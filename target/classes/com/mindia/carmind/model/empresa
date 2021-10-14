@@ -1,0 +1,4 @@
+class Empresa{
+    int id;
+    String nombre;
+}
