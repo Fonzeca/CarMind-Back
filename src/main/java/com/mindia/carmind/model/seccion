@@ -1,4 +1,0 @@
-class Seccion {
-    int id;
-    String nombre, descripcion;
-}

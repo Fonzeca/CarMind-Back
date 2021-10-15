@@ -1,4 +1,0 @@
-class Vehiculo{
-    int id;
-    String marca, modelo, linea, ultimo_service, color;
-}
