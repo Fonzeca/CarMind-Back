@@ -10,12 +10,6 @@
             "request": "launch",
             "mainClass": "com.mindia.carmind.CarMindApplication",
             "projectName": "CarMind"
-        },
-        {
-            "type": "java",
-            "name": "Launch Current File",
-            "request": "launch",
-            "mainClass": "${file}"
         }
     ]
 }
