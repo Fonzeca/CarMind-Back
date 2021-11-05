@@ -6,8 +6,12 @@ import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -17,23 +21,23 @@ public class UsuariosApi {
     UsuariosManager manager;
 
     @GetMapping("/usuarios")
-    public UsuarioView getUsuario(@RequestAttribute("id") String id) {
+    public UsuarioView getUsuario(@RequestParam("id") String id) {
 
         return manager.obtenerUsuarioById(id);
     }
 
-    @GetMapping("/usuarios/alta")
+    @PostMapping("/usuarios/alta")
     public void altaUsuario(@RequestAttribute("pojo") AltaPojo pojo) {
         manager.altaConductor(pojo);
     }
 
-    @GetMapping("/usuarios/editar")
+    @PutMapping("/usuarios/editar")
     public void editarUsuario(@RequestAttribute("pojo") ModificarPojo pojo) {
 
         manager.modificarConductor(pojo);
     }
 
-    @GetMapping("/usuarios/borrar")
+    @DeleteMapping("/usuarios/borrar")
     public void borrarUsuario(@RequestAttribute("id") String id) {
 
         manager.bajaConductor(id);

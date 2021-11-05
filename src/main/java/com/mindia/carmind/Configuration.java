@@ -12,35 +12,32 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
 @org.springframework.context.annotation.Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties
-public class Configuration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer{
+public class Configuration extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable()
-		.authorizeRequests()
-		.antMatchers(HttpMethod.POST, "/login").permitAll()
-		.anyRequest().authenticated();
+		http.cors().and().csrf().disable().authorizeRequests()
+				// .antMatchers(HttpMethod.POST, "/login").permitAll()
+				// .anyRequest().authenticated()
+				.antMatchers(HttpMethod.GET, "/*").permitAll();
 	}
-	
+
 	@Bean
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
-        jsonConverter.setDefaultCharset(StandardCharsets.UTF_8);
-        return jsonConverter;
-    }
-	
+	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
+		MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
+		jsonConverter.setDefaultCharset(StandardCharsets.UTF_8);
+		return jsonConverter;
+	}
+
 	@Bean
-    public WebMvcConfigurer corsConfigurer() {
+	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**")
-				.allowedOrigins("*")
-				.allowedMethods("*");
+				registry.addMapping("/**").allowedOrigins("*").allowedMethods("*");
 			}
 		};
 	}
