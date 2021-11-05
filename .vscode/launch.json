@@ -6,7 +6,7 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch CarMindApplication",
+            "name": "Debug (Launch)",
             "request": "launch",
             "mainClass": "com.mindia.carmind.CarMindApplication",
             "projectName": "CarMind"
