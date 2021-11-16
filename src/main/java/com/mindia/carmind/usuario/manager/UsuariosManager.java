@@ -1,7 +1,7 @@
 package com.mindia.carmind.usuario.manager;
 
-import com.mindia.carmind.entities.Usuarios;
-import com.mindia.carmind.entities.interfaces.IUsuarios;
+import com.mindia.carmind.entities.Usuario;
+import com.mindia.carmind.entities.interfaces.IUsuario;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UsuariosManager implements IUsuarios {
+public class UsuariosManager implements IUsuario {
     Convertions c;
 
     @Autowired
@@ -21,7 +21,7 @@ public class UsuariosManager implements IUsuarios {
     @Override
     public void altaConductor(AltaPojo pojo) {
 
-        Usuarios usuario = new Usuarios();
+        Usuario usuario = new Usuario();
         usuario.setAdministrador(pojo.isAdministrador());
         usuario.setEmpresa(pojo.getEmpresa().getId());
         usuario.setNombre(pojo.getNombre());
@@ -31,7 +31,7 @@ public class UsuariosManager implements IUsuarios {
 
     @Override
     public void modificarConductor(ModificarPojo pojo) {
-        Usuarios usuario = repository.getById(pojo.getId());
+        Usuario usuario = repository.getById(pojo.getId());
         usuario.setAdministrador(pojo.isAdministrador());
         usuario.setEmpresa(pojo.getEmpresa().getId());
         usuario.setNombre(pojo.getNombre());
@@ -47,7 +47,7 @@ public class UsuariosManager implements IUsuarios {
 
     @Override
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuarios u = repository.getById(c.toInt(id));
+        Usuario u = repository.getById(c.toInt(id));
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;

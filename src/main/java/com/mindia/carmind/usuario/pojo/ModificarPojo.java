@@ -1,10 +1,11 @@
 package com.mindia.carmind.usuario.pojo;
 
 import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.entities.Empresas;
+import com.mindia.carmind.entities.Empresa;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "id", "nombre", "empresa", "administrador" })
@@ -16,7 +17,7 @@ public class ModificarPojo {
     @JsonProperty("nombre")
     private String nombre;
     @JsonProperty("empresa")
-    private Empresas empresa;
+    private Empresa empresa;
     @JsonProperty("administrador")
     private boolean administrador;
 
@@ -51,16 +52,16 @@ public class ModificarPojo {
     }
 
     @JsonProperty("empresa")
-    public Empresas getEmpresa() {
+    public Empresa getEmpresa() {
         return empresa;
     }
 
     @JsonProperty("empresa")
-    public void setEmpresa(Empresas empresa) {
+    public void setEmpresa(Empresa empresa) {
         this.empresa = empresa;
     }
 
-    public ModificarPojo withEmpresa(Empresas empresa) {
+    public ModificarPojo withEmpresa(Empresa empresa) {
         this.empresa = empresa;
         return this;
     }

@@ -3,10 +3,11 @@ package com.mindia.carmind.vehiculo.pojo;
 import java.util.Date;
 
 import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.entities.Vehiculos;
+import com.mindia.carmind.entities.Vehiculo;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
@@ -116,7 +117,7 @@ public class VehiculoView {
         return this;
     }
 
-    public VehiculoView(Vehiculos v) {
+    public VehiculoView(Vehiculo v) {
         marca = v.getMarca();
         color = v.getColor();
         modelo = v.getModelo();

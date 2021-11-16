@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,25 +20,23 @@ public class VehiculoApi {
     @Autowired
     VehiculoManager manager;
 
-    @GetMapping("/vehiculos")
+    @GetMapping("/vehiculo")
     public VehiculoView getVehiculo(@RequestAttribute("id") String id) {
-
         return manager.obtenerVehiculoById(id);
     }
 
-    @PostMapping("/vehiculos/alta")
-    public void altaVehiculo(@RequestAttribute("pojo") AltaPojo pojo) {
-
+    @PostMapping("/vehiculo")
+    public void altaVehiculo(@RequestBody AltaPojo pojo) {
         manager.altaVehiculo(pojo);
     }
 
-    @PutMapping("/vehiculos/editar")
+    @PutMapping("/vehiculo")
     public void editarVehiculo(@RequestAttribute("pojo") ModificarPojo pojo) {
 
         manager.modificarVehiculo(pojo);
     }
 
-    @DeleteMapping("/vehiculos/borrar")
+    @DeleteMapping("/vehiculo")
     public void borrarVehiculo(@RequestAttribute("id") String id) {
 
         manager.bajaVehiculo(id);

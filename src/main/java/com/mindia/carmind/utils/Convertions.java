@@ -26,6 +26,7 @@ public class Convertions {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static Map<String, Object> fromJson(String json) {
         ObjectMapper mapper = new ObjectMapper();
         try {

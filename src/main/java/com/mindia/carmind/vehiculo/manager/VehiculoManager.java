@@ -1,7 +1,7 @@
 package com.mindia.carmind.vehiculo.manager;
 
-import com.mindia.carmind.entities.Vehiculos;
-import com.mindia.carmind.entities.interfaces.IVehiculos;
+import com.mindia.carmind.entities.Vehiculo;
+import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class VehiculoManager implements IVehiculos {
+public class VehiculoManager implements IVehiculo {
     Convertions c;
 
     @Autowired
@@ -20,7 +20,9 @@ public class VehiculoManager implements IVehiculos {
 
     public void altaVehiculo(AltaPojo pojo) {
 
-        Vehiculos vehiculo = new Vehiculos();
+        pojo.validate();
+
+        Vehiculo vehiculo = new Vehiculo();
         vehiculo.setColor(pojo.getColor());
         vehiculo.setFechaService(pojo.getFechaService());
         vehiculo.setLinea(pojo.getLinea());
@@ -32,7 +34,7 @@ public class VehiculoManager implements IVehiculos {
     }
 
     public void modificarVehiculo(ModificarPojo pojo) {
-        Vehiculos vehiculo = repository.getById(pojo.getId());
+        Vehiculo vehiculo = repository.getById(pojo.getId());
         vehiculo.setColor(pojo.getColor());
         vehiculo.setFechaService(pojo.getFechaService());
         vehiculo.setLinea(pojo.getLinea());
@@ -48,9 +50,10 @@ public class VehiculoManager implements IVehiculos {
     }
 
     public VehiculoView obtenerVehiculoById(String id) {
-        Vehiculos v = repository.getById(c.toInt(id));
+        Vehiculo v = repository.getById(c.toInt(id));
         VehiculoView vehiculo = new VehiculoView(v);
         return vehiculo;
     }
+
 
 }

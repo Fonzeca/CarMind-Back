@@ -1,11 +1,18 @@
 package com.mindia.carmind.vehiculo.pojo;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
@@ -113,6 +120,62 @@ public class AltaPojo {
     public AltaPojo withUltimaEvaluacion(int ultimaEvaluacion) {
         this.ultimaEvaluacion = ultimaEvaluacion;
         return this;
+    }
+
+    public boolean validate(){
+        Stream<MarcaPojo> MARCAS = MarcaPojo.getMarcas().stream();
+
+        MarcaPojo marcaPojo = buscarMarca(MARCAS);
+
+        if(this.marca == null || this.marca.isBlank()
+            || marcaPojo == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca erronea");
+        }
+        this.marca = marcaPojo.getMarca();
+
+        ModeloPojo modeloPojo = buscarModelo(marcaPojo.getModelos().stream());
+
+        if(this.modelo == null || this.modelo.isBlank()
+            || modeloPojo == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo erroneo");
+        }
+        this.modelo = modeloPojo.getModelo();
+
+        if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
+        }
+
+        return true;
+    }
+
+    private MarcaPojo buscarMarca(Stream<MarcaPojo> MARCAS){
+        if(this.marca != null && !this.marca.isBlank()){
+
+            //Busca y lo encapsulamos en a
+            List<MarcaPojo> a = MARCAS.filter(
+                x -> x.getMarca().trim().toLowerCase().equals(this.marca.trim().toLowerCase())
+            ).collect(Collectors.toList());
+
+            //Me duvuelve el primero o null
+            return a.size() > 0 ? a.get(0) : null;
+        }else{
+            return null;
+        }
+    }
+
+    private ModeloPojo buscarModelo(Stream<ModeloPojo> modelos){
+        if(this.modelo != null && !this.modelo.isBlank()){
+
+            //Busca y lo encapsulamos en a
+            List<ModeloPojo> a = modelos.filter(
+                x -> x.getModelo().trim().toLowerCase().equals(this.modelo.trim().toLowerCase())
+            ).collect(Collectors.toList());
+
+            //Me duvuelve el primero o null
+            return a.size() > 0 ? a.get(0) : null;
+        }else{
+            return null;
+        }
     }
 
 }

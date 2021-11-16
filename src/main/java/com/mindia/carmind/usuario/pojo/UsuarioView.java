@@ -1,10 +1,11 @@
 package com.mindia.carmind.usuario.pojo;
 
 import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.entities.Usuarios;
+import com.mindia.carmind.entities.Usuario;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "nombre", "empresa", "administrador" })
@@ -63,10 +64,10 @@ public class UsuarioView {
         return this;
     }
 
-    public UsuarioView(Usuarios u) {
+    public UsuarioView(Usuario u) {
         administrador = u.getAdministrador();
         nombre = u.getNombre();
-        empresa = u.getEmpresas().getNombre();
+        empresa = u.getEmpresa2().getNombre();
     }
 
 }
