@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -43,9 +42,8 @@ public class VehiculoApi {
         manager.modificarVehiculo(pojo);
     }
 
-    @DeleteMapping("/vehiculo")
-    public void borrarVehiculo(@RequestAttribute("id") String id) {
-
+    @DeleteMapping("/vehiculo/{id}")
+    public void borrarVehiculo(@PathVariable String id) {
         manager.bajaVehiculo(id);
     }
 }

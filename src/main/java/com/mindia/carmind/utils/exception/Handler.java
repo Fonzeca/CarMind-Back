@@ -1,5 +1,7 @@
 package com.mindia.carmind.utils.exception;
 
+import javax.persistence.EntityNotFoundException;
+
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.http.HttpStatus;
@@ -32,6 +34,13 @@ public class Handler {
         ErrorDetails details = new ErrorDetails(ex.getMessage(), "");
         
         return new ResponseEntity(details, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<?> handleResponseStatusException(EntityNotFoundException ex, WebRequest request){
+        ErrorDetails details = new ErrorDetails("Entidad no encontrada", ex.getMessage());
+        
+        return new ResponseEntity(details, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(Exception.class)
