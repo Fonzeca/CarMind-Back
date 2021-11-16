@@ -123,8 +123,10 @@ public class AltaPojo {
     }
 
     public boolean validate(){
+        //Obtengo todas las marcas
         Stream<MarcaPojo> MARCAS = MarcaPojo.getMarcas().stream();
 
+        //Busco verdaderamente existe la marca que se quiere dar de alta
         MarcaPojo marcaPojo = buscarMarca(MARCAS);
 
         if(this.marca == null || this.marca.isBlank()
@@ -133,6 +135,7 @@ public class AltaPojo {
         }
         this.marca = marcaPojo.getMarca();
 
+        //Se busca si verdaderamente existe el modelo que se quiere dar de alta
         ModeloPojo modeloPojo = buscarModelo(marcaPojo.getModelos().stream());
 
         if(this.modelo == null || this.modelo.isBlank()
@@ -141,6 +144,7 @@ public class AltaPojo {
         }
         this.modelo = modeloPojo.getModelo();
 
+        //Valida si la linea no esta vacia o es mayor a 10 caracteres
         if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
         }
@@ -148,6 +152,13 @@ public class AltaPojo {
         return true;
     }
 
+    /**
+     * Funcion para buscar entre las base de datos, una marca.
+     * Si no existe, devuelve null.
+     * 
+     * @param MARCAS
+     * @return El objeto MarcaPojo buscado
+     */
     private MarcaPojo buscarMarca(Stream<MarcaPojo> MARCAS){
         if(this.marca != null && !this.marca.isBlank()){
 
@@ -163,6 +174,13 @@ public class AltaPojo {
         }
     }
 
+    /**
+     * Funcion para buscar entre las base de datos, un modelo.
+     * Si no existe, devuelve null.
+     * 
+     * @param modelos
+     * @return El objeto ModelPojo
+     */
     private ModeloPojo buscarModelo(Stream<ModeloPojo> modelos){
         if(this.modelo != null && !this.modelo.isBlank()){
 
