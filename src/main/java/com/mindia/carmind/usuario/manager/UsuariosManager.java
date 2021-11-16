@@ -41,13 +41,13 @@ public class UsuariosManager implements IUsuario {
 
     @Override
     public void bajaConductor(String id) {
-        repository.deleteById(c.toInt(id));
+        repository.deleteById(Integer.parseInt(id));
         ;
     }
 
     @Override
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuario u = repository.getById(c.toInt(id));
+        Usuario u = repository.getById(Integer.parseInt(id));
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;

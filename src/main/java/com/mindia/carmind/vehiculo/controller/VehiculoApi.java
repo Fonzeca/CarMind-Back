@@ -1,5 +1,7 @@
 package com.mindia.carmind.vehiculo.controller;
 
+import java.util.List;
+
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
@@ -8,6 +10,7 @@ import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -21,7 +24,12 @@ public class VehiculoApi {
     VehiculoManager manager;
 
     @GetMapping("/vehiculo")
-    public VehiculoView getVehiculo(@RequestAttribute("id") String id) {
+    public List<VehiculoView> getAllVehiculo() {
+        return manager.getAllVehiculos();
+    }
+
+    @GetMapping("/vehiculo/{id}")
+    public VehiculoView getVehiculo(@PathVariable String id) {
         return manager.obtenerVehiculoById(id);
     }
 
@@ -31,8 +39,7 @@ public class VehiculoApi {
     }
 
     @PutMapping("/vehiculo")
-    public void editarVehiculo(@RequestAttribute("pojo") ModificarPojo pojo) {
-
+    public void editarVehiculo(@RequestBody ModificarPojo pojo) {
         manager.modificarVehiculo(pojo);
     }
 

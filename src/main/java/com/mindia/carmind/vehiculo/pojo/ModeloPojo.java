@@ -1,6 +1,10 @@
 
 package com.mindia.carmind.vehiculo.pojo;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -56,6 +60,29 @@ public class ModeloPojo {
     @JsonProperty("Modelo")
     public void setModelo(String modelo) {
         this.modelo = modelo;
+    }
+
+    /**
+     * Funcion para buscar entre las base de datos, un modelo.
+     * Si no existe, devuelve null.
+     * 
+     * @param modelos
+     * @param modelo el modelo a buscar
+     * @return El objeto ModelPojo
+     */
+    public static ModeloPojo buscarModelo(Stream<ModeloPojo> modelos, String modelo){
+        if(modelo != null && !modelo.isBlank()){
+
+            //Busca y lo encapsulamos en a
+            List<ModeloPojo> a = modelos.filter(
+                x -> x.getModelo().trim().toLowerCase().equals(modelo.trim().toLowerCase())
+            ).collect(Collectors.toList());
+
+            //Me duvuelve el primero o null
+            return a.size() > 0 ? a.get(0) : null;
+        }else{
+            return null;
+        }
     }
 
 }

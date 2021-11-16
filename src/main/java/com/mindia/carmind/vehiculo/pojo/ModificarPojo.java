@@ -1,14 +1,16 @@
 package com.mindia.carmind.vehiculo.pojo;
 
-import java.util.Date;
-
 import javax.annotation.Generated;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
+@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color" })
 @Generated("jsonschema2pojo")
 public class ModificarPojo {
 
@@ -22,10 +24,6 @@ public class ModificarPojo {
     private String linea;
     @JsonProperty("color")
     private String color;
-    @JsonProperty("fecha_service")
-    private Date fechaService;
-    @JsonProperty("ultima_evaluacion")
-    private int ultimaEvaluacion;
 
     @JsonProperty("id")
     public int getId() {
@@ -35,11 +33,6 @@ public class ModificarPojo {
     @JsonProperty("id")
     public void setId(int id) {
         this.id = id;
-    }
-
-    public ModificarPojo withId(int id) {
-        this.id = id;
-        return this;
     }
 
     @JsonProperty("marca")
@@ -52,11 +45,6 @@ public class ModificarPojo {
         this.marca = marca;
     }
 
-    public ModificarPojo withMarca(String marca) {
-        this.marca = marca;
-        return this;
-    }
-
     @JsonProperty("modelo")
     public String getModelo() {
         return modelo;
@@ -65,11 +53,6 @@ public class ModificarPojo {
     @JsonProperty("modelo")
     public void setModelo(String modelo) {
         this.modelo = modelo;
-    }
-
-    public ModificarPojo withModelo(String modelo) {
-        this.modelo = modelo;
-        return this;
     }
 
     @JsonProperty("linea")
@@ -82,11 +65,6 @@ public class ModificarPojo {
         this.linea = linea;
     }
 
-    public ModificarPojo withLinea(String linea) {
-        this.linea = linea;
-        return this;
-    }
-
     @JsonProperty("color")
     public String getColor() {
         return color;
@@ -97,39 +75,32 @@ public class ModificarPojo {
         this.color = color;
     }
 
-    public ModificarPojo withColor(String color) {
-        this.color = color;
-        return this;
-    }
+    public boolean validate(){
 
-    @JsonProperty("fecha_service")
-    public Date getFechaService() {
-        return fechaService;
-    }
+        //Busco si verdaderamente existe la marca que se quiere dar de alta
+        MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
 
-    @JsonProperty("fecha_service")
-    public void setFechaService(Date fechaService) {
-        this.fechaService = fechaService;
-    }
+        if(this.marca == null || this.marca.isBlank()
+            || marcaPojo == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca erronea");
+        }
+        this.marca = marcaPojo.getMarca();
 
-    public ModificarPojo withFechaService(Date fechaService) {
-        this.fechaService = fechaService;
-        return this;
-    }
+        //Se busca si verdaderamente existe el modelo que se quiere dar de alta
+        ModeloPojo modeloPojo = ModeloPojo.buscarModelo(marcaPojo.getModelos().stream(), this.modelo);
 
-    @JsonProperty("ultima_evaluacion")
-    public int getUltimaEvaluacion() {
-        return ultimaEvaluacion;
-    }
+        if(this.modelo == null || this.modelo.isBlank()
+            || modeloPojo == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo erroneo");
+        }
+        this.modelo = modeloPojo.getModelo();
 
-    @JsonProperty("ultima_evaluacion")
-    public void setUltimaEvaluacion(int ultimaEvaluacion) {
-        this.ultimaEvaluacion = ultimaEvaluacion;
-    }
+        //Valida si la linea no esta vacia o es mayor a 10 caracteres
+        if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
+        }
 
-    public ModificarPojo withUltimaEvaluacion(int ultimaEvaluacion) {
-        this.ultimaEvaluacion = ultimaEvaluacion;
-        return this;
+        return true;
     }
 
 }

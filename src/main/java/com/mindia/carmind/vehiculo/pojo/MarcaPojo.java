@@ -4,6 +4,7 @@ package com.mindia.carmind.vehiculo.pojo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.annotation.Generated;
 
@@ -95,6 +96,28 @@ public class MarcaPojo {
             }
         }
         return MARCAS;
+    }
+
+    /**
+     * Funcion para buscar entre las base de datos, una marca.
+     * Si no existe, devuelve null.
+     * 
+     * @param marca la marca a buscar
+     * @return El objeto MarcaPojo buscado
+     */
+    public static MarcaPojo buscarMarca(String marca){
+        if(marca != null && !marca.isBlank()){
+
+            //Busca y lo encapsulamos en a
+            List<MarcaPojo> a = getMarcas().stream().filter(
+                x -> x.getMarca().trim().toLowerCase().equals(marca.trim().toLowerCase())
+            ).collect(Collectors.toList());
+
+            //Me duvuelve el primero o null
+            return a.size() > 0 ? a.get(0) : null;
+        }else{
+            return null;
+        }
     }
 
 }

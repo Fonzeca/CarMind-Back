@@ -10,10 +10,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mindia.carmind.entities.Vehiculo;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
+@JsonPropertyOrder({ "id","marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
 @Generated("jsonschema2pojo")
 public class VehiculoView {
 
+    @JsonProperty("id")
+    private int id;
     @JsonProperty("marca")
     private String marca;
     @JsonProperty("modelo")
@@ -25,7 +27,17 @@ public class VehiculoView {
     @JsonProperty("fecha_service")
     private Date fechaService;
     @JsonProperty("ultima_evaluacion")
-    private int ultimaEvaluacion;
+    private Integer ultimaEvaluacion;
+
+    @JsonProperty("id")
+    public int getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(int id) {
+        this.id = id;
+    }
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -35,11 +47,6 @@ public class VehiculoView {
     @JsonProperty("marca")
     public void setMarca(String marca) {
         this.marca = marca;
-    }
-
-    public VehiculoView withMarca(String marca) {
-        this.marca = marca;
-        return this;
     }
 
     @JsonProperty("modelo")
@@ -52,11 +59,6 @@ public class VehiculoView {
         this.modelo = modelo;
     }
 
-    public VehiculoView withModelo(String modelo) {
-        this.modelo = modelo;
-        return this;
-    }
-
     @JsonProperty("linea")
     public String getLinea() {
         return linea;
@@ -65,11 +67,6 @@ public class VehiculoView {
     @JsonProperty("linea")
     public void setLinea(String linea) {
         this.linea = linea;
-    }
-
-    public VehiculoView withLinea(String linea) {
-        this.linea = linea;
-        return this;
     }
 
     @JsonProperty("color")
@@ -82,11 +79,6 @@ public class VehiculoView {
         this.color = color;
     }
 
-    public VehiculoView withColor(String color) {
-        this.color = color;
-        return this;
-    }
-
     @JsonProperty("fecha_service")
     public Date getFechaService() {
         return fechaService;
@@ -97,27 +89,18 @@ public class VehiculoView {
         this.fechaService = fechaService;
     }
 
-    public VehiculoView withFechaService(Date fechaService) {
-        this.fechaService = fechaService;
-        return this;
-    }
-
     @JsonProperty("ultima_evaluacion")
-    public int getUltimaEvaluacion() {
+    public Integer getUltimaEvaluacion() {
         return ultimaEvaluacion;
     }
 
     @JsonProperty("ultima_evaluacion")
-    public void setUltimaEvaluacion(int ultimaEvaluacion) {
+    public void setUltimaEvaluacion(Integer ultimaEvaluacion) {
         this.ultimaEvaluacion = ultimaEvaluacion;
-    }
-
-    public VehiculoView withUltimaEvaluacion(int ultimaEvaluacion) {
-        this.ultimaEvaluacion = ultimaEvaluacion;
-        return this;
     }
 
     public VehiculoView(Vehiculo v) {
+        id = v.getId();
         marca = v.getMarca();
         color = v.getColor();
         modelo = v.getModelo();

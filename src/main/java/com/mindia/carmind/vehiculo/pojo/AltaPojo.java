@@ -1,20 +1,15 @@
 package com.mindia.carmind.vehiculo.pojo;
 
 import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.annotation.Generated;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
@@ -30,7 +25,7 @@ public class AltaPojo {
     @JsonProperty("fecha_service")
     private Date fechaService;
     @JsonProperty("ultima_evaluacion")
-    private int ultimaEvaluacion;
+    private Integer ultimaEvaluacion;
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -108,12 +103,12 @@ public class AltaPojo {
     }
 
     @JsonProperty("ultima_evaluacion")
-    public int getUltimaEvaluacion() {
+    public Integer getUltimaEvaluacion() {
         return ultimaEvaluacion;
     }
 
     @JsonProperty("ultima_evaluacion")
-    public void setUltimaEvaluacion(int ultimaEvaluacion) {
+    public void setUltimaEvaluacion(Integer ultimaEvaluacion) {
         this.ultimaEvaluacion = ultimaEvaluacion;
     }
 
@@ -123,11 +118,9 @@ public class AltaPojo {
     }
 
     public boolean validate(){
-        //Obtengo todas las marcas
-        Stream<MarcaPojo> MARCAS = MarcaPojo.getMarcas().stream();
 
-        //Busco verdaderamente existe la marca que se quiere dar de alta
-        MarcaPojo marcaPojo = buscarMarca(MARCAS);
+        //Busco si verdaderamente existe la marca que se quiere dar de alta
+        MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
 
         if(this.marca == null || this.marca.isBlank()
             || marcaPojo == null){
@@ -136,7 +129,7 @@ public class AltaPojo {
         this.marca = marcaPojo.getMarca();
 
         //Se busca si verdaderamente existe el modelo que se quiere dar de alta
-        ModeloPojo modeloPojo = buscarModelo(marcaPojo.getModelos().stream());
+        ModeloPojo modeloPojo = ModeloPojo.buscarModelo(marcaPojo.getModelos().stream(), this.modelo);
 
         if(this.modelo == null || this.modelo.isBlank()
             || modeloPojo == null){
@@ -152,48 +145,7 @@ public class AltaPojo {
         return true;
     }
 
-    /**
-     * Funcion para buscar entre las base de datos, una marca.
-     * Si no existe, devuelve null.
-     * 
-     * @param MARCAS
-     * @return El objeto MarcaPojo buscado
-     */
-    private MarcaPojo buscarMarca(Stream<MarcaPojo> MARCAS){
-        if(this.marca != null && !this.marca.isBlank()){
 
-            //Busca y lo encapsulamos en a
-            List<MarcaPojo> a = MARCAS.filter(
-                x -> x.getMarca().trim().toLowerCase().equals(this.marca.trim().toLowerCase())
-            ).collect(Collectors.toList());
-
-            //Me duvuelve el primero o null
-            return a.size() > 0 ? a.get(0) : null;
-        }else{
-            return null;
-        }
-    }
-
-    /**
-     * Funcion para buscar entre las base de datos, un modelo.
-     * Si no existe, devuelve null.
-     * 
-     * @param modelos
-     * @return El objeto ModelPojo
-     */
-    private ModeloPojo buscarModelo(Stream<ModeloPojo> modelos){
-        if(this.modelo != null && !this.modelo.isBlank()){
-
-            //Busca y lo encapsulamos en a
-            List<ModeloPojo> a = modelos.filter(
-                x -> x.getModelo().trim().toLowerCase().equals(this.modelo.trim().toLowerCase())
-            ).collect(Collectors.toList());
-
-            //Me duvuelve el primero o null
-            return a.size() > 0 ? a.get(0) : null;
-        }else{
-            return null;
-        }
-    }
+    
 
 }

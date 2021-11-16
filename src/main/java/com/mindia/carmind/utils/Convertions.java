@@ -12,10 +12,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class Convertions {
 
-    public Integer toInt(String id) {
-        return Integer.parseInt(id);
-    }
-
     public static String toJson(Object o) {
         ObjectMapper mapper = new ObjectMapper();
         try {
