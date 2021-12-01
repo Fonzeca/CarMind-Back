@@ -1,4 +1,4 @@
-package com.mindia.carmind.user.pojo;
+package com.mindia.carmind.usuario.pojo.userHub;
 
 import javax.annotation.Generated;
 

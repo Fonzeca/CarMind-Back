@@ -2,7 +2,8 @@ package com.mindia.carmind;
 
 import java.nio.charset.StandardCharsets;
 
-import com.mindia.carmind.user.pojo.UserHubConfig;
+import com.mindia.carmind.usuario.manager.JWTFilter;
+import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -13,6 +14,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -27,10 +29,11 @@ public class Configuration extends WebSecurityConfigurerAdapter implements WebMv
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.cors().and().csrf().disable().authorizeRequests()
-				// .antMatchers(HttpMethod.POST, "/login").permitAll()
-				// .anyRequest().authenticated()
-				.antMatchers(HttpMethod.GET, "/*").permitAll();
+		http.cors().and().csrf().disable()
+		.addFilterAfter(new JWTFilter(userHubConfig), UsernamePasswordAuthenticationFilter.class)
+		.authorizeRequests()
+			.antMatchers(HttpMethod.POST, "/login").permitAll()
+			.anyRequest().authenticated();
 	}
 
 	@Bean

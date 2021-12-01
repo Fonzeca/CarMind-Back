@@ -4,13 +4,16 @@ import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.userHub.TokenView;
+import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,25 +23,43 @@ public class UsuariosApi {
     @Autowired
     UsuariosManager manager;
 
-    @GetMapping("/usuarios")
-    public UsuarioView getUsuario(@RequestParam("id") String id) {
+    @Autowired
+    UserHubConfig userHubConfig;
 
+    @PostMapping("/login")
+    public TokenView getVehiculo(@RequestParam("username") String userName, @RequestParam("password") String password) {
+        return manager.login(userName, password);
+    }
+
+    @GetMapping("/test")
+    @PreAuthorize("hasRole('admin')")
+    public String test(){
+        return "Hello World";
+    }
+
+    @GetMapping("/usuario/{id}")
+    public UsuarioView getUsuarioById(@PathVariable String id) {
         return manager.obtenerUsuarioById(id);
     }
 
-    @PostMapping("/usuarios/alta")
-    public void altaUsuario(@RequestAttribute("pojo") AltaPojo pojo) {
-        manager.altaConductor(pojo);
+    @GetMapping("/usuario")
+    public UsuarioView getAllUsuarios() {
+
+        return null;
     }
 
-    @PutMapping("/usuarios/editar")
-    public void editarUsuario(@RequestAttribute("pojo") ModificarPojo pojo) {
+    @PostMapping("/usuario")
+    public void altaUsuario(@RequestBody AltaPojo pojo) {
+        manager.altaUsuario(pojo);
+    }
 
+    @PutMapping("/usuario")
+    public void editarUsuario(@RequestBody ModificarPojo pojo) {
         manager.modificarConductor(pojo);
     }
 
-    @DeleteMapping("/usuarios/borrar")
-    public void borrarUsuario(@RequestAttribute("id") String id) {
+    //Funcionalidad no terminada
+    public void borrarUsuario(@PathVariable String id) {
 
         manager.bajaConductor(id);
     }

@@ -1,4 +1,4 @@
-package com.mindia.carmind.user.manager;
+package com.mindia.carmind.usuario.manager;
 
 import java.io.IOException;
 import java.util.stream.Collectors;
@@ -9,8 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mindia.carmind.user.pojo.LoggedView;
-import com.mindia.carmind.user.pojo.UserHubConfig;
+import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
+import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,6 +33,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
     UserHubConfig userHubConfig;
 
+    //Constructor
     public JWTFilter(UserHubConfig userHubConfig) {
         this.userHubConfig = userHubConfig;
     }
@@ -42,13 +43,18 @@ public class JWTFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         try {
+            //Obtenemos el barer token de los headers
             String authenticationHeader = request.getHeader(HEADER);
 
+            //Preguntamos si la llamada que hacemos es la del login
             if (request.getRequestURI().equals("/login")) {
+
+                //Si es la del login, no necesita auth
                 chain.doFilter(request, response);
                 return;
             }
 
+            //Validamos que el barer este bien armado y consultamos a UserHub si el token esta activo
             if (authenticationHeader != null && authenticationHeader.startsWith(PREFIX)
                     && validateTokenToUserHub(authenticationHeader)) {
 
@@ -56,8 +62,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
             } else {
                 SecurityContextHolder.clearContext();
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                return;
             }
             chain.doFilter(request, response);
         } catch (Exception e) {
@@ -66,6 +70,12 @@ public class JWTFilter extends OncePerRequestFilter {
 
     }
 
+    /**
+     * Metodo que llama a UserHub para verificar si el token esta activo.
+     * 
+     * @param token token a verificar
+     * @return true or false dependiendo si el token esta activo o no
+     */
     private boolean validateTokenToUserHub(String token) {
 
         String pathUserHub = "/logged";
@@ -79,7 +89,10 @@ public class JWTFilter extends OncePerRequestFilter {
             if(userHubResponse.code() != 200){
                 return false;
             }else{
+                //Transformo de json a objeto
                 LoggedView loggedView = mapper.readValue(userHubResponse.body().string(), LoggedView.class);
+
+                //Seteo los datos de auth al contexto de Spring
                 setUpSpringAuthentication(loggedView);
 
                 return true;
@@ -94,7 +107,7 @@ public class JWTFilter extends OncePerRequestFilter {
     /**
      * Metodo para autenticarnos dentro del flujo de Spring
      * 
-     * @param claims
+     * @param loggedUser objeto con los datos del user
      */
     private void setUpSpringAuthentication(LoggedView loggedUser) {
         UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(loggedUser,

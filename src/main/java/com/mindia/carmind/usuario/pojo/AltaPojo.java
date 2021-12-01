@@ -5,19 +5,51 @@ import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.entities.Empresa;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "nombre", "empresa", "administrador" })
+@JsonPropertyOrder({ "nombre", "apellido", "username", "password", "DNI", "administrador" })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
 
     @JsonProperty("nombre")
     private String nombre;
-    @JsonProperty("empresa")
-    private Empresa empresa;
+    @JsonProperty("apellido")
+    private String apellido;
+    @JsonProperty("username")
+    private String username;
+    @JsonProperty("password")
+    private String password;
+    @JsonProperty("DNI")
+    private String dni;
     @JsonProperty("administrador")
-    private boolean administrador;
+    private Boolean administrador;
+
+    /**
+     * No args constructor for use in serialization
+     *
+     */
+    public AltaPojo() {
+    }
+
+    /**
+     *
+     * @param password
+     * @param administrador
+     * @param apellido
+     * @param nombre
+     * @param dni
+     * @param username
+     */
+    public AltaPojo(String nombre, String apellido, String username, String password, String dni,
+            Boolean administrador) {
+        super();
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.username = username;
+        this.password = password;
+        this.dni = dni;
+        this.administrador = administrador;
+    }
 
     @JsonProperty("nombre")
     public String getNombre() {
@@ -29,39 +61,54 @@ public class AltaPojo {
         this.nombre = nombre;
     }
 
-    public AltaPojo withNombre(String nombre) {
-        this.nombre = nombre;
-        return this;
+    @JsonProperty("apellido")
+    public String getApellido() {
+        return apellido;
     }
 
-    @JsonProperty("empresa")
-    public Empresa getEmpresa() {
-        return empresa;
+    @JsonProperty("apellido")
+    public void setApellido(String apellido) {
+        this.apellido = apellido;
     }
 
-    @JsonProperty("empresa")
-    public void setEmpresa(Empresa empresa) {
-        this.empresa = empresa;
+    @JsonProperty("username")
+    public String getUsername() {
+        return username;
     }
 
-    public AltaPojo withEmpresa(Empresa empresa) {
-        this.empresa = empresa;
-        return this;
+    @JsonProperty("username")
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    @JsonProperty("password")
+    public String getPassword() {
+        return password;
+    }
+
+    @JsonProperty("password")
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @JsonProperty("DNI")
+    public String getDni() {
+        return dni;
+    }
+
+    @JsonProperty("DNI")
+    public void setDni(String dni) {
+        this.dni = dni;
     }
 
     @JsonProperty("administrador")
-    public boolean isAdministrador() {
+    public Boolean getAdministrador() {
         return administrador;
     }
 
     @JsonProperty("administrador")
-    public void setAdministrador(boolean administrador) {
+    public void setAdministrador(Boolean administrador) {
         this.administrador = administrador;
-    }
-
-    public AltaPojo withAdministrador(boolean administrador) {
-        this.administrador = administrador;
-        return this;
     }
 
 }

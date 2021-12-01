@@ -67,7 +67,7 @@ public class UsuarioView {
     public UsuarioView(Usuario u) {
         administrador = u.getAdministrador();
         nombre = u.getNombre();
-        empresa = u.getEmpresa2().getNombre();
+        empresa = u.getEmpresa() + "";
     }
 
 }

@@ -1,6 +1,6 @@
 package com.mindia.carmind;
 
-import com.mindia.carmind.user.pojo.UserHubConfig;
+import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
