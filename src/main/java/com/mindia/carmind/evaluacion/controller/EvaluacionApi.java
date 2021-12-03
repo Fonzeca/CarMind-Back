@@ -15,7 +15,7 @@ public class EvaluacionApi {
     UserHubConfig userHubConfig;
 
 
-    @GetMapping("/test")
+    @GetMapping("/test2")
     @PreAuthorize("hasRole('admin')")
     public String test(){
         return "Hello World";

@@ -104,7 +104,6 @@ public class VehiculoView {
         modelo = v.getModelo();
         linea = v.getLinea();
         fechaService = v.getFechaService();
-        ultimaEvaluacion = v.getUltimaEvaluacion();
     }
 
 }

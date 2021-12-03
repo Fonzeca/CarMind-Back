@@ -6,7 +6,14 @@ package com.mindia.carmind.entities;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "Seccion"
@@ -33,7 +40,7 @@ public class Seccion implements Serializable {
     @Column(name="descripcion", nullable=false, length=100)
     private String     descripcion ;
 
-    @Column(name="activo", nullable=false)
+    @Column(name="activo", nullable=false )
     private Boolean    activo ;
 
 

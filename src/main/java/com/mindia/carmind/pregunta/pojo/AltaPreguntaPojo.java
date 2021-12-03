@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "seccion"
 })
 @Generated("jsonschema2pojo")
-public class AltaPojo {
+public class AltaPreguntaPojo {
 
     @JsonProperty("descripcion")
     private String descripcion;
@@ -23,7 +23,7 @@ public class AltaPojo {
      * No args constructor for use in serialization
      *
      */
-    public AltaPojo() {
+    public AltaPreguntaPojo() {
     }
 
     /**
@@ -31,7 +31,7 @@ public class AltaPojo {
      * @param descripcion
      * @param seccion
      */
-    public AltaPojo(String descripcion, Integer seccion) {
+    public AltaPreguntaPojo(String descripcion, Integer seccion) {
         super();
         this.descripcion = descripcion;
         this.seccion = seccion;

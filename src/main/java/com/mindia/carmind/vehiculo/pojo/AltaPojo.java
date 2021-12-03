@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service", "ultima_evaluacion" })
+@JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service" })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
 
@@ -24,8 +24,6 @@ public class AltaPojo {
     private String color;
     @JsonProperty("fecha_service")
     private Date fechaService;
-    @JsonProperty("ultima_evaluacion")
-    private Integer ultimaEvaluacion;
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -99,21 +97,6 @@ public class AltaPojo {
 
     public AltaPojo withFechaService(Date fechaService) {
         this.fechaService = fechaService;
-        return this;
-    }
-
-    @JsonProperty("ultima_evaluacion")
-    public Integer getUltimaEvaluacion() {
-        return ultimaEvaluacion;
-    }
-
-    @JsonProperty("ultima_evaluacion")
-    public void setUltimaEvaluacion(Integer ultimaEvaluacion) {
-        this.ultimaEvaluacion = ultimaEvaluacion;
-    }
-
-    public AltaPojo withUltimaEvaluacion(int ultimaEvaluacion) {
-        this.ultimaEvaluacion = ultimaEvaluacion;
         return this;
     }
 
