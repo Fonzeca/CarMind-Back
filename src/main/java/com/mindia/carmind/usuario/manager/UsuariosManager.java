@@ -7,7 +7,6 @@ import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
-import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UsuariosManager implements IUsuario {
-    Convertions c;
-
     @Autowired
     UsuariosRepository repository;
 

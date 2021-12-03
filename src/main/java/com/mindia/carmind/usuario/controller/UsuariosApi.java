@@ -5,7 +5,6 @@ import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
-import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,9 +21,6 @@ public class UsuariosApi {
 
     @Autowired
     UsuariosManager manager;
-
-    @Autowired
-    UserHubConfig userHubConfig;
 
     @PostMapping("/login")
     public TokenView getVehiculo(@RequestParam("username") String userName, @RequestParam("password") String password) {
