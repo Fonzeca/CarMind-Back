@@ -6,37 +6,44 @@ import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.utils.exception.custom.EmptyFieldOnPojo;
+import com.mindia.carmind.entities.Pregunta;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "id",
     "descripcion",
-    "seccion_id"
+    "seccion_id",
+    "activo"
 })
 @Generated("jsonschema2pojo")
-public class AltaPreguntaPojo {
+public class PreguntaView {
 
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("descripcion")
     private String descripcion;
     @JsonProperty("seccion_id")
     private Integer seccionId;
+    @JsonProperty("activo")
+    private Boolean activo;
 
-    /**
-     * No args constructor for use in serialization
-     * 
-     */
-    public AltaPreguntaPojo() {
+
+    public PreguntaView(Pregunta pregunta) {
+        super();
+        this.id = pregunta.getId();
+        this.descripcion = pregunta.getDescripcion();
+        this.seccionId = pregunta.getSeccion();
+        this.activo = pregunta.getActivo();
     }
 
-    /**
-     * 
-     * @param descripcion
-     * @param seccionId
-     */
-    public AltaPreguntaPojo(String descripcion, Integer seccionId) {
-        super();
-        this.descripcion = descripcion;
-        this.seccionId = seccionId;
+    @JsonProperty("id")
+    public Integer getId() {
+        return id;
+    }
+
+    @JsonProperty("id")
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     @JsonProperty("descripcion")
@@ -59,14 +66,14 @@ public class AltaPreguntaPojo {
         this.seccionId = seccionId;
     }
 
-    public void validate(){
-        if(descripcion == null || descripcion.isEmpty()){
-            throw new EmptyFieldOnPojo("descripcion");
-        }
+    @JsonProperty("activo")
+    public Boolean getActivo() {
+        return activo;
+    }
 
-        if(seccionId == null || seccionId < 0){
-            throw new EmptyFieldOnPojo("seccion_id");
-        }
+    @JsonProperty("activo")
+    public void setActivo(Boolean activo) {
+        this.activo = activo;
     }
 
 }

@@ -6,6 +6,7 @@ import javax.annotation.Generated;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.mindia.carmind.utils.exception.custom.EmptyFieldOnPojo;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -56,6 +57,17 @@ public class AltaSeccionPojo {
     @JsonProperty("nombre")
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+
+    public void validate(){
+        if(descripcion == null || descripcion.isEmpty()){
+            throw new EmptyFieldOnPojo("descripcion");
+        }
+
+        if(nombre == null || nombre.isEmpty()){
+            throw new EmptyFieldOnPojo("nombre");
+        }
     }
 
 }

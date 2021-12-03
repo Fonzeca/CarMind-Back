@@ -18,6 +18,8 @@ public class SeccionManager {
     com.mindia.carmind.seccion.persistence.SeccionRepository repository;
 
     public void createSeccion(AltaSeccionPojo alta){
+        alta.validate();
+
         Seccion seccion = new Seccion();
 
         seccion.setDescripcion(alta.getDescripcion());
@@ -41,6 +43,16 @@ public class SeccionManager {
 
     public List<SeccionView> getAll(){
         return repository.findByActivoTrue().stream().map(SeccionView::new).collect(Collectors.toList());
+    }
+
+    public Seccion getSeccionActivaById(String id){
+        int intId = Integer.parseInt(id);
+
+        Seccion seccion = repository.findByIdAndActivoTrue(intId);
+        if(seccion == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Seccion no encontrada");
+        }
+        return seccion;
     }
 
 

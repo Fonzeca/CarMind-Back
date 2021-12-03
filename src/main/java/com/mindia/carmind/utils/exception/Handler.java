@@ -2,6 +2,7 @@ package com.mindia.carmind.utils.exception;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.mindia.carmind.utils.exception.custom.EmptyFieldOnPojo;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,13 @@ public class Handler {
         ErrorDetails details = new ErrorDetails(ex.getReason(), ex.getStatus().value()+"");
         
         return new ResponseEntity(details, ex.getStatus());
+    }
+
+    @ExceptionHandler(EmptyFieldOnPojo.class)
+    public ResponseEntity<?> handleEmptyFieldOnPojo(EmptyFieldOnPojo ex, WebRequest request){
+        ErrorDetails details = new ErrorDetails(ex.getMessage(), HttpStatus.BAD_REQUEST.value()+"");
+        
+        return new ResponseEntity(details, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
