@@ -5,11 +5,16 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.Vehiculo;
+import com.mindia.carmind.entities.VehiculoEvaluacion;
 import com.mindia.carmind.entities.interfaces.IVehiculo;
+import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.utils.Convertions;
+import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
+import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -25,6 +30,12 @@ public class VehiculoManager implements IVehiculo {
 
     @Autowired
     VehiculosRepository repository;
+
+    @Autowired
+    VehiculoEvaluacionRepository vehiculoEvaluacionRepository;
+
+    @Autowired
+    EvaluacionManager evaluacionManager;
 
     public void altaVehiculo(AltaPojo pojo) {
 
@@ -76,6 +87,22 @@ public class VehiculoManager implements IVehiculo {
     public List<VehiculoView> getAllVehiculos() {
         List<Vehiculo> v = repository.findAll();
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
+    }
+
+    public void asignarEvaluacion(String vehiculoId, AsignacionPojo pojo){
+        int intId = Integer.parseInt(vehiculoId);
+
+        Vehiculo vehiculo = repository.getById(intId);
+
+        Evaluacion evaluacion = evaluacionManager.getEvaluacionById(pojo.getIdEvaluacion() + "");
+        
+        //Tabla many-to-many
+        VehiculoEvaluacion manyToMany = new VehiculoEvaluacion();
+        manyToMany.setEvaluacionId(evaluacion.getId());
+        manyToMany.setVehiculoId(vehiculo.getId());
+        manyToMany.setTipoFrecuencia(pojo.getFrecuencia());
+
+        vehiculoEvaluacionRepository.save(manyToMany);
     }
 
 

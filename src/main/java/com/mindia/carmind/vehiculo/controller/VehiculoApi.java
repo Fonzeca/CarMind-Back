@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
+import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -45,5 +46,10 @@ public class VehiculoApi {
     @DeleteMapping("/vehiculo/{id}")
     public void borrarVehiculo(@PathVariable String id) {
         manager.bajaVehiculo(id);
+    }
+
+    @PostMapping("/vehiculo/{id}/asignarEvaluacion")
+    public void asignarEvaluacion(@PathVariable String id, @RequestBody AsignacionPojo pojo) {
+        manager.asignarEvaluacion(id, pojo);
     }
 }
