@@ -20,35 +20,35 @@ public class Handler {
     public ResponseEntity<?> handleUserHubException(UserHubException ex, WebRequest request){
         ErrorDetails details = new ErrorDetails(ex.getMessage(), ex.getError());
         
-        return new ResponseEntity(details, HttpStatus.valueOf(ex.getCode()));
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.valueOf(ex.getCode()));
     }
 
     @ExceptionHandler(ResponseStatusException.class)
     public ResponseEntity<?> handleResponseStatusException(ResponseStatusException ex, WebRequest request){
         ErrorDetails details = new ErrorDetails(ex.getReason(), ex.getStatus().value()+"");
         
-        return new ResponseEntity(details, ex.getStatus());
+        return new ResponseEntity<ErrorDetails>(details, ex.getStatus());
     }
 
     @ExceptionHandler(EmptyFieldOnPojo.class)
     public ResponseEntity<?> handleEmptyFieldOnPojo(EmptyFieldOnPojo ex, WebRequest request){
         ErrorDetails details = new ErrorDetails(ex.getMessage(), HttpStatus.BAD_REQUEST.value()+"");
         
-        return new ResponseEntity(details, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> handleResponseStatusException(AccessDeniedException ex, WebRequest request){
         ErrorDetails details = new ErrorDetails(ex.getMessage(), "");
         
-        return new ResponseEntity(details, HttpStatus.FORBIDDEN);
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> handleResponseStatusException(EntityNotFoundException ex, WebRequest request){
         ErrorDetails details = new ErrorDetails("Entidad no encontrada", ex.getMessage());
         
-        return new ResponseEntity(details, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(Exception.class)
@@ -56,6 +56,6 @@ public class Handler {
         ErrorDetails details = new ErrorDetails();
 
         ex.printStackTrace();
-        return new ResponseEntity(details, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
