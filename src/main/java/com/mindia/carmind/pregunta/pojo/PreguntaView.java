@@ -36,6 +36,12 @@ public class PreguntaView {
         this.activo = pregunta.getActivo();
     }
 
+    public PreguntaView(Pregunta pregunta, boolean activo) {
+        super();
+        this.id = pregunta.getId();
+        this.descripcion = pregunta.getDescripcion();
+    }
+
     @JsonProperty("id")
     public Integer getId() {
         return id;
