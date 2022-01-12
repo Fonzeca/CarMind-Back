@@ -10,15 +10,18 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id_evaluacion",
-    "frecuencia"
+    "intervalo_dias",
+    "fecha_inicio"
 })
 @Generated("jsonschema2pojo")
 public class AsignacionPojo {
 
     @JsonProperty("id_evaluacion")
     private Integer idEvaluacion;
-    @JsonProperty("frecuencia")
-    private Integer frecuencia;
+    @JsonProperty("intervalo_dias")
+    private Integer intervalo_dias;
+    @JsonProperty("fecha_inicio")
+    private String fecha_inicio;
 
     /**
      * No args constructor for use in serialization
@@ -30,12 +33,12 @@ public class AsignacionPojo {
     /**
      * 
      * @param idEvaluacion
-     * @param frecuencia
+     * @param intervalo_dias
      */
-    public AsignacionPojo(Integer idEvaluacion, Integer frecuencia) {
+    public AsignacionPojo(Integer idEvaluacion, Integer intervalo_dias) {
         super();
         this.idEvaluacion = idEvaluacion;
-        this.frecuencia = frecuencia;
+        this.intervalo_dias = intervalo_dias;
     }
 
     @JsonProperty("id_evaluacion")
@@ -48,14 +51,25 @@ public class AsignacionPojo {
         this.idEvaluacion = idEvaluacion;
     }
 
-    @JsonProperty("frecuencia")
-    public Integer getFrecuencia() {
-        return frecuencia;
+    @JsonProperty("intervalo_dias")
+    public Integer getIntervalo_dias() {
+        return this.intervalo_dias;
     }
 
-    @JsonProperty("frecuencia")
-    public void setFrecuencia(Integer frecuencia) {
-        this.frecuencia = frecuencia;
+    @JsonProperty("intervalo_dias")
+    public void setIntervalo_dias(Integer intervalo_dias) {
+        this.intervalo_dias = intervalo_dias;
     }
+
+    @JsonProperty("fecha_inicio")
+    public String getFecha_inicio() {
+        return this.fecha_inicio;
+    }
+    
+    @JsonProperty("fecha_inicio")
+    public void setFecha_inicio(String fecha_inicio) {
+        this.fecha_inicio = fecha_inicio;
+    }
+
 
 }

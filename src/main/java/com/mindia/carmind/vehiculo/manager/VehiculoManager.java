@@ -1,6 +1,10 @@
 package com.mindia.carmind.vehiculo.manager;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -100,7 +104,16 @@ public class VehiculoManager implements IVehiculo {
         VehiculoEvaluacion manyToMany = new VehiculoEvaluacion();
         manyToMany.setEvaluacionId(evaluacion.getId());
         manyToMany.setVehiculoId(vehiculo.getId());
-        manyToMany.setTipoFrecuencia(pojo.getFrecuencia());
+        manyToMany.setIntervaloDias(pojo.getIntervalo_dias());
+
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+
+        try {
+            manyToMany.setFechaInicio(formatter.parse(pojo.getFecha_inicio()));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid format of date");
+        }
 
         vehiculoEvaluacionRepository.save(manyToMany);
     }
