@@ -2,6 +2,7 @@ package com.mindia.carmind.vehiculo.controller;
 
 import java.util.List;
 
+import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
@@ -51,5 +52,10 @@ public class VehiculoApi {
     @PostMapping("/vehiculo/{id}/asignarEvaluacion")
     public void asignarEvaluacion(@PathVariable String id, @RequestBody AsignacionPojo pojo) {
         manager.asignarEvaluacion(id, pojo);
+    }
+
+    @GetMapping("/vehiculo/{id}/check")
+    public EvaluacionView check(@PathVariable int id) {
+        return manager.checkVehiculo(id);
     }
 }

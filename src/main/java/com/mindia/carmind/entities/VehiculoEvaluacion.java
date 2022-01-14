@@ -5,8 +5,16 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.util.Date;
-import javax.persistence.*;
+import java.time.LocalDate;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "VehiculoEvaluacion"
@@ -36,9 +44,8 @@ public class VehiculoEvaluacion implements Serializable {
     @Column(name="intervalo_dias", nullable=false)
     private Integer    intervaloDias ;
 
-    @Temporal(TemporalType.DATE)
-    @Column(name="fecha_inicio", nullable=false)
-    private Date       fechaInicio ;
+    @Column(name="fecha_inicio", nullable=false, columnDefinition = "DATE")
+    private LocalDate       fechaInicio ;
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
@@ -87,10 +94,10 @@ public class VehiculoEvaluacion implements Serializable {
         return this.intervaloDias;
     }
 
-    public void setFechaInicio( Date fechaInicio ) {
+    public void setFechaInicio( LocalDate fechaInicio ) {
         this.fechaInicio = fechaInicio ;
     }
-    public Date getFechaInicio() {
+    public LocalDate getFechaInicio() {
         return this.fechaInicio;
     }
 

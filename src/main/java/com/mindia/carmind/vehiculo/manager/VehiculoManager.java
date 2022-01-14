@@ -1,8 +1,8 @@
 package com.mindia.carmind.vehiculo.manager;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -10,10 +10,13 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import com.mindia.carmind.entities.Evaluacion;
+import com.mindia.carmind.entities.LogEvaluacion;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.entities.VehiculoEvaluacion;
 import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
+import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
+import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
@@ -37,6 +40,9 @@ public class VehiculoManager implements IVehiculo {
 
     @Autowired
     VehiculoEvaluacionRepository vehiculoEvaluacionRepository;
+
+    @Autowired
+    LogEvaluacionRepository logEvaluacionRepository;
 
     @Autowired
     EvaluacionManager evaluacionManager;
@@ -106,16 +112,80 @@ public class VehiculoManager implements IVehiculo {
         manyToMany.setVehiculoId(vehiculo.getId());
         manyToMany.setIntervaloDias(pojo.getIntervalo_dias());
 
-        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        
 
         try {
-            manyToMany.setFechaInicio(formatter.parse(pojo.getFecha_inicio()));
-        } catch (ParseException e) {
+            LocalDate fechaInicio = LocalDate.parse(pojo.getFecha_inicio(), DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
+            manyToMany.setFechaInicio(fechaInicio);
+        } catch (IllegalArgumentException | DateTimeParseException e) {
             e.printStackTrace();
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid format of date");
         }
 
         vehiculoEvaluacionRepository.save(manyToMany);
+    }
+
+    public EvaluacionView checkVehiculo(int id){
+        //Obtenemos el vehiculo
+        Vehiculo vehiculo = repository.getById(id);
+
+        //Obtenemos las evaluaciones de él
+        List<VehiculoEvaluacion> vehiculoxEvaluacion = vehiculo.getListOfVehiculoEvaluacion();
+
+        //Iteramos sobre ellas
+        for (VehiculoEvaluacion vehiculoEvaluacion : vehiculoxEvaluacion) {
+            
+            //Obtenemos el ultimo log de la evaluacion
+            LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
+
+            //Si el ultimo log es null, es porque nunca se hizo una evaluacion
+            if(log != null){
+
+                //Fecha del ultimo log
+                LocalDate dateLog = log.getFecha();
+                
+                //Fecha de la proxima vez que se deberia realizar la evaluacion
+                LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
+
+                int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
+
+                //Si la fecha del log esta adelante de la ultima vez que se debio realizar la evaluacion
+                if(dateLog.isAfter(fechaProxima.minusDays(intervaloDias)) || dateLog.isEqual(fechaProxima.minusDays(intervaloDias))){
+                    //Damos un salto de iteracion. Salteandomos que devuelva la evaluacion.
+                    break;
+                }
+            }
+
+            //Devolvemos la evaluacion a realizar
+            return evaluacionManager.getEvaluacionViewById(vehiculoEvaluacion.getEvaluacionId());
+        }
+
+        //Devolvemos null, ya que no tiene que hacer ninguna evaluacion.
+        return null;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Calcula la proxima fecha de la evaluacion
+     * 
+     * @param vehiculoEvaluacion
+     * @return proxima fecha de la evaluacion
+     */
+    private LocalDate fechaProximoCheck(VehiculoEvaluacion vehiculoEvaluacion){
+
+        LocalDate hoy = LocalDate.now();
+
+        LocalDate fechaPeriodo = vehiculoEvaluacion.getFechaInicio();
+
+        int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
+
+
+        while (hoy.isAfter(fechaPeriodo)) {
+            fechaPeriodo = fechaPeriodo.plusDays(intervaloDias);
+        }
+
+        return fechaPeriodo;
     }
 
 
