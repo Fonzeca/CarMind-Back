@@ -5,6 +5,7 @@ import java.util.List;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.pojo.AltaEvaluacionPojo;
 import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
+import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -50,6 +51,11 @@ public class EvaluacionApi {
     @PreAuthorize("hasRole('admin_empresa')")
     public void changePreguntas(@PathVariable int id, @RequestBody AltaEvaluacionPojo alta){
         manager.changePreguntasOfEvaluacion(id, alta);
+    }
+
+    @PostMapping("/evaluacion/{id}/realizar")
+    public void realizarEvaluacion(@PathVariable int id, @RequestBody RealizarEvaluacionPojo respuestas){
+        manager.realizarEvaluacion(id, respuestas);
     }
 
 

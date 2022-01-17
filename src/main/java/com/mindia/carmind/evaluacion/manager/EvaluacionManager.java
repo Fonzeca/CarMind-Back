@@ -1,21 +1,32 @@
 package com.mindia.carmind.evaluacion.manager;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.EvaluacionPregunta;
+import com.mindia.carmind.entities.LogEvaluacion;
+import com.mindia.carmind.entities.LogPregunta;
 import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.Seccion;
+import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionPreguntaRepository;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
+import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.evaluacion.pojo.AltaEvaluacionPojo;
 import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
+import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.RespuestaPojo;
+import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
+import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class EvaluacionManager {
@@ -24,6 +35,15 @@ public class EvaluacionManager {
 
     @Autowired
     EvaluacionPreguntaRepository evaluacionPreguntaRepository;
+
+    @Autowired
+    VehiculosRepository vehiculosRepository;
+
+    @Autowired
+    LogEvaluacionRepository logEvaluacionRepository;
+
+    @Autowired
+    LogPreguntaRepository logPreguntaRepository;
 
     public Evaluacion getEvaluacionById(String id){
         int intId = Integer.parseInt(id);
@@ -97,6 +117,67 @@ public class EvaluacionManager {
 
             evaluacionPreguntaRepository.save(manyToMany);
         }
+    }
+
+    @Transactional
+    public void realizarEvaluacion(int id, RealizarEvaluacionPojo respuestas){
+        //Validamos el pojo
+        respuestas.validate();
+
+        //Obtenemos la evaluacion
+        Evaluacion evaluacion = repository.getById(id);
+
+        //Obtenemos el vehiculo
+        Vehiculo vehiculo = vehiculosRepository.getById(respuestas.getVehiculoId());
+
+        //Obtenemos todas las evaluaciones del vehiculo
+        List<Integer> idEvaluacionesVehiculo = vehiculo.getListOfVehiculoEvaluacion().stream().map(x -> x.getEvaluacionId()).collect(Collectors.toList());
+
+        //Nos aseguramos que la evaluacion que se quiere hacer, la tenga el vehiculo
+        if(idEvaluacionesVehiculo.contains(evaluacion.getId())){
+
+            //Nos aseguramos que la cantidad de respuestas, sea la misma cantidad de preguntas
+            if(evaluacion.getListOfEvaluacionPregunta().size() == respuestas.getRespuestas().size()){
+
+                List<Integer> idsPreguntasEvaluacion = evaluacion.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta()).collect(Collectors.toList());
+
+                List<Integer> idsPreguntasRespuestas = respuestas.getRespuestas().stream().map(x -> x.getPreguntaId()).collect(Collectors.toList());
+
+                //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
+                if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
+                    
+                    LogEvaluacion log = new LogEvaluacion();
+                    log.setEvaluacionId(id);
+                    log.setFecha(LocalDate.now());
+                    log.setVehiculoId(vehiculo.getId());
+                    log.setObservaciones(respuestas.getObservaciones());
+
+                    logEvaluacionRepository.save(log);
+                    
+                    List<LogPregunta> logsPreguntas = new ArrayList<LogPregunta>();
+                    for (RespuestaPojo res : respuestas.getRespuestas()) {
+                        logsPreguntas.add(res.parseToLogPregunta(log.getId()));
+                    }
+
+                    logPreguntaRepository.saveAll(logsPreguntas);
+                    
+                    //OK
+                    return;
+                }else{
+                    //Error
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las preguntas respondidas no concuerdan con la evaluacion.");
+                }
+
+            }else{
+                //Error
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas respondidas no concuerdan con la evaluacion.");
+            }
+
+        }else{
+            //Error
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La evaluacion a realizar, no la tiene asignada el vehiculo seleccionado.");
+        }
+
     }
 
 }
