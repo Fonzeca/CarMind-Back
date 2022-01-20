@@ -1,6 +1,6 @@
 package com.mindia.carmind.vehiculo.pojo;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.annotation.Generated;
 
@@ -23,7 +23,7 @@ public class AltaPojo {
     @JsonProperty("color")
     private String color;
     @JsonProperty("fecha_service")
-    private Date fechaService;
+    private LocalDate fechaService;
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -86,16 +86,16 @@ public class AltaPojo {
     }
 
     @JsonProperty("fecha_service")
-    public Date getFechaService() {
+    public LocalDate getFechaService() {
         return fechaService;
     }
 
     @JsonProperty("fecha_service")
-    public void setFechaService(Date fechaService) {
+    public void setFechaService(LocalDate fechaService) {
         this.fechaService = fechaService;
     }
 
-    public AltaPojo withFechaService(Date fechaService) {
+    public AltaPojo withFechaService(LocalDate fechaService) {
         this.fechaService = fechaService;
         return this;
     }

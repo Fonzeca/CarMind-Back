@@ -5,9 +5,18 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "Vehiculo"
@@ -37,9 +46,8 @@ public class Vehiculo implements Serializable {
     @Column(name="linea", nullable=false, length=50)
     private String     linea ;
 
-    @Temporal(TemporalType.DATE)
     @Column(name="fecha_service")
-    private Date       fechaService ;
+    private LocalDate       fechaService ;
 
     @Column(name="usuario_id")
     private Integer    usuarioId ;
@@ -96,10 +104,10 @@ public class Vehiculo implements Serializable {
         return this.linea;
     }
 
-    public void setFechaService( Date fechaService ) {
+    public void setFechaService( LocalDate fechaService ) {
         this.fechaService = fechaService ;
     }
-    public Date getFechaService() {
+    public LocalDate getFechaService() {
         return this.fechaService;
     }
 
