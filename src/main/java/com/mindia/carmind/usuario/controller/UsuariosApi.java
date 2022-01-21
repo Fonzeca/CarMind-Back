@@ -1,5 +1,7 @@
 package com.mindia.carmind.usuario.controller;
 
+import java.util.List;
+
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
@@ -39,9 +41,8 @@ public class UsuariosApi {
     }
 
     @GetMapping("/usuario")
-    public UsuarioView getAllUsuarios() {
-
-        return null;
+    public List<UsuarioView> getAllUsuarios() {
+        return manager.getAllUsuario();
     }
 
     @PostMapping("/usuario")

@@ -1,5 +1,8 @@
 package com.mindia.carmind.usuario.manager;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.interfaces.IUsuario;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
@@ -86,6 +89,11 @@ public class UsuariosManager implements IUsuario {
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
+    }
+
+    public List<UsuarioView> getAllUsuario(){
+        List<Usuario> usuarios = repository.findAll();
+        return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
     }
 
 }
