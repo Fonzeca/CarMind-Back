@@ -35,6 +35,7 @@ public class Configuration extends WebSecurityConfigurerAdapter implements WebMv
 		.addFilterAfter(new JWTFilter(userHubConfig), UsernamePasswordAuthenticationFilter.class)
 		.authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/login").permitAll()
+			.antMatchers(HttpMethod.GET, "/test").permitAll()
 			.anyRequest().authenticated();
 	}
 

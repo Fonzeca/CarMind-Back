@@ -64,7 +64,7 @@ public class UserHubManager {
     }
 
     protected boolean altaUsuario(AltaPojo alta) {
-        if (tokenAdmin == null) {
+        if (tokenAdmin == null || !validate()) {
             loginAsAdmin();
         }
 
@@ -114,7 +114,7 @@ public class UserHubManager {
     }
 
     protected boolean modifyUsuario(ModificarPojo pojo){
-        if (tokenAdmin == null) {
+        if (tokenAdmin == null || !validate()) {
             loginAsAdmin();
         }
 
@@ -162,6 +162,29 @@ public class UserHubManager {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
         }
         
+    }
+
+    private boolean validate(){
+        RequestBody body = RequestBody.create(null);
+
+        String pathUserHub = "/validate";
+
+        // Armo el request para mandar a UserHub
+        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub).post(body).build();
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                return false;
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
     }
 
     private void loginAsAdmin(){
