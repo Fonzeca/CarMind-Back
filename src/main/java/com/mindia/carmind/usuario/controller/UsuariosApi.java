@@ -5,6 +5,7 @@ import java.util.List;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
+import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 
@@ -58,5 +59,21 @@ public class UsuariosApi {
 
         manager.bajaConductor(id);
     }
+
+    @PostMapping("/usuario/recuperar")
+    public void enviarTokenRecuperacionPassword(@RequestParam("email") String email){
+        manager.enviarTokenRecuperacionPassword(email);
+    }
+
+    @PostMapping("/usuario/validateRecoverToken")
+    public void validateRecoverToken(@RequestBody RecuperacionPojo pojo){
+        manager.validateRecoverToken(pojo);
+    }
+
+    @PostMapping("/usuario/resetPassword")
+    public void resetPassword(@RequestBody RecuperacionPojo pojo){
+        manager.resetPassword(pojo);
+    }
+    
 
 }

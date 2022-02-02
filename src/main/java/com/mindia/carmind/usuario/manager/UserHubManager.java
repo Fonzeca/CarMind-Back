@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
+import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.userHub.LoginView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.usuario.pojo.userHub.UserHubConfig;
@@ -163,6 +164,103 @@ public class UserHubManager {
         }
         
     }
+
+
+    public boolean enviarTokenRecuperacionPassword(String email){
+
+        RequestBody body = RequestBody.create(new byte[0]);
+
+        String pathUserHub = "/public/recoverPassword?email=" + email;
+
+        // Armo el request para mandar a UserHub
+        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
+            .post(body)
+            .build();
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                throw new UserHubException(response.body().string());
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
+    }
+
+    public boolean validateRecoverToken(RecuperacionPojo pojo){
+
+        // Armo el json a mandar
+        ObjectNode user = mapper.createObjectNode();
+        user.put("email", pojo.getEmail());
+        user.put("token", pojo.getToken());
+
+        // Armo el body
+        RequestBody body = RequestBody.create(Convertions.toJson(user),
+                MediaType.get("application/json; charset=utf-8"));
+
+        String pathUserHub = "/public/validateRecoverToken";
+
+        // Armo el request para mandar a UserHub
+        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
+            .method("POST", body)
+            .build();
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                throw new UserHubException(response.body().string());
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
+    }
+
+    public boolean resetPassword(RecuperacionPojo pojo){
+
+        // Armo el json a mandar
+        ObjectNode user = mapper.createObjectNode();
+        user.put("email", pojo.getEmail());
+        user.put("token", pojo.getToken());
+        user.put("newPassword", pojo.getNewPassword());
+
+
+        // Armo el body
+        RequestBody body = RequestBody.create(Convertions.toJson(user),
+                MediaType.get("application/json; charset=utf-8"));
+
+        String pathUserHub = "/public/resetPassword";
+
+        // Armo el request para mandar a UserHub
+        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
+            .post(body)
+            .build();
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                throw new UserHubException(response.body().string());
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
+    }
+
+    //--------------------------------------------
 
     private boolean validate(){
         RequestBody body = RequestBody.create(null);

@@ -8,6 +8,7 @@ import com.mindia.carmind.entities.interfaces.IUsuario;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
+import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
@@ -94,6 +95,18 @@ public class UsuariosManager implements IUsuario {
     public List<UsuarioView> getAllUsuario(){
         List<Usuario> usuarios = repository.findAll();
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
+    }
+
+    public void enviarTokenRecuperacionPassword(String email){
+        userHubManager.enviarTokenRecuperacionPassword(email);
+    }
+
+    public void validateRecoverToken(RecuperacionPojo pojo){
+        userHubManager.validateRecoverToken(pojo);
+    }
+
+    public void resetPassword(RecuperacionPojo pojo){
+        userHubManager.resetPassword(pojo);
     }
 
 }
