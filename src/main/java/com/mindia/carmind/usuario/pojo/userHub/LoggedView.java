@@ -45,6 +45,8 @@ public class LoggedView {
     private Integer documentType;
     @JsonProperty("DocumentNumber")
     private String documentNumber;
+    @JsonProperty("RecoverPasswordToken")
+    private String recoverPasswordToken;
 
     /**
      * No args constructor for use in serialization
@@ -179,5 +181,16 @@ public class LoggedView {
     public void setDocumentNumber(String documentNumber) {
         this.documentNumber = documentNumber;
     }
+
+    @JsonProperty("RecoverPasswordToken")
+    public String getRecoverPasswordToken() {
+        return this.recoverPasswordToken;
+    }
+    
+    @JsonProperty("RecoverPasswordToken")
+    public void setRecoverPasswordToken(String recoverPasswordToken) {
+        this.recoverPasswordToken = recoverPasswordToken;
+    }
+
 
 }
