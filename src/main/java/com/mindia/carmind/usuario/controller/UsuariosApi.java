@@ -46,7 +46,7 @@ public class UsuariosApi {
 
     @PostMapping("/usuario")
     public void altaUsuario(@RequestBody AltaPojo pojo) {
-        manager.altaUsuario(pojo);
+        manager.altaUsuario(pojo, null);
     }
 
     @PutMapping("/usuario")

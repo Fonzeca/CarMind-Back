@@ -55,6 +55,9 @@ public class Vehiculo implements Serializable {
     @Column(name="color", nullable=false, length=50)
     private String     color ;
 
+    @Column(name="empresa_id", nullable=false)
+    private Integer    empresaId ;
+
     @Column(name="seguro_pdf")
     private Integer    seguroPdf ;
 
@@ -75,6 +78,10 @@ public class Vehiculo implements Serializable {
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
+    @ManyToOne
+    @JoinColumn(name="empresa_id", referencedColumnName="id", insertable=false, updatable=false)
+    private Empresa    empresa ; 
+
     @ManyToOne
     @JoinColumn(name="usuario_id", referencedColumnName="id", insertable=false, updatable=false)
     private Usuario    usuario ; 
@@ -143,6 +150,13 @@ public class Vehiculo implements Serializable {
         return this.color;
     }
 
+    public void setEmpresaId( Integer empresaId ) {
+        this.empresaId = empresaId ;
+    }
+    public Integer getEmpresaId() {
+        return this.empresaId;
+    }
+
     public void setSeguroPdf( Integer seguroPdf ) {
         this.seguroPdf = seguroPdf ;
     }
@@ -186,6 +200,10 @@ public class Vehiculo implements Serializable {
     }
 
     //--- GETTERS FOR LINKS
+    public Empresa getEmpresa() {
+        return this.empresa;
+    } 
+
     public Usuario getUsuario() {
         return this.usuario;
     } 
@@ -215,6 +233,8 @@ public class Vehiculo implements Serializable {
         sb.append(usuarioId);
         sb.append("|");
         sb.append(color);
+        sb.append("|");
+        sb.append(empresaId);
         sb.append("|");
         sb.append(seguroPdf);
         sb.append("|");

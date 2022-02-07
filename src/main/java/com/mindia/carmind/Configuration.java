@@ -39,6 +39,7 @@ public class Configuration extends WebSecurityConfigurerAdapter implements WebMv
 			.antMatchers(HttpMethod.POST, "/usuario/recuperar").permitAll()
 			.antMatchers(HttpMethod.POST, "/usuario/validateRecoverToken").permitAll()
 			.antMatchers(HttpMethod.POST, "/usuario/resetPassword").permitAll()
+			.antMatchers(HttpMethod.POST, "/empresa").permitAll()
 			.anyRequest().authenticated();
 	}
 

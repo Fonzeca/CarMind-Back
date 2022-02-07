@@ -10,11 +10,13 @@ import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -32,7 +34,7 @@ public class UsuariosManager implements IUsuario {
     }
 
     @Override
-    public void altaUsuario(AltaPojo pojo) {
+    public void altaUsuario(AltaPojo pojo, Integer idEmpresa) {
         //Le damos de alta al usuario en userHub
         try {
             userHubManager.altaUsuario(pojo);
@@ -57,7 +59,16 @@ public class UsuariosManager implements IUsuario {
         usuario.setDni(pojo.getDni());
         usuario.setApellido(pojo.getApellido());
         usuario.setNombre(pojo.getNombre());
-        usuario.setEmpresa(1);
+
+        if(idEmpresa != null){
+            usuario.setEmpresa(idEmpresa);            
+        }else{
+            LoggedView principal = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            Usuario loggedUser = repository.findByUsername(principal.getUserName());
+    
+            usuario.setEmpresa(loggedUser.getEmpresa());
+        }
+
 
         repository.save(usuario);
     }

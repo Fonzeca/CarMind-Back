@@ -9,7 +9,7 @@ public interface IUsuario {
 
     TokenView login(String username, String password);
 
-    void altaUsuario(AltaPojo pojo);
+    void altaUsuario(AltaPojo pojo, Integer idEmpresa);
 
     void modificarConductor(ModificarPojo pojo);
 
