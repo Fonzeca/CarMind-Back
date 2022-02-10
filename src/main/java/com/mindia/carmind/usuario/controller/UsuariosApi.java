@@ -32,7 +32,7 @@ public class UsuariosApi {
     }
 
     @GetMapping("/loggedUser")
-    public UsuarioView getLoggedUser(@PathVariable String id) {
+    public UsuarioView getLoggedUser() {
         LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return manager.obtenerUsuarioById(logged.getId());
     }
