@@ -7,11 +7,9 @@ import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
-import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,8 +31,7 @@ public class UsuariosApi {
 
     @GetMapping("/loggedUser")
     public UsuarioView getLoggedUser() {
-        LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return manager.obtenerUsuarioByUsername(logged.getUserName());
+        return manager.getLoggeduser();
     }
 
     @GetMapping("/test")

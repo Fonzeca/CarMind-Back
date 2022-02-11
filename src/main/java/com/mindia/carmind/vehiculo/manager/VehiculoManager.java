@@ -19,6 +19,8 @@ import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
+import com.mindia.carmind.usuario.manager.UsuariosManager;
+import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
@@ -65,9 +67,14 @@ public class VehiculoManager implements IVehiculo {
     @Autowired
     DocumentoRepository documentoRepository;
 
+    @Autowired
+    UsuariosManager usuariosManager;
+
     public void altaVehiculo(AltaPojo pojo) {
 
         pojo.validate();
+
+        UsuarioView usuario = usuariosManager.getLoggeduser();
 
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setColor(pojo.getColor());
@@ -75,6 +82,7 @@ public class VehiculoManager implements IVehiculo {
         vehiculo.setLinea(pojo.getLinea());
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
+        vehiculo.setEmpresaId(usuario.getEmpresa());
 
         repository.save(vehiculo);
     }
@@ -113,7 +121,9 @@ public class VehiculoManager implements IVehiculo {
 
     @Override
     public List<VehiculoView> getAllVehiculos() {
-        List<Vehiculo> v = repository.findAll();
+        UsuarioView usuario = usuariosManager.getLoggeduser();
+        
+        List<Vehiculo> v = repository.findByEmpresaId(usuario.getEmpresa());
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
     }
 
@@ -129,8 +139,6 @@ public class VehiculoManager implements IVehiculo {
         manyToMany.setEvaluacionId(evaluacion.getId());
         manyToMany.setVehiculoId(vehiculo.getId());
         manyToMany.setIntervaloDias(pojo.getIntervalo_dias());
-
-        
 
         try {
             LocalDate fechaInicio = LocalDate.parse(pojo.getFecha_inicio(), DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));

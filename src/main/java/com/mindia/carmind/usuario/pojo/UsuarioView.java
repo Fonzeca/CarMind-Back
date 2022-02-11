@@ -17,7 +17,7 @@ public class UsuarioView {
     @JsonProperty("nombre")
     private String nombre;
     @JsonProperty("empresa")
-    private String empresa;
+    private Integer empresa;
     @JsonProperty("administrador")
     private boolean administrador;
 
@@ -37,18 +37,13 @@ public class UsuarioView {
     }
 
     @JsonProperty("empresa")
-    public String getEmpresa() {
+    public Integer getEmpresa() {
         return empresa;
     }
 
     @JsonProperty("empresa")
-    public void setEmpresa(String empresa) {
+    public void setEmpresa(Integer empresa) {
         this.empresa = empresa;
-    }
-
-    public UsuarioView withEmpresa(String empresa) {
-        this.empresa = empresa;
-        return this;
     }
 
     @JsonProperty("administrador")
@@ -85,7 +80,7 @@ public class UsuarioView {
     public UsuarioView(Usuario u) {
         administrador = u.getAdministrador();
         nombre = u.getNombre();
-        empresa = u.getEmpresa() + "";
+        empresa = u.getEmpresa();
         id = u.getId();
     }
 

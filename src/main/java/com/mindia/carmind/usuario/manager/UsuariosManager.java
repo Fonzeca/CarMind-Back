@@ -67,10 +67,7 @@ public class UsuariosManager implements IUsuario {
         if(idEmpresa != null){
             usuario.setEmpresa(idEmpresa);            
         }else{
-            LoggedView principal = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Usuario loggedUser = repository.findByUsername(principal.getUserName());
-    
-            usuario.setEmpresa(loggedUser.getEmpresa());
+            usuario.setEmpresa(getLoggeduser().getEmpresa());
         }
 
 
@@ -82,7 +79,7 @@ public class UsuariosManager implements IUsuario {
         //Modificamos el usuario en UserHub
         userHubManager.modifyUsuario(pojo);
 
-        Usuario usuario = repository.findByUsername(pojo.getUsername());
+        Usuario usuario = repository.findByUsernameAndEmpresa(pojo.getUsername(), getLoggeduser().getEmpresa());
 
         usuario.setNombre(pojo.getNombre());
         usuario.setApellido(pojo.getApellido());
@@ -101,17 +98,23 @@ public class UsuariosManager implements IUsuario {
 
     @Override
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuario u = repository.getById(Integer.parseInt(id));
+        Usuario u = repository.findByIdAndEmpresa(Integer.parseInt(id), getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
     }
 
     public UsuarioView obtenerUsuarioByUsername(String username) {
-        Usuario u = repository.findByUsername(username);
+        Usuario u = repository.findByUsernameAndEmpresa(username, getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
+    }
+
+    public UsuarioView getLoggeduser() {
+        LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Usuario u = repository.findByUsername(logged.getUserName());
+        return new UsuarioView(u);
     }
 
     public List<UsuarioView> getAllUsuario(){
