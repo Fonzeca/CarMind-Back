@@ -30,6 +30,10 @@ public class UsuariosManager implements IUsuario {
 
 
     public TokenView login(String username, String password) {
+        Usuario u = repository.findByUsername(username);
+        if(u == null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario inexistente.");
+        }
         return userHubManager.login(username, password);
     }
 
