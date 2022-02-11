@@ -34,7 +34,7 @@ public class UsuariosApi {
     @GetMapping("/loggedUser")
     public UsuarioView getLoggedUser() {
         LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return manager.obtenerUsuarioById(logged.getId());
+        return manager.obtenerUsuarioByUsername(logged.getUserName());
     }
 
     @GetMapping("/test")

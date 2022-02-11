@@ -103,6 +103,13 @@ public class UsuariosManager implements IUsuario {
         return usuario;
     }
 
+    public UsuarioView obtenerUsuarioByUsername(String username) {
+        Usuario u = repository.findByUsername(username);
+        UsuarioView usuario = new UsuarioView(u);
+
+        return usuario;
+    }
+
     public List<UsuarioView> getAllUsuario(){
         List<Usuario> usuarios = repository.findAll();
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
