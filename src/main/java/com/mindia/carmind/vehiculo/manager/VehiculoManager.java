@@ -81,6 +81,7 @@ public class VehiculoManager implements IVehiculo {
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
         vehiculo.setEmpresaId(usuario.getEmpresa());
+        vehiculo.setTipoVehiculo(pojo.getTipo());
 
         repository.save(vehiculo);
     }
