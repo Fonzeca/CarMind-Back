@@ -10,10 +10,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@JsonPropertyOrder({ "marca", "modelo", "linea", "color", "fecha_service" })
+@JsonPropertyOrder({ "nombre","patente","marca", "modelo", "linea", "color", "fecha_service" })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
 
+    @JsonProperty("nombre")
+    private String nombre;
+    @JsonProperty("patente")
+    private String patente;
     @JsonProperty("marca")
     private String marca;
     @JsonProperty("modelo")
@@ -35,11 +39,6 @@ public class AltaPojo {
         this.marca = marca;
     }
 
-    public AltaPojo withMarca(String marca) {
-        this.marca = marca;
-        return this;
-    }
-
     @JsonProperty("modelo")
     public String getModelo() {
         return modelo;
@@ -48,11 +47,6 @@ public class AltaPojo {
     @JsonProperty("modelo")
     public void setModelo(String modelo) {
         this.modelo = modelo;
-    }
-
-    public AltaPojo withModelo(String modelo) {
-        this.modelo = modelo;
-        return this;
     }
 
     @JsonProperty("linea")
@@ -65,11 +59,6 @@ public class AltaPojo {
         this.linea = linea;
     }
 
-    public AltaPojo withLinea(String linea) {
-        this.linea = linea;
-        return this;
-    }
-
     @JsonProperty("color")
     public String getColor() {
         return color;
@@ -78,11 +67,6 @@ public class AltaPojo {
     @JsonProperty("color")
     public void setColor(String color) {
         this.color = color;
-    }
-
-    public AltaPojo withColor(String color) {
-        this.color = color;
-        return this;
     }
 
     @JsonProperty("fecha_service")
@@ -95,13 +79,33 @@ public class AltaPojo {
         this.fechaService = fechaService;
     }
 
-    public AltaPojo withFechaService(LocalDate fechaService) {
-        this.fechaService = fechaService;
-        return this;
+    @JsonProperty("nombre")
+    public String getNombre() {
+        return this.nombre;
     }
+
+    @JsonProperty("nombre")
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    @JsonProperty("patente")
+    public String getPatente() {
+        return this.patente;
+    }
+
+    @JsonProperty("patente")
+    public void setPatente(String patente) {
+        this.patente = patente;
+    }
+
+
 
     public boolean validate(){
 
+        this.modelo = this.modelo.trim();
+        this.marca = this.marca.trim();
+/*         
         //Busco si verdaderamente existe la marca que se quiere dar de alta
         MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
 
@@ -119,7 +123,7 @@ public class AltaPojo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo erroneo");
         }
         this.modelo = modeloPojo.getModelo();
-
+ */
         //Valida si la linea no esta vacia o es mayor a 10 caracteres
         if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");

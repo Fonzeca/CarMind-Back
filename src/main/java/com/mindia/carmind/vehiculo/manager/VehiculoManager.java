@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
@@ -23,6 +24,7 @@ import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
+import com.mindia.carmind.vehiculo.persistence.TipoDocumentoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
@@ -43,15 +45,6 @@ import org.springframework.web.server.ResponseStatusException;
 public class VehiculoManager implements IVehiculo {
     Convertions c;
 
-    enum TipoDocumento{
-        Seguro,
-        VTV,
-        Titulo,
-        Patente,
-        TarjetaVerde,
-        Ruta
-    }
-
     @Autowired
     VehiculosRepository repository;
 
@@ -70,6 +63,9 @@ public class VehiculoManager implements IVehiculo {
     @Autowired
     UsuariosManager usuariosManager;
 
+    @Autowired
+    TipoDocumentoRepository tipoDocumentoRepository;
+
     public void altaVehiculo(AltaPojo pojo) {
 
         pojo.validate();
@@ -77,6 +73,8 @@ public class VehiculoManager implements IVehiculo {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
         Vehiculo vehiculo = new Vehiculo();
+        vehiculo.setNombre(pojo.getNombre());
+        vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); //TODO: Validate properties
         vehiculo.setColor(pojo.getColor());
         vehiculo.setFechaService(pojo.getFechaService());
         vehiculo.setLinea(pojo.getLinea());
@@ -93,7 +91,7 @@ public class VehiculoManager implements IVehiculo {
 
         Vehiculo vehiculo = repository.getById(pojo.getId());
 
-        if(vehiculo == null){
+        if (vehiculo == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id incorrecto");
         }
 
@@ -122,26 +120,27 @@ public class VehiculoManager implements IVehiculo {
     @Override
     public List<VehiculoView> getAllVehiculos() {
         UsuarioView usuario = usuariosManager.getLoggeduser();
-        
+
         List<Vehiculo> v = repository.findByEmpresaId(usuario.getEmpresa());
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
     }
 
-    public void asignarEvaluacion(String vehiculoId, AsignacionPojo pojo){
+    public void asignarEvaluacion(String vehiculoId, AsignacionPojo pojo) {
         int intId = Integer.parseInt(vehiculoId);
 
         Vehiculo vehiculo = repository.getById(intId);
 
         Evaluacion evaluacion = evaluacionManager.getEvaluacionById(pojo.getIdEvaluacion() + "");
-        
-        //Tabla many-to-many
+
+        // Tabla many-to-many
         VehiculoEvaluacion manyToMany = new VehiculoEvaluacion();
         manyToMany.setEvaluacionId(evaluacion.getId());
         manyToMany.setVehiculoId(vehiculo.getId());
         manyToMany.setIntervaloDias(pojo.getIntervalo_dias());
 
         try {
-            LocalDate fechaInicio = LocalDate.parse(pojo.getFecha_inicio(), DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
+            LocalDate fechaInicio = LocalDate.parse(pojo.getFecha_inicio(),
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
             manyToMany.setFechaInicio(fechaInicio);
         } catch (IllegalArgumentException | DateTimeParseException e) {
             e.printStackTrace();
@@ -151,138 +150,95 @@ public class VehiculoManager implements IVehiculo {
         vehiculoEvaluacionRepository.save(manyToMany);
     }
 
-    public EvaluacionView checkVehiculo(int id){
-        //Obtenemos el vehiculo
+    public EvaluacionView checkVehiculo(int id) {
+        // Obtenemos el vehiculo
         Vehiculo vehiculo = repository.getById(id);
 
-        //Obtenemos las evaluaciones de él
+        // Obtenemos las evaluaciones de él
         List<VehiculoEvaluacion> vehiculoxEvaluacion = vehiculo.getListOfVehiculoEvaluacion();
 
-        //Iteramos sobre ellas
+        // Iteramos sobre ellas
         for (VehiculoEvaluacion vehiculoEvaluacion : vehiculoxEvaluacion) {
-            
-            //Obtenemos el ultimo log de la evaluacion
+
+            // Obtenemos el ultimo log de la evaluacion
             LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
 
-            //Si el ultimo log es null, es porque nunca se hizo una evaluacion
-            if(log != null){
+            // Si el ultimo log es null, es porque nunca se hizo una evaluacion
+            if (log != null) {
 
-                //Fecha del ultimo log
+                // Fecha del ultimo log
                 LocalDate dateLog = log.getFecha();
-                
-                //Fecha de la proxima vez que se deberia realizar la evaluacion
+
+                // Fecha de la proxima vez que se deberia realizar la evaluacion
                 LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
 
                 int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
-                //Si la fecha del log esta adelante de la ultima vez que se debio realizar la evaluacion
-                if(dateLog.isAfter(fechaProxima.minusDays(intervaloDias)) || dateLog.isEqual(fechaProxima.minusDays(intervaloDias))){
-                    //Damos un salto de iteracion. Salteandomos que devuelva la evaluacion.
+                // Si la fecha del log esta adelante de la ultima vez que se debio realizar la
+                // evaluacion
+                if (dateLog.isAfter(fechaProxima.minusDays(intervaloDias))
+                        || dateLog.isEqual(fechaProxima.minusDays(intervaloDias))) {
+                    // Damos un salto de iteracion. Salteandomos que devuelva la evaluacion.
                     break;
                 }
             }
 
-            //Devolvemos la evaluacion a realizar
+            // Devolvemos la evaluacion a realizar
             return evaluacionManager.getEvaluacionViewById(vehiculoEvaluacion.getEvaluacionId());
         }
 
-        //Devolvemos null, ya que no tiene que hacer ninguna evaluacion.
+        // Devolvemos null, ya que no tiene que hacer ninguna evaluacion.
         return null;
     }
 
     @Transactional
-    public void subirDocumentacion(int id, MultipartFile file, String tipo){
-        //Buscamos el vehiculo
-        Vehiculo vehiculo = repository.getById(id);
+    public void subirDocumentacion(int id, MultipartFile file, String tipo, String vencimiento) {
+        // Buscamos el vehiculo
+        obtenerVehiculoById(id + "");
 
-        //Comparamos el tipo de documento
-        TipoDocumento tipoDoc;
-        try {
-            tipoDoc = TipoDocumento.valueOf(TipoDocumento.class, tipo);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No existe ese tipo de documento");
+        if (!tipoDocumentoRepository.findAll().stream().anyMatch(x -> x.getNombre().equals(tipo))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ese tipo de documento");
         }
 
-        //Seteamos el documento para guardar
+        // Seteamos el documento para guardar
         Documento doc = new Documento();
         try {
             doc.setData(file.getBytes());
             doc.setFormato(FilenameUtils.getExtension(file.getOriginalFilename()));
             doc.setContentType(file.getContentType());
+            doc.setTipoDocumento(tipo);
+            doc.setVehiculoId(id);
 
-            //Lo guardamos, obtenemos el id
+            doc.setVencimiento(LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
+            doc.setAvisoVencimiento(false);
+
+            // Lo guardamos, obtenemos el id
             documentoRepository.save(doc);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        //Depende de que tipo de documento se guardo, el vehiculo va cambiando dependiendo de que se queria guardar
-        switch(tipoDoc){
-            case Seguro:
-                vehiculo.setSeguroPdf(doc.getId());
-                break;
-            case VTV:
-                vehiculo.setVtvPdf(doc.getId());
-                break;
-            case Titulo:
-                vehiculo.setTituloPdf(doc.getId());
-                break;
-            case Patente:
-                vehiculo.setPatentePdf(doc.getId());
-                break;
-            case TarjetaVerde:
-                vehiculo.setTarjetaVerdePdf(doc.getId());
-                break;
-            case Ruta:
-                vehiculo.setRutaPdf(doc.getId());
-                break;
-        }
-
-        //Se guarda el vehiculo
-        repository.save(vehiculo);
     }
 
-    public Documento getDocumentacionVehiculo(int id, String tipo){
-        //Buscamos el vehiculo
-        Vehiculo vehiculo = repository.getById(id);
+    public Documento getDocumentacionVehiculo(int id, String tipo) {
+        // Buscamos el vehiculo
+        Vehiculo v = repository.getById(id);
 
-        //Comparamos el tipo de documento
-        TipoDocumento tipoDoc;
-        try {
-            tipoDoc = TipoDocumento.valueOf(TipoDocumento.class, tipo);
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No existe ese tipo de documento");
+        // Comparamos el tipo de documento
+        if (!tipoDocumentoRepository.findAll().stream().anyMatch(x -> x.getNombre().equals(tipo))) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ese tipo de documento");
         }
 
-        Integer idDoc = 0;
+        List<Documento> listDoc = v.getListOfDocumento();
+        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo)).findFirst();
 
-        switch(tipoDoc){
-            case Seguro:
-                idDoc = vehiculo.getSeguroPdf();
-                break;
-            case VTV:
-                idDoc = vehiculo.getVtvPdf();
-                break;
-            case Titulo:
-                idDoc = vehiculo.getTituloPdf();
-                break;
-            case Patente:
-                idDoc = vehiculo.getPatentePdf();
-                break;
-            case TarjetaVerde:
-                idDoc = vehiculo.getTarjetaVerdePdf();
-                break;
-            case Ruta:
-                idDoc = vehiculo.getRutaPdf();
-                break;
+        if(doc.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el documento asociado al vehiculo.");
         }
 
-        return documentoRepository.getById(idDoc);
+        return doc.get();
     }
 
-    
-
-    //-------------------------------------------------------------------------------------------------------------------------------
+    // -------------------------------------------------------------------------------------------------------------------------------
 
     /**
      * Calcula la proxima fecha de la evaluacion
@@ -290,7 +246,7 @@ public class VehiculoManager implements IVehiculo {
      * @param vehiculoEvaluacion
      * @return proxima fecha de la evaluacion
      */
-    private LocalDate fechaProximoCheck(VehiculoEvaluacion vehiculoEvaluacion){
+    private LocalDate fechaProximoCheck(VehiculoEvaluacion vehiculoEvaluacion) {
 
         LocalDate hoy = LocalDate.now();
 
@@ -298,13 +254,11 @@ public class VehiculoManager implements IVehiculo {
 
         int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
-
         while (hoy.isAfter(fechaPeriodo)) {
             fechaPeriodo = fechaPeriodo.plusDays(intervaloDias);
         }
 
         return fechaPeriodo;
     }
-
 
 }

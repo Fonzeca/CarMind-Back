@@ -64,9 +64,9 @@ public class VehiculoApi {
         return manager.checkVehiculo(id);
     }
 
-    @PostMapping("/vehiculo/{id}/upload")
-    public void subirDocumentacion(@PathVariable int id, @RequestParam("file") MultipartFile file, @RequestParam("tipo") String tipo){
-        manager.subirDocumentacion(id, file, tipo);
+    @PostMapping("/vehiculo/{id}/{tipo}/upload")
+    public void subirDocumentacion(@PathVariable int id, @RequestParam("file") MultipartFile file, @RequestParam("vencimiento") String vencimiento, @PathVariable("tipo") String tipo){
+        manager.subirDocumentacion(id, file, tipo, vencimiento);
     }
 
     @GetMapping("/vehiculo/{id}/documento/{tipo}")
