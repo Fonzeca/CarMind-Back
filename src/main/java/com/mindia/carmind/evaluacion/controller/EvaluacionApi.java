@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.pojo.AltaEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.AltaPojo;
 import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
 
@@ -26,7 +27,7 @@ public class EvaluacionApi {
 
     @PostMapping("/evaluacion")
     @PreAuthorize("hasRole('admin_empresa')")
-    public void altaEvaluacion(@RequestBody AltaEvaluacionPojo alta){
+    public void altaEvaluacion(@RequestBody AltaPojo alta){
         manager.altaEvaluacion(alta);
     }
 

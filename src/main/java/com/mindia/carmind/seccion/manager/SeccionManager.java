@@ -1,11 +1,10 @@
 package com.mindia.carmind.seccion.manager;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Seccion;
-import com.mindia.carmind.seccion.pojo.AltaSeccionPojo;
-import com.mindia.carmind.seccion.pojo.SeccionView;
+import com.mindia.carmind.evaluacion.pojo.AltaSeccionPojo;
+import com.mindia.carmind.pregunta.manager.PreguntaManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,16 +16,32 @@ public class SeccionManager {
     @Autowired
     com.mindia.carmind.seccion.persistence.SeccionRepository repository;
 
-    public void createSeccion(AltaSeccionPojo alta){
-        alta.validate();
+    @Autowired
+    PreguntaManager preguntaManager;
 
-        Seccion seccion = new Seccion();
+    // public void createSeccion(AltaSeccionPojo alta){
+    //     alta.validate();
 
-        seccion.setDescripcion(alta.getDescripcion());
-        seccion.setNombre(alta.getNombre());
-        seccion.setActivo(true);
+    //     Seccion seccion = new Seccion();
 
-        repository.save(seccion);
+    //     seccion.setDescripcion(alta.getDescripcion());
+    //     seccion.setNombre(alta.getNombre());
+    //     seccion.setActivo(true);
+
+    //     repository.save(seccion);
+    // }
+
+    public void createSeccion(int evaluacionId, List<AltaSeccionPojo> altaSeccionPojo){
+        for (AltaSeccionPojo alta : altaSeccionPojo) {
+            Seccion seccion = new Seccion();
+            seccion.setActivo(true);
+            seccion.setNombre(alta.getNombre());
+            seccion.setEvaluacionId(evaluacionId);
+    
+            seccion = repository.save(seccion);
+    
+            preguntaManager.createPreguntas(seccion.getId(), alta.getPreguntas());
+        }
     }
 
     public void desactivateSeccion(String id){
@@ -41,9 +56,9 @@ public class SeccionManager {
         repository.save(seccion);
     }
 
-    public List<SeccionView> getAll(){
-        return repository.findByActivoTrue().stream().map(SeccionView::new).collect(Collectors.toList());
-    }
+    // public List<SeccionView> getAll(){
+    //     return repository.findByActivoTrue().stream().map(SeccionView::new).collect(Collectors.toList());
+    // }
 
     public Seccion getSeccionActivaById(String id){
         int intId = Integer.parseInt(id);

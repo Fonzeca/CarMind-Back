@@ -2,15 +2,12 @@
 package com.mindia.carmind.seccion.pojo;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.entities.Pregunta;
-import com.mindia.carmind.entities.Seccion;
 import com.mindia.carmind.pregunta.pojo.PreguntaView;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -34,22 +31,23 @@ public class SeccionView {
     @JsonProperty("preguntas")
     private List<PreguntaView> preguntas;
 
-    public SeccionView(Seccion seccion) {
-        super();
-        this.id = seccion.getId();
-        this.nombre = seccion.getNombre();
-        this.descripcion = seccion.getDescripcion();
-        this.activo = seccion.getActivo();
-    }
+    //TODO: borrar
+    // public SeccionView(Seccion seccion) {
+    //     super();
+    //     this.id = seccion.getId();
+    //     this.nombre = seccion.getNombre();
+    //     this.descripcion = seccion.getDescripcion();
+    //     this.activo = seccion.getActivo();
+    // }
 
-    public SeccionView(Seccion seccion, List<Pregunta> preguntas) {
-        super();
-        this.id = seccion.getId();
-        this.nombre = seccion.getNombre();
-        this.descripcion = seccion.getDescripcion();
+    // public SeccionView(Seccion seccion, List<Pregunta> preguntas) {
+    //     super();
+    //     this.id = seccion.getId();
+    //     this.nombre = seccion.getNombre();
+    //     this.descripcion = seccion.getDescripcion();
 
-        this.preguntas = preguntas.stream().map(x -> new PreguntaView(x, false)).collect(Collectors.toList());
-    }
+    //     this.preguntas = preguntas.stream().map(x -> new PreguntaView(x, false)).collect(Collectors.toList());
+    // }
 
 
     @JsonProperty("id")

@@ -42,9 +42,9 @@ public class RespuestaPojo {
 
     public LogPregunta parseToLogPregunta(Integer logEvaluacionId){
         LogPregunta log = new LogPregunta();
-        log.setLogEvaluacion(logEvaluacionId);
-        log.setPregunta(this.preguntaId);
-        log.setRespuesta(this.respuesta);
+        // log.setLogEvaluacion(logEvaluacionId);
+        // log.setPregunta(this.preguntaId);
+        // log.setRespuesta(this.respuesta);
         return log;
     }
 

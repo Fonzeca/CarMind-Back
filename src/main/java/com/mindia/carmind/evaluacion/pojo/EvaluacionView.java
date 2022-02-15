@@ -1,8 +1,6 @@
 package com.mindia.carmind.evaluacion.pojo;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.annotation.Generated;
 
@@ -65,15 +63,15 @@ public class EvaluacionView {
     }
 
     public EvaluacionView(Evaluacion e, List<Pregunta> preguntas, List<Seccion> secciones){
-        this.id = e.getId();
-        this.nombre = e.getNombre();
-        this.secciones = new ArrayList<SeccionView>();
+        // this.id = e.getId();
+        // this.nombre = e.getNombre();
+        // this.secciones = new ArrayList<SeccionView>();
 
-        for (Seccion seccion : secciones) {
-            List<Pregunta> preguntasxSeccion = preguntas.stream().filter(x -> x.getSeccion() == seccion.getId()).collect(Collectors.toList());
+        // for (Seccion seccion : secciones) {
+        //     List<Pregunta> preguntasxSeccion = preguntas.stream().filter(x -> x.getSeccion() == seccion.getId()).collect(Collectors.toList());
 
-            this.secciones.add(new SeccionView(seccion, preguntasxSeccion));
-        }
+        //     this.secciones.add(new SeccionView(seccion, preguntasxSeccion));
+        // }
 
     }
 

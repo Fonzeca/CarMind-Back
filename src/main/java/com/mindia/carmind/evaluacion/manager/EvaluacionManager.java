@@ -1,25 +1,18 @@
 package com.mindia.carmind.evaluacion.manager;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Evaluacion;
-import com.mindia.carmind.entities.EvaluacionPregunta;
-import com.mindia.carmind.entities.LogEvaluacion;
-import com.mindia.carmind.entities.LogPregunta;
-import com.mindia.carmind.entities.Pregunta;
-import com.mindia.carmind.entities.Seccion;
 import com.mindia.carmind.entities.Vehiculo;
-import com.mindia.carmind.evaluacion.persistence.EvaluacionPreguntaRepository;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.evaluacion.pojo.AltaEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.AltaPojo;
 import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
-import com.mindia.carmind.evaluacion.pojo.RespuestaPojo;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
+import com.mindia.carmind.seccion.manager.SeccionManager;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
@@ -36,9 +29,6 @@ public class EvaluacionManager {
     EvaluacionRepository repository;
 
     @Autowired
-    EvaluacionPreguntaRepository evaluacionPreguntaRepository;
-
-    @Autowired
     VehiculosRepository vehiculosRepository;
 
     @Autowired
@@ -50,6 +40,9 @@ public class EvaluacionManager {
     @Autowired
     UsuariosManager usuariosManager;
 
+    @Autowired
+    SeccionManager seccionManager;
+
     public Evaluacion getEvaluacionById(String id){
         int intId = Integer.parseInt(id);
 
@@ -57,34 +50,44 @@ public class EvaluacionManager {
     }
 
     public EvaluacionView getEvaluacionViewById(int id){
-        Evaluacion e = repository.getById(id);
+        // Evaluacion e = repository.getById(id);
         
-        List<Pregunta> preguntas = e.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta2()).collect(Collectors.toList());
+        // List<Pregunta> preguntas = e.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta2()).collect(Collectors.toList());
         
-        List<Seccion> secciones = preguntas.stream().map(x -> x.getSeccion2()).distinct().collect(Collectors.toList());
+        // List<Seccion> secciones = preguntas.stream().map(x -> x.getSeccion2()).distinct().collect(Collectors.toList());
         
-        EvaluacionView evaluacion = new EvaluacionView(e, preguntas, secciones);
+        // EvaluacionView evaluacion = new EvaluacionView(e, preguntas, secciones);
 
-        return evaluacion;
+        // return evaluacion;
+        return null;
     }
 
     @Transactional
-    public void altaEvaluacion(AltaEvaluacionPojo alta){
+    public void altaEvaluacion(AltaPojo alta){
+        
         Evaluacion evaluacion = new Evaluacion();
-        evaluacion.setNombre(alta.getNombre());
+        evaluacion.setNombre(alta.getTitulo());
 
         evaluacion = repository.save(evaluacion);
 
-        List<EvaluacionPregunta> lstPreguntas = new ArrayList<EvaluacionPregunta>();
-        
-        for (Integer idPregunta : alta.getIdsPreguntas()) {
-            EvaluacionPregunta manyToMany = new EvaluacionPregunta();
-            manyToMany.setEvaluacion(evaluacion.getId());
-            manyToMany.setPregunta(idPregunta);
-            lstPreguntas.add(manyToMany);
-        }
+        seccionManager.createSeccion(evaluacion.getId(), alta.getSecciones());
 
-        evaluacionPreguntaRepository.saveAll(lstPreguntas);
+        
+        // Evaluacion evaluacion = new Evaluacion();
+        // evaluacion.setNombre(alta.getNombre());
+
+        // evaluacion = repository.save(evaluacion);
+
+        // List<EvaluacionPregunta> lstPreguntas = new ArrayList<EvaluacionPregunta>();
+        
+        // for (Integer idPregunta : alta.getIdsPreguntas()) {
+        //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
+        //     manyToMany.setEvaluacion(evaluacion.getId());
+        //     manyToMany.setPregunta(idPregunta);
+        //     lstPreguntas.add(manyToMany);
+        // }
+
+        // evaluacionPreguntaRepository.saveAll(lstPreguntas);
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
@@ -100,28 +103,28 @@ public class EvaluacionManager {
     }
 
     public void changePreguntasOfEvaluacion(int id, AltaEvaluacionPojo alta) {
-        Evaluacion evaluacion = repository.getById(id);
+        // Evaluacion evaluacion = repository.getById(id);
         
-        List<EvaluacionPregunta> preguntasViejas = evaluacion.getListOfEvaluacionPregunta();
+        // List<EvaluacionPregunta> preguntasViejas = evaluacion.getListOfEvaluacionPregunta();
 
-        List<Integer> preguntasNuevas = alta.getIdsPreguntas();
+        // List<Integer> preguntasNuevas = alta.getIdsPreguntas();
 
-        for (EvaluacionPregunta pregunta : preguntasViejas) {
+        // for (EvaluacionPregunta pregunta : preguntasViejas) {
 
-            if(!preguntasNuevas.contains(pregunta.getPregunta())){
-                evaluacionPreguntaRepository.delete(pregunta);
-            }else{
-                preguntasNuevas.remove(pregunta.getPregunta());
-            }
-        }
+        //     if(!preguntasNuevas.contains(pregunta.getPregunta())){
+        //         evaluacionPreguntaRepository.delete(pregunta);
+        //     }else{
+        //         preguntasNuevas.remove(pregunta.getPregunta());
+        //     }
+        // }
 
-        for (Integer idPregunta : preguntasNuevas) {
-            EvaluacionPregunta manyToMany = new EvaluacionPregunta();
-            manyToMany.setEvaluacion(evaluacion.getId());
-            manyToMany.setPregunta(idPregunta);
+        // for (Integer idPregunta : preguntasNuevas) {
+        //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
+        //     manyToMany.setEvaluacion(evaluacion.getId());
+        //     manyToMany.setPregunta(idPregunta);
 
-            evaluacionPreguntaRepository.save(manyToMany);
-        }
+        //     evaluacionPreguntaRepository.save(manyToMany);
+        // }
     }
 
     @Transactional
@@ -145,42 +148,42 @@ public class EvaluacionManager {
         if(idEvaluacionesVehiculo.contains(evaluacion.getId())){
 
             //Nos aseguramos que la cantidad de respuestas, sea la misma cantidad de preguntas
-            if(evaluacion.getListOfEvaluacionPregunta().size() == respuestas.getRespuestas().size()){
+            // if(evaluacion.getListOfEvaluacionPregunta().size() == respuestas.getRespuestas().size()){
 
-                List<Integer> idsPreguntasEvaluacion = evaluacion.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta()).collect(Collectors.toList());
+            //     List<Integer> idsPreguntasEvaluacion = evaluacion.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta()).collect(Collectors.toList());
 
-                List<Integer> idsPreguntasRespuestas = respuestas.getRespuestas().stream().map(x -> x.getPreguntaId()).collect(Collectors.toList());
+            //     List<Integer> idsPreguntasRespuestas = respuestas.getRespuestas().stream().map(x -> x.getPreguntaId()).collect(Collectors.toList());
 
-                //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
-                if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
-                    //OK
+            //     //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
+            //     if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
+            //         //OK
                     
-                    LogEvaluacion log = new LogEvaluacion();
-                    log.setEvaluacionId(id);
-                    log.setFecha(LocalDate.now());
-                    log.setVehiculoId(vehiculo.getId());
-                    log.setObservaciones(respuestas.getObservaciones());
-                    log.setUsuarioId(loggedUser.getId());
+            //         LogEvaluacion log = new LogEvaluacion();
+            //         log.setEvaluacionId(id);
+            //         log.setFecha(LocalDate.now());
+            //         log.setVehiculoId(vehiculo.getId());
+            //         log.setObservaciones(respuestas.getObservaciones());
+            //         log.setUsuarioId(loggedUser.getId());
 
-                    logEvaluacionRepository.save(log);
+            //         logEvaluacionRepository.save(log);
                     
-                    List<LogPregunta> logsPreguntas = new ArrayList<LogPregunta>();
-                    for (RespuestaPojo res : respuestas.getRespuestas()) {
-                        logsPreguntas.add(res.parseToLogPregunta(log.getId()));
-                    }
+            //         List<LogPregunta> logsPreguntas = new ArrayList<LogPregunta>();
+            //         for (RespuestaPojo res : respuestas.getRespuestas()) {
+            //             logsPreguntas.add(res.parseToLogPregunta(log.getId()));
+            //         }
 
-                    logPreguntaRepository.saveAll(logsPreguntas);
+            //         logPreguntaRepository.saveAll(logsPreguntas);
                     
-                    return;
-                }else{
-                    //Error
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las preguntas respondidas no concuerdan con la evaluacion.");
-                }
+            //         return;
+            //     }else{
+            //         //Error
+            //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las preguntas respondidas no concuerdan con la evaluacion.");
+            //     }
 
-            }else{
-                //Error
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas respondidas no concuerdan con la evaluacion.");
-            }
+            // }else{
+            //     //Error
+            //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas respondidas no concuerdan con la evaluacion.");
+            // }
 
         }else{
             //Error

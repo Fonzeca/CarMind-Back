@@ -37,7 +37,7 @@ public class Documento implements Serializable {
 
     //--- ENTITY DATA FIELDS 
     @Lob
-    @Column(name="data", nullable=false)
+    @Column(name="data", nullable=false, columnDefinition = "mediumblob")
     private byte[]     data ;
 
     @Column(name="formato", nullable=false, length=6)
