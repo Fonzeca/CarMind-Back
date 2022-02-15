@@ -23,20 +23,20 @@ public class PreguntaApi {
     PreguntaManager manager;
 
 
-    @PostMapping("/pregunta")
     @PreAuthorize("hasRole('admin_empresa')")
+    @PostMapping("/pregunta")
     public void createPregunta(@RequestBody AltaPreguntaPojo alta){
         manager.createPregunta(alta);
     }
 
-    @GetMapping("/pregunta")
     @PreAuthorize("hasRole('admin_empresa')")
+    @GetMapping("/pregunta")
     public List<PreguntaView> getAll(){
         return manager.getAllActivos();
     }
 
-    @PutMapping("/pregunta/{id}/desactivate")
     @PreAuthorize("hasRole('admin_empresa')")
+    @PutMapping("/pregunta/{id}/desactivate")
     public void desactivatePreguntaById(@PathVariable String id){
         manager.desactivatePregunta(id);
     }

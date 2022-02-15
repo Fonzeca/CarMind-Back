@@ -1,0 +1,73 @@
+{
+    "vehiculo_id": 2,
+    "titulo": "asdasd",
+    "fecha_inicio": "asdad",
+    "secciones": [{
+            "nombre": "Seccion vehiculo",
+            "index": 0,
+            "preguntas": [{
+                    "descripcion": "Luces",
+                    "index": 0,
+                    "tipo": "Selección cruz y check",
+                    "opciones": [
+                        "Luz delantera",
+                        "Luz trasera",
+                        "Luz de interior"
+                    ]
+                },
+                {
+                    "descripcion": "Parachoque delantero",
+                    "index": 1,
+                    "tipo": "Foto"
+                },
+                {
+                    "descripcion": "Interior",
+                    "index": 2,
+                    "tipo": "Selección cruz y check",
+                    "opciones": [
+                        "Matafuego",
+                        "Antivuelco"
+                    ]
+                },
+                {
+                    "descripcion": "Exterior",
+                    "index": 3,
+                    "tipo": "Selección múltiple",
+                    "opciones": [
+                        "Ruedas todoterreno",
+                        "Ruedas lisas"
+                    ]
+                },
+                {
+                    "descripcion": "¿Enciende el vehiculo?",
+                    "index": 4,
+                    "tipo": "Selección única"
+                },
+                {
+                    "descripcion": "Observaciones",
+                    "index": 5,
+                    "tipo": "Texto"
+                }
+            ]
+        },
+        {
+            "nombre": "Seccion conductor",
+            "index": 1,
+            "preguntas": [{
+                    "descripcion": "Licencias",
+                    "index": 0,
+                    "tipo": "Selección cruz y check",
+                    "opciones": [
+                        "Licencia de conducir nacional",
+                        "Licencia de conducir mina"
+                    ]
+                },
+                {
+                    "descripcion": "Observaciones",
+                    "index": 1,
+                    "tipo": "Texto"
+                }
+            ]
+        }
+    ]
+}
