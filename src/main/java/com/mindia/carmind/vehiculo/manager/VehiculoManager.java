@@ -114,7 +114,7 @@ public class VehiculoManager implements IVehiculo {
 
     public VehiculoView obtenerVehiculoById(String id) {
         Vehiculo v = repository.getById(Integer.parseInt(id));
-        VehiculoView vehiculo = new VehiculoView(v);
+        VehiculoView vehiculo = new VehiculoView(v, true);
         return vehiculo;
     }
 

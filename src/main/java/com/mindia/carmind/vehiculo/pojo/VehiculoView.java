@@ -14,6 +14,7 @@ import com.mindia.carmind.entities.Vehiculo;
         "id",
         "nombre",
         "en_uso",
+        "usuario_en_uso",
         "color",
         "marca",
         "modelo",
@@ -31,6 +32,8 @@ public class VehiculoView {
     private String nombre;
     @JsonProperty("en_uso")
     private Boolean enUso;
+    @JsonProperty("usuario_en_uso")
+    private String usuarioEnUso;
     @JsonProperty("color")
     private String color;
     @JsonProperty("marca")
@@ -181,17 +184,31 @@ public class VehiculoView {
         this.ultimaEvaluacion = ultimaEvaluacion;
     }
 
+    @JsonProperty("usuario_en_uso")
+    public String getUsuarioEnUso() {
+        return this.usuarioEnUso;
+    }
+
+    @JsonProperty("usuario_en_uso")
+    public void setUsuarioEnUso(String usuarioEnUso) {
+        this.usuarioEnUso = usuarioEnUso;
+    }
+
+
     public VehiculoView(Vehiculo v) {
         this(v, false);
     }
 
-    private VehiculoView(Vehiculo v, boolean detalle) {
+    public VehiculoView(Vehiculo v, boolean detalle) {
         id = v.getId();
         nombre = v.getNombre();
         this.enUso = v.getUsuarioIdUsando() != null;
         color = v.getColor();
         
         if (detalle) {
+            if(this.enUso){
+                usuarioEnUso = v.getUsuario().getNombre() + " " + v.getUsuario().getApellido();
+            }
             marca = v.getMarca();
             modelo = v.getModelo();
             linea = v.getLinea();
