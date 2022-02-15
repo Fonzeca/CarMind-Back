@@ -74,7 +74,7 @@ public class VehiculoManager implements IVehiculo {
 
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
-        vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); //TODO: Validate properties
+        vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
         vehiculo.setColor(pojo.getColor());
         vehiculo.setFechaService(pojo.getFechaService());
         vehiculo.setLinea(pojo.getLinea());
@@ -192,6 +192,40 @@ public class VehiculoManager implements IVehiculo {
         return null;
     }
 
+    public void iniciarUso(Integer id) {
+        // Obtenemos el vehiculo
+        Vehiculo vehiculo = repository.getById(id);
+
+        // Obtenemos el usuario logeado
+        UsuarioView loggedUser = usuariosManager.getLoggeduser();
+
+        if (checkVehiculo(id) == null) {
+
+            vehiculo.setUsuarioIdUsando(loggedUser.getId());
+
+            repository.save(vehiculo);
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo tiene una evaluacion en espera.");
+        }
+    }
+
+    public void terminarUso(Integer id) {
+        // Obtenemos el vehiculo
+        Vehiculo vehiculo = repository.getById(id);
+
+        // Obtenemos el usuario logeado
+        UsuarioView loggedUser = usuariosManager.getLoggeduser();
+
+        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando() == loggedUser.getId()){
+            vehiculo.setUsuarioIdUsando(null);
+
+            repository.save(vehiculo);
+        }else{
+            
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario actual no es el que esta usando este vehiculo.");
+        }
+    }
+
     @Transactional
     public void subirDocumentacion(int id, MultipartFile file, String tipo, String vencimiento) {
         // Buscamos el vehiculo
@@ -210,7 +244,8 @@ public class VehiculoManager implements IVehiculo {
             doc.setTipoDocumento(tipo);
             doc.setVehiculoId(id);
 
-            doc.setVencimiento(LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
+            doc.setVencimiento(
+                    LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
             doc.setAvisoVencimiento(false);
 
             // Lo guardamos, obtenemos el id
@@ -232,7 +267,7 @@ public class VehiculoManager implements IVehiculo {
         List<Documento> listDoc = v.getListOfDocumento();
         Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo)).findFirst();
 
-        if(doc.isEmpty()){
+        if (doc.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el documento asociado al vehiculo.");
         }
 

@@ -11,4 +11,6 @@ public interface LogEvaluacionRepository extends JpaRepository<LogEvaluacion, In
 
     @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE evaluacion_id = ?1 ORDER BY fecha DESC LIMIT 1")
     public LogEvaluacion getLastLogById(Integer id);
+
+    LogEvaluacion findByVehiculoIdOrderByFechaDesc(Integer vehiculoId);
 }
