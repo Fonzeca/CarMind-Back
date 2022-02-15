@@ -20,6 +20,8 @@ import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
 import com.mindia.carmind.evaluacion.pojo.RespuestaPojo;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
+import com.mindia.carmind.usuario.manager.UsuariosManager;
+import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,9 @@ public class EvaluacionManager {
 
     @Autowired
     LogPreguntaRepository logPreguntaRepository;
+
+    @Autowired
+    UsuariosManager usuariosManager;
 
     public Evaluacion getEvaluacionById(String id){
         int intId = Integer.parseInt(id);
@@ -127,6 +132,9 @@ public class EvaluacionManager {
         //Obtenemos la evaluacion
         Evaluacion evaluacion = repository.getById(id);
 
+        //Obtenemos el usuario
+        UsuarioView loggedUser = usuariosManager.getLoggeduser();
+
         //Obtenemos el vehiculo
         Vehiculo vehiculo = vehiculosRepository.getById(respuestas.getVehiculoId());
 
@@ -145,12 +153,14 @@ public class EvaluacionManager {
 
                 //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
                 if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
+                    //OK
                     
                     LogEvaluacion log = new LogEvaluacion();
                     log.setEvaluacionId(id);
                     log.setFecha(LocalDate.now());
                     log.setVehiculoId(vehiculo.getId());
                     log.setObservaciones(respuestas.getObservaciones());
+                    log.setUsuarioId(loggedUser.getId());
 
                     logEvaluacionRepository.save(log);
                     
@@ -161,7 +171,6 @@ public class EvaluacionManager {
 
                     logPreguntaRepository.saveAll(logsPreguntas);
                     
-                    //OK
                     return;
                 }else{
                     //Error
