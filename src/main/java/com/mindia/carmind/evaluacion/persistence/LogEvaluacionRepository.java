@@ -1,5 +1,7 @@
 package com.mindia.carmind.evaluacion.persistence;
 
+import java.util.List;
+
 import com.mindia.carmind.entities.LogEvaluacion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,6 +13,9 @@ public interface LogEvaluacionRepository extends JpaRepository<LogEvaluacion, In
 
     @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE evaluacion_id = ?1 ORDER BY fecha DESC LIMIT 1")
     public LogEvaluacion getLastLogById(Integer id);
+
+    @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion ORDER BY fecha DESC")
+    List<LogEvaluacion> getAllFechaDesc();
 
     LogEvaluacion findByVehiculoIdOrderByFechaDesc(Integer vehiculoId);
 }

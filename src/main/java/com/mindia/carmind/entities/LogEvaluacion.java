@@ -5,7 +5,7 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -38,7 +38,7 @@ public class LogEvaluacion implements Serializable {
 
     //--- ENTITY DATA FIELDS 
     @Column(name="fecha", nullable=false)
-    private LocalDate       fecha ;
+    private LocalDateTime       fecha ;
 
     @Column(name="evaluacion_id", nullable=false)
     private Integer    evaluacionId ;
@@ -85,10 +85,10 @@ public class LogEvaluacion implements Serializable {
         return this.id;
     }
 
-    public void setFecha( LocalDate fecha ) {
+    public void setFecha( LocalDateTime fecha ) {
         this.fecha = fecha ;
     }
-    public LocalDate getFecha() {
+    public LocalDateTime getFecha() {
         return this.fecha;
     }
 

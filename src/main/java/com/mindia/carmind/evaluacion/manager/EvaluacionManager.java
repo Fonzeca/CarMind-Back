@@ -1,6 +1,6 @@
 package com.mindia.carmind.evaluacion.manager;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -15,6 +15,7 @@ import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
+import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.alta.AltaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
@@ -172,7 +173,7 @@ public class EvaluacionManager {
                 //LogEvaluacion
                 LogEvaluacion log = new LogEvaluacion();
                 log.setEvaluacionId(id);
-                log.setFecha(LocalDate.now());
+                log.setFecha(LocalDateTime.now());
                 log.setVehiculoId(vehiculo.getId());
                 log.setUsuarioId(loggedUser.getId());
 
@@ -248,6 +249,13 @@ public class EvaluacionManager {
         }
 
     }
+
+    public List<LogEvaluacionView> historialDeEvaluaciones(){
+        List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
+        return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
+    }
+
+    //---------------------------------------PRIVATE-----------------------------------------------------
 
     private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){
         List<Pregunta> preguntasDb = new ArrayList<Pregunta>();

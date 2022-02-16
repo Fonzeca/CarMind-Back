@@ -168,7 +168,7 @@ public class VehiculoManager implements IVehiculo {
             if (log != null) {
 
                 // Fecha del ultimo log
-                LocalDate dateLog = log.getFecha();
+                LocalDate dateLog = log.getFecha().toLocalDate();
 
                 // Fecha de la proxima vez que se deberia realizar la evaluacion
                 LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
