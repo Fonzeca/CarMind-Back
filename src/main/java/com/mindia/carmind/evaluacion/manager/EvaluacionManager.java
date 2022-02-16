@@ -7,10 +7,9 @@ import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
-import com.mindia.carmind.evaluacion.pojo.AltaEvaluacionPojo;
 import com.mindia.carmind.evaluacion.pojo.AltaPojo;
-import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
 import com.mindia.carmind.seccion.manager.SeccionManager;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
@@ -50,16 +49,9 @@ public class EvaluacionManager {
     }
 
     public EvaluacionView getEvaluacionViewById(int id){
-        // Evaluacion e = repository.getById(id);
-        
-        // List<Pregunta> preguntas = e.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta2()).collect(Collectors.toList());
-        
-        // List<Seccion> secciones = preguntas.stream().map(x -> x.getSeccion2()).distinct().collect(Collectors.toList());
-        
-        // EvaluacionView evaluacion = new EvaluacionView(e, preguntas, secciones);
+        Evaluacion e = repository.getById(id);
 
-        // return evaluacion;
-        return null;
+        return EvaluacionView.getEvaluacionDetails(e);
     }
 
     @Transactional
@@ -102,30 +94,30 @@ public class EvaluacionManager {
         repository.save(e);
     }
 
-    public void changePreguntasOfEvaluacion(int id, AltaEvaluacionPojo alta) {
-        // Evaluacion evaluacion = repository.getById(id);
+    // public void changePreguntasOfEvaluacion(int id, AltaEvaluacionPojo alta) {
+    //     // Evaluacion evaluacion = repository.getById(id);
         
-        // List<EvaluacionPregunta> preguntasViejas = evaluacion.getListOfEvaluacionPregunta();
+    //     // List<EvaluacionPregunta> preguntasViejas = evaluacion.getListOfEvaluacionPregunta();
 
-        // List<Integer> preguntasNuevas = alta.getIdsPreguntas();
+    //     // List<Integer> preguntasNuevas = alta.getIdsPreguntas();
 
-        // for (EvaluacionPregunta pregunta : preguntasViejas) {
+    //     // for (EvaluacionPregunta pregunta : preguntasViejas) {
 
-        //     if(!preguntasNuevas.contains(pregunta.getPregunta())){
-        //         evaluacionPreguntaRepository.delete(pregunta);
-        //     }else{
-        //         preguntasNuevas.remove(pregunta.getPregunta());
-        //     }
-        // }
+    //     //     if(!preguntasNuevas.contains(pregunta.getPregunta())){
+    //     //         evaluacionPreguntaRepository.delete(pregunta);
+    //     //     }else{
+    //     //         preguntasNuevas.remove(pregunta.getPregunta());
+    //     //     }
+    //     // }
 
-        // for (Integer idPregunta : preguntasNuevas) {
-        //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
-        //     manyToMany.setEvaluacion(evaluacion.getId());
-        //     manyToMany.setPregunta(idPregunta);
+    //     // for (Integer idPregunta : preguntasNuevas) {
+    //     //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
+    //     //     manyToMany.setEvaluacion(evaluacion.getId());
+    //     //     manyToMany.setPregunta(idPregunta);
 
-        //     evaluacionPreguntaRepository.save(manyToMany);
-        // }
-    }
+    //     //     evaluacionPreguntaRepository.save(manyToMany);
+    //     // }
+    // }
 
     @Transactional
     public void realizarEvaluacion(int id, RealizarEvaluacionPojo respuestas){

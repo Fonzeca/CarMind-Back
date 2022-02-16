@@ -3,7 +3,7 @@ package com.mindia.carmind.vehiculo.controller;
 import java.util.List;
 
 import com.mindia.carmind.entities.Documento;
-import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
+import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;

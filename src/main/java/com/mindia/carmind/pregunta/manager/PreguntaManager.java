@@ -1,14 +1,12 @@
 package com.mindia.carmind.pregunta.manager;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.PreguntaOpcion;
 import com.mindia.carmind.evaluacion.pojo.AltaPreguntaPojo;
 import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.pregunta.persistence.PreguntaRepository;
-import com.mindia.carmind.pregunta.pojo.PreguntaView;
 import com.mindia.carmind.seccion.manager.SeccionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,9 +66,9 @@ public class PreguntaManager {
         }
     }
 
-    public List<PreguntaView> getAllActivos(){
-        return repository.findByActivoTrue().stream().map(PreguntaView::new).collect(Collectors.toList());
-    }
+    // public List<PreguntaView> getAllActivos(){
+    //     return repository.findByActivoTrue().stream().map(PreguntaView::new).collect(Collectors.toList());
+    // }
 
     public void desactivatePregunta(String id){
         int intId = Integer.parseInt(id);

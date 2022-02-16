@@ -19,7 +19,7 @@ import com.mindia.carmind.entities.VehiculoEvaluacion;
 import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
-import com.mindia.carmind.evaluacion.pojo.EvaluacionView;
+import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.utils.Convertions;
