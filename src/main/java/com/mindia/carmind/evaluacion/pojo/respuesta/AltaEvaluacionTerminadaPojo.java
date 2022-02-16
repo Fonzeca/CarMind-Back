@@ -1,8 +1,9 @@
-package com.mindia.carmind.evaluacion.pojo;
+
+package com.mindia.carmind.evaluacion.pojo.respuesta;
 
 import java.util.List;
 
-import javax.annotation.processing.Generated;
+import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -13,32 +14,30 @@ import org.springframework.web.server.ResponseStatusException;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "vehiculo_id",
-        "observaciones",
-        "respuestas"
+    "vehiculo_id",
+    "respuestas"
 })
 @Generated("jsonschema2pojo")
-public class RealizarEvaluacionPojo {
+public class AltaEvaluacionTerminadaPojo {
+
     @JsonProperty("vehiculo_id")
     private Integer vehiculoId;
     @JsonProperty("respuestas")
-    private List<RespuestaPojo> respuestas = null;
-    @JsonProperty("observaciones")
-    private String observaciones;
+    private List<AltaRespuestaPojo> respuestas = null;
 
     /**
      * No args constructor for use in serialization
-     *
+     * 
      */
-    public RealizarEvaluacionPojo() {
+    public AltaEvaluacionTerminadaPojo() {
     }
 
     /**
-     *
+     * 
      * @param respuestas
      * @param vehiculoId
      */
-    public RealizarEvaluacionPojo(Integer vehiculoId, List<RespuestaPojo> respuestas) {
+    public AltaEvaluacionTerminadaPojo(Integer vehiculoId, List<AltaRespuestaPojo> respuestas) {
         super();
         this.vehiculoId = vehiculoId;
         this.respuestas = respuestas;
@@ -55,23 +54,13 @@ public class RealizarEvaluacionPojo {
     }
 
     @JsonProperty("respuestas")
-    public List<RespuestaPojo> getRespuestas() {
+    public List<AltaRespuestaPojo> getRespuestas() {
         return respuestas;
     }
 
     @JsonProperty("respuestas")
-    public void setRespuestas(List<RespuestaPojo> respuestas) {
+    public void setRespuestas(List<AltaRespuestaPojo> respuestas) {
         this.respuestas = respuestas;
-    }
-
-    @JsonProperty("observaciones")
-    public String getObservaciones() {
-        return this.observaciones;
-    }
-
-    @JsonProperty("observaciones")
-    public void setObservaciones(String observaciones) {
-        this.observaciones = observaciones;
     }
 
     public void validate(){
@@ -84,6 +73,5 @@ public class RealizarEvaluacionPojo {
         }
 
     }
-
 
 }

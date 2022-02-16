@@ -14,18 +14,20 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "tipo_documento"
 })
 @Generated("jsonschema2pojo")
-public class TiposPojo {
+public class TodosTiposPojo {
 
     @JsonProperty("tipo_vehiculo")
     private List<String> tipoVehiculo = null;
     @JsonProperty("tipo_documento")
     private List<String> tipoDocumento = null;
+    @JsonProperty("tipo_pregunta")
+    private List<TipoPojo> tipoPregunta = null;
 
     /**
      * No args constructor for use in serialization
      *
      */
-    public TiposPojo() {
+    public TodosTiposPojo() {
     }
 
     /**
@@ -33,7 +35,7 @@ public class TiposPojo {
      * @param tipoDocumento
      * @param tipoVehiculo
      */
-    public TiposPojo(List<String> tipoVehiculo, List<String> tipoDocumento) {
+    public TodosTiposPojo(List<String> tipoVehiculo, List<String> tipoDocumento) {
         super();
         this.tipoVehiculo = tipoVehiculo;
         this.tipoDocumento = tipoDocumento;
@@ -58,5 +60,16 @@ public class TiposPojo {
     public void setTipoDocumento(List<String> tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
+
+    @JsonProperty("tipo_pregunta")
+    public List<TipoPojo> getTipoPregunta() {
+        return this.tipoPregunta;
+    }
+
+    @JsonProperty("tipo_pregunta")
+    public void setTipoPregunta(List<TipoPojo> tipoPregunta) {
+        this.tipoPregunta = tipoPregunta;
+    }
+
 
 }

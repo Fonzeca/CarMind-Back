@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.PreguntaOpcion;
-import com.mindia.carmind.evaluacion.pojo.AltaPreguntaPojo;
+import com.mindia.carmind.evaluacion.pojo.alta.AltaPreguntaPojo;
+import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
 import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.pregunta.persistence.PreguntaRepository;
 import com.mindia.carmind.seccion.manager.SeccionManager;
@@ -64,6 +65,10 @@ public class PreguntaManager {
                 }
             }
         }
+    }
+
+    public PreguntaView getPreguntaById(Integer id){
+        return new PreguntaView(repository.getById(id));
     }
 
     // public List<PreguntaView> getAllActivos(){

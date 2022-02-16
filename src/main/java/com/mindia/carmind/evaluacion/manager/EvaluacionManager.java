@@ -1,15 +1,28 @@
 package com.mindia.carmind.evaluacion.manager;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mindia.carmind.empresa.manager.EmpresaManager;
 import com.mindia.carmind.entities.Evaluacion;
+import com.mindia.carmind.entities.LogEvaluacion;
+import com.mindia.carmind.entities.LogOption;
+import com.mindia.carmind.entities.LogPregunta;
+import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
-import com.mindia.carmind.evaluacion.pojo.AltaPojo;
-import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.alta.AltaPojo;
+import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
+import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
+import com.mindia.carmind.evaluacion.pojo.respuesta.RespuestaOpcionPojo;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
+import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
+import com.mindia.carmind.pregunta.manager.PreguntaManager;
+import com.mindia.carmind.pregunta.persistence.LogOptionRepository;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
 import com.mindia.carmind.seccion.manager.SeccionManager;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
@@ -41,6 +54,15 @@ public class EvaluacionManager {
 
     @Autowired
     SeccionManager seccionManager;
+
+    @Autowired
+    EmpresaManager empresaManager;
+
+    @Autowired
+    PreguntaManager preguntaManager;
+
+    @Autowired
+    LogOptionRepository logOptionRepository;
 
     public Evaluacion getEvaluacionById(String id){
         int intId = Integer.parseInt(id);
@@ -120,7 +142,7 @@ public class EvaluacionManager {
     // }
 
     @Transactional
-    public void realizarEvaluacion(int id, RealizarEvaluacionPojo respuestas){
+    public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas){
         //Validamos el pojo
         respuestas.validate();
 
@@ -139,49 +161,102 @@ public class EvaluacionManager {
         //Nos aseguramos que la evaluacion que se quiere hacer, la tenga el vehiculo
         if(idEvaluacionesVehiculo.contains(evaluacion.getId())){
 
-            //Nos aseguramos que la cantidad de respuestas, sea la misma cantidad de preguntas
-            // if(evaluacion.getListOfEvaluacionPregunta().size() == respuestas.getRespuestas().size()){
+            List<Integer> idsPreguntasEvaluacion = getIdsPreguntasOfEvaluacion(evaluacion);
 
-            //     List<Integer> idsPreguntasEvaluacion = evaluacion.getListOfEvaluacionPregunta().stream().map(x -> x.getPregunta()).collect(Collectors.toList());
+            List<Integer> idsPreguntasRespuestas = respuestas.getRespuestas().stream().map(x -> x.getPreguntaId()).collect(Collectors.toList());
 
-            //     List<Integer> idsPreguntasRespuestas = respuestas.getRespuestas().stream().map(x -> x.getPreguntaId()).collect(Collectors.toList());
+            //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
+            if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
+                //OK
 
-            //     //Nos aseguramos que las preguntas respondidas, sean igual a las preguntas de la evaluacion
-            //     if(!idsPreguntasEvaluacion.retainAll(idsPreguntasRespuestas)){
-            //         //OK
-                    
-            //         LogEvaluacion log = new LogEvaluacion();
-            //         log.setEvaluacionId(id);
-            //         log.setFecha(LocalDate.now());
-            //         log.setVehiculoId(vehiculo.getId());
-            //         log.setObservaciones(respuestas.getObservaciones());
-            //         log.setUsuarioId(loggedUser.getId());
+                //LogEvaluacion
+                LogEvaluacion log = new LogEvaluacion();
+                log.setEvaluacionId(id);
+                log.setFecha(LocalDate.now());
+                log.setVehiculoId(vehiculo.getId());
+                log.setUsuarioId(loggedUser.getId());
 
-            //         logEvaluacionRepository.save(log);
-                    
-            //         List<LogPregunta> logsPreguntas = new ArrayList<LogPregunta>();
-            //         for (RespuestaPojo res : respuestas.getRespuestas()) {
-            //             logsPreguntas.add(res.parseToLogPregunta(log.getId()));
-            //         }
+                //Guardamos el log de la evaluacion
+                log = logEvaluacionRepository.save(log);
+                
+                //Recorremos las respuestas del view
+                for (AltaRespuestaPojo res : respuestas.getRespuestas()) {
+                    //Creamos el log de la pregunta
+                    LogPregunta logPregunta = new LogPregunta();
+                    logPregunta.setIdPregunta(res.getPreguntaId());
+                    logPregunta.setLogEvaluacion(log.getId());
 
-            //         logPreguntaRepository.saveAll(logsPreguntas);
-                    
-            //         return;
-            //     }else{
-            //         //Error
-            //         throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las preguntas respondidas no concuerdan con la evaluacion.");
-            //     }
+                    //Obtenemos la pregunta a responder, para validar el tipo
+                    PreguntaView pregunta = preguntaManager.getPreguntaById(res.getPreguntaId());
 
-            // }else{
-            //     //Error
-            //     throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La cantidad de preguntas respondidas no concuerdan con la evaluacion.");
-            // }
+                    //depende del tipo de pregunta, cambia su comportamiento
+                    switch(pregunta.getTipo()){
+                        case "F":
+                            //Si es foto, nos fijamos si esta en el json
+                            if(res.getBase64Image() != null){
+                                byte[] decodedImage = Base64.getDecoder().decode(res.getBase64Image());
+                                logPregunta.setImage(decodedImage);
+                            }else{
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "En una respuesta del tipo Foto, no se le encuentra la foto adjunta.");
+                            }
+                            break;
+                        case "S1":
+                        case "S2":
+                            if(res.getOpciones() != null && res.getOpciones().size() > 0){
+                                logPregunta.setNota(res.getTexto());
+                                
+                                //Guardamos antes el log, para que tengamos un id.
+                                logPregunta = logPreguntaRepository.save(logPregunta);
+                                for (RespuestaOpcionPojo optRes : res.getOpciones()) {
+                                    LogOption log_opt = new LogOption();
+                                    log_opt.setTickCheck(optRes.getTickCorrecto());
+                                    log_opt.setIdOption(optRes.getOpcionId());
+                                    log_opt.setIdLogPregunta(logPregunta.getId());
+
+                                    //TODO: validar las ids  .constraint fails (`carmind`.`log_option`, CONSTRAINT `option_log_option` FOREIGN KEY (`id_option`) REFERENCES `pregunta_opcion` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)
+                                    logOptionRepository.save(log_opt);
+                                }
+                            }else{
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "En una respuesta del tipo con opciones, no se le encuentra las opciones.");
+                            }
+                            break;
+                        case "S3":
+                            logPregunta.setTickCorrecto(res.getTickCorrecto());
+                            if(!res.getTickCorrecto()){
+                                logPregunta.setNota(res.getTexto());
+                            }
+                            break;
+                        case "TX":
+                            logPregunta.setNota(res.getTexto());
+                            break;
+                    }
+                    //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
+                    if(logPregunta.getId() == null){
+                        logPregunta = logPreguntaRepository.save(logPregunta);
+                    }
+                }
+                
+                return;
+            }else{
+                //Error
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Las preguntas respondidas no concuerdan con la evaluacion.");
+            }
 
         }else{
             //Error
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La evaluacion a realizar, no la tiene asignada el vehiculo seleccionado.");
         }
 
+    }
+
+    private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){
+        List<Pregunta> preguntasDb = new ArrayList<Pregunta>();
+
+        e.getListOfSeccion().stream().forEach(x -> {
+            preguntasDb.addAll(x.getListOfPregunta());
+        });
+
+        return preguntasDb.stream().map(x -> x.getId()).collect(Collectors.toList());
     }
 
 }

@@ -5,8 +5,10 @@ import java.util.stream.Collectors;
 
 import com.mindia.carmind.empresa.persistence.EmpresaRepository;
 import com.mindia.carmind.empresa.pojo.AltaPojo;
-import com.mindia.carmind.empresa.pojo.TiposPojo;
+import com.mindia.carmind.empresa.pojo.TipoPojo;
+import com.mindia.carmind.empresa.pojo.TodosTiposPojo;
 import com.mindia.carmind.entities.Empresa;
+import com.mindia.carmind.pregunta.persistence.TipoPreguntaRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.vehiculo.persistence.TipoDocumentoRepository;
 import com.mindia.carmind.vehiculo.persistence.TipoVehiculoRepository;
@@ -32,6 +34,9 @@ public class EmpresaManager {
     @Autowired
     TipoDocumentoRepository tipoDocumentoRepository;
 
+    @Autowired
+    TipoPreguntaRepository tipoPreguntaRepository;
+
     @Transactional
     public void crearEmpresa(AltaPojo alta){
 
@@ -49,16 +54,24 @@ public class EmpresaManager {
 
     }
 
-    public TiposPojo getAllTipos(){
-        TiposPojo pojo = new TiposPojo();
+    public TodosTiposPojo getAllTipos(){
+        TodosTiposPojo pojo = new TodosTiposPojo();
 
         List<String> tiposVehiculo = tipoVehiculoRepository.findAll().stream().map(x -> x.getNombre()).collect(Collectors.toList());
 
         List<String> tiposDocumento = tipoDocumentoRepository.findAll().stream().map(x -> x.getNombre()).collect(Collectors.toList());
 
+        List<TipoPojo> tiposPregunta = getTiposPregunta();
+
+
         pojo.setTipoDocumento(tiposDocumento);
         pojo.setTipoVehiculo(tiposVehiculo);
+        pojo.setTipoPregunta(tiposPregunta);
 
         return pojo;
+    }
+
+    public List<TipoPojo> getTiposPregunta(){
+        return tipoPreguntaRepository.findAll().stream().map(x -> new TipoPojo(x.getCodigo(), x.getNombre())).collect(Collectors.toList());
     }
 }

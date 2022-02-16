@@ -8,7 +8,7 @@
             "preguntas": [{
                     "descripcion": "Luces",
                     "index": 0,
-                    "tipo": "Selección cruz y check",
+                    "tipo": "S1",
                     "opciones": [
                         "Luz delantera",
                         "Luz trasera",
@@ -18,12 +18,12 @@
                 {
                     "descripcion": "Parachoque delantero",
                     "index": 1,
-                    "tipo": "Foto"
+                    "tipo": "F"
                 },
                 {
                     "descripcion": "Interior",
                     "index": 2,
-                    "tipo": "Selección cruz y check",
+                    "tipo": "S1",
                     "opciones": [
                         "Matafuego",
                         "Antivuelco"
@@ -32,7 +32,7 @@
                 {
                     "descripcion": "Exterior",
                     "index": 3,
-                    "tipo": "Selección múltiple",
+                    "tipo": "S2",
                     "opciones": [
                         "Ruedas todoterreno",
                         "Ruedas lisas"
@@ -41,12 +41,12 @@
                 {
                     "descripcion": "¿Enciende el vehiculo?",
                     "index": 4,
-                    "tipo": "Selección única"
+                    "tipo": "S3"
                 },
                 {
                     "descripcion": "Observaciones",
                     "index": 5,
-                    "tipo": "Texto"
+                    "tipo": "TX"
                 }
             ]
         },
@@ -56,7 +56,7 @@
             "preguntas": [{
                     "descripcion": "Licencias",
                     "index": 0,
-                    "tipo": "Selección cruz y check",
+                    "tipo": "S1",
                     "opciones": [
                         "Licencia de conducir nacional",
                         "Licencia de conducir mina"
@@ -65,7 +65,7 @@
                 {
                     "descripcion": "Observaciones",
                     "index": 1,
-                    "tipo": "Texto"
+                    "tipo": "TX"
                 }
             ]
         }

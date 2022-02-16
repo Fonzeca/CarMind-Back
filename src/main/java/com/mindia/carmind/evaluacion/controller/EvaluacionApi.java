@@ -3,8 +3,8 @@ package com.mindia.carmind.evaluacion.controller;
 import java.util.List;
 
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
-import com.mindia.carmind.evaluacion.pojo.AltaPojo;
-import com.mindia.carmind.evaluacion.pojo.RealizarEvaluacionPojo;
+import com.mindia.carmind.evaluacion.pojo.alta.AltaPojo;
+import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +54,7 @@ public class EvaluacionApi {
     // }
 
     @PostMapping("/evaluacion/{id}/realizar")
-    public void realizarEvaluacion(@PathVariable int id, @RequestBody RealizarEvaluacionPojo respuestas){
+    public void realizarEvaluacion(@PathVariable int id, @RequestBody AltaEvaluacionTerminadaPojo respuestas){
         manager.realizarEvaluacion(id, respuestas);
     }
 

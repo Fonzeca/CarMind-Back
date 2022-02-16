@@ -2,7 +2,7 @@ package com.mindia.carmind.empresa.controller;
 
 import com.mindia.carmind.empresa.manager.EmpresaManager;
 import com.mindia.carmind.empresa.pojo.AltaPojo;
-import com.mindia.carmind.empresa.pojo.TiposPojo;
+import com.mindia.carmind.empresa.pojo.TodosTiposPojo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +22,7 @@ public class EmpresaApi {
     }
 
     @GetMapping("/tipos")
-    public TiposPojo getAllTipos(){
+    public TodosTiposPojo getAllTipos(){
         return manager.getAllTipos();
     }
 

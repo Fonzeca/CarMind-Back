@@ -3,7 +3,7 @@ package com.mindia.carmind.seccion.manager;
 import java.util.List;
 
 import com.mindia.carmind.entities.Seccion;
-import com.mindia.carmind.evaluacion.pojo.AltaSeccionPojo;
+import com.mindia.carmind.evaluacion.pojo.alta.AltaSeccionPojo;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 
 import org.springframework.beans.factory.annotation.Autowired;

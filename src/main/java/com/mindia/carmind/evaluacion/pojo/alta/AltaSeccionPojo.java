@@ -1,5 +1,5 @@
 
-package com.mindia.carmind.evaluacion.pojo;
+package com.mindia.carmind.evaluacion.pojo.alta;
 
 import java.util.List;
 

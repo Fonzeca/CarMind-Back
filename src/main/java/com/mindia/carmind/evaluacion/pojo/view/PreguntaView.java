@@ -111,7 +111,7 @@ public class PreguntaView {
         this.id = p.getId();
         this.descripcion = p.getDescripcion();
         this.index = p.getIndexOrden();
-        this.tipo = p.getTipo();
+        this.tipo = p.getTipoPregunta().getCodigo();
 
         this.opciones = p.getListOfPreguntaOpcion().stream().map(OpcionView::new).collect(Collectors.toList());
     }
