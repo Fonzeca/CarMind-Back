@@ -36,10 +36,10 @@ public class Configuration extends WebSecurityConfigurerAdapter implements WebMv
 		.authorizeRequests()
 			.antMatchers(HttpMethod.POST, "/login").permitAll()
 			.antMatchers(HttpMethod.GET, "/test").permitAll()
-			.antMatchers(HttpMethod.POST, "/usuario/recuperar").permitAll()
-			.antMatchers(HttpMethod.POST, "/usuario/validateRecoverToken").permitAll()
-			.antMatchers(HttpMethod.POST, "/usuario/resetPassword").permitAll()
-			.antMatchers(HttpMethod.POST, "/empresa").permitAll()
+			.antMatchers(HttpMethod.POST, "/public/usuario/recuperar").permitAll()
+			.antMatchers(HttpMethod.POST, "/public/usuario/validateRecoverToken").permitAll()
+			.antMatchers(HttpMethod.POST, "/public/usuario/resetPassword").permitAll()
+			.antMatchers(HttpMethod.POST, "/public/empresa").permitAll()
 			.anyRequest().authenticated();
 	}
 

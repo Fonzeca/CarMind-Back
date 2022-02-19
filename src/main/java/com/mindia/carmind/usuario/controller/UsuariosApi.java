@@ -65,17 +65,17 @@ public class UsuariosApi {
         manager.bajaConductor(id);
     }
 
-    @PostMapping("/usuario/recuperar")
+    @PostMapping("/public/usuario/recuperar")
     public void enviarTokenRecuperacionPassword(@RequestParam("email") String email){
         manager.enviarTokenRecuperacionPassword(email);
     }
 
-    @PostMapping("/usuario/validateRecoverToken")
+    @PostMapping("/public/usuario/validateRecoverToken")
     public void validateRecoverToken(@RequestBody RecuperacionPojo pojo){
         manager.validateRecoverToken(pojo);
     }
 
-    @PostMapping("/usuario/resetPassword")
+    @PostMapping("/public/usuario/resetPassword")
     public void resetPassword(@RequestBody RecuperacionPojo pojo){
         manager.resetPassword(pojo);
     }

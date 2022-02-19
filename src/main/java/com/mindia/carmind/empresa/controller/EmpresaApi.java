@@ -16,7 +16,7 @@ public class EmpresaApi {
     @Autowired
     EmpresaManager manager;
 
-    @PostMapping("/empresa")
+    @PostMapping("/public/empresa")
     public void altaEmpresa(@RequestBody AltaPojo alta){
         manager.crearEmpresa(alta);
     }
