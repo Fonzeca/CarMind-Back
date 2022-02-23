@@ -255,6 +255,11 @@ public class EvaluacionManager {
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
 
+    public List<LogEvaluacionView> getLogById(int id){
+        List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
+        return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
+    }
+
     //---------------------------------------PRIVATE-----------------------------------------------------
 
     private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){

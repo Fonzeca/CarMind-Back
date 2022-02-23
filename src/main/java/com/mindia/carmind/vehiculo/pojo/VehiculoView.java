@@ -1,6 +1,7 @@
 package com.mindia.carmind.vehiculo.pojo;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.annotation.Generated;
 
@@ -8,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mindia.carmind.entities.Vehiculo;
+import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -21,7 +23,8 @@ import com.mindia.carmind.entities.Vehiculo;
         "linea",
         "patente",
         "fecha_service",
-        "ultima_evaluacion"
+        "ultima_evaluacion",
+        "pendientes"
 })
 @Generated("jsonschema2pojo")
 public class VehiculoView {
@@ -48,40 +51,14 @@ public class VehiculoView {
     private LocalDate fechaService;
     @JsonProperty("ultima_evaluacion")
     private String ultimaEvaluacion;
+    @JsonProperty("pendientes")
+    private List<EvaluacionLiteView> pendientes;
 
     /**
      * No args constructor for use in serialization
      *
      */
     public VehiculoView() {
-    }
-
-    /**
-     *
-     * @param marca
-     * @param color
-     * @param ultimaEvaluacion
-     * @param enUso
-     * @param id
-     * @param fechaService
-     * @param nombre
-     * @param modelo
-     * @param linea
-     * @param patente
-     */
-    public VehiculoView(Integer id, String nombre, Boolean enUso, String color, String marca, String modelo,
-            String linea, String patente, LocalDate fechaService, String ultimaEvaluacion) {
-        super();
-        this.id = id;
-        this.nombre = nombre;
-        this.enUso = enUso;
-        this.color = color;
-        this.marca = marca;
-        this.modelo = modelo;
-        this.linea = linea;
-        this.patente = patente;
-        this.fechaService = fechaService;
-        this.ultimaEvaluacion = ultimaEvaluacion;
     }
 
     @JsonProperty("id")
@@ -192,6 +169,16 @@ public class VehiculoView {
     @JsonProperty("usuario_en_uso")
     public void setUsuarioEnUso(String usuarioEnUso) {
         this.usuarioEnUso = usuarioEnUso;
+    }
+
+    @JsonProperty("pendientes")
+    public List<EvaluacionLiteView> getPendientes() {
+        return this.pendientes;
+    }
+
+    @JsonProperty("pendientes")
+    public void setPendientes(List<EvaluacionLiteView> pendientes) {
+        this.pendientes = pendientes;
     }
 
 

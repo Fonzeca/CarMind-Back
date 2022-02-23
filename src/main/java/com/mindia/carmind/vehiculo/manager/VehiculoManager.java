@@ -19,6 +19,7 @@ import com.mindia.carmind.entities.VehiculoEvaluacion;
 import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
+import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
@@ -115,6 +116,10 @@ public class VehiculoManager implements IVehiculo {
     public VehiculoView obtenerVehiculoById(String id) {
         Vehiculo v = repository.getById(Integer.parseInt(id));
         VehiculoView vehiculo = new VehiculoView(v, true);
+
+        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream().map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x))).collect(Collectors.toList());
+        vehiculo.setPendientes(listsEvaluacion);
+
         return vehiculo;
     }
 
@@ -295,6 +300,39 @@ public class VehiculoManager implements IVehiculo {
         }
 
         return fechaPeriodo;
+    }
+
+    private int getVencimientoOfEvaluacion(VehiculoEvaluacion vehiculoEvaluacion){
+        // Obtenemos el ultimo log de la evaluacion
+        LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
+
+        // Si el ultimo log es null, es porque nunca se hizo una evaluacion
+        if (log != null) {
+
+            // Fecha del ultimo log
+            LocalDate dateLog = log.getFecha().toLocalDate();
+
+            // Fecha de la proxima vez que se deberia realizar la evaluacion
+            LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
+
+            int vencimiento = (int) LocalDate.now().datesUntil(fechaProxima).count();
+
+            int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
+
+            if (dateLog.isBefore(fechaProxima.minusDays(intervaloDias))){
+                return 0;
+            }
+
+            return vencimiento;
+        }else{
+
+            if(!vehiculoEvaluacion.getFechaInicio().isBefore(LocalDate.now())){
+                int vencimiento = (int) LocalDate.now().datesUntil(vehiculoEvaluacion.getFechaInicio()).count();
+                return vencimiento;
+            }
+
+            return 0;
+        }
     }
 
 }
