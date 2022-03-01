@@ -2,8 +2,10 @@ package com.mindia.carmind.vehiculo.manager;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -295,7 +297,7 @@ public class VehiculoManager implements IVehiculo {
 
         int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
-        while (hoy.isAfter(fechaPeriodo)) {
+        while (hoy.isAfter(fechaPeriodo) || hoy.isEqual(fechaPeriodo)) {
             fechaPeriodo = fechaPeriodo.plusDays(intervaloDias);
         }
 
@@ -310,16 +312,18 @@ public class VehiculoManager implements IVehiculo {
         if (log != null) {
 
             // Fecha del ultimo log
-            LocalDate dateLog = log.getFecha().toLocalDate();
-
-            // Fecha de la proxima vez que se deberia realizar la evaluacion
-            LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
-
-            int vencimiento = (int) LocalDate.now().datesUntil(fechaProxima).count();
+            LocalDateTime dateLog = log.getFecha();
 
             int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
-            if (dateLog.isBefore(fechaProxima.minusDays(intervaloDias))){
+            // Fecha de la proxima vez que se deberia realizar la evaluacion
+            LocalDateTime fechaProxima = fechaProximoCheck(vehiculoEvaluacion).atStartOfDay();
+            
+            LocalDateTime fechaAnterior = fechaProxima.minusDays(intervaloDias);
+
+            int vencimiento = (int) LocalDateTime.now().toLocalDate().atStartOfDay().until(fechaProxima, ChronoUnit.DAYS);
+            
+            if(dateLog.isBefore(fechaAnterior)){
                 return 0;
             }
 
