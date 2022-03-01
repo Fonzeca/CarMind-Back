@@ -117,12 +117,7 @@ public class VehiculoManager implements IVehiculo {
 
     public VehiculoView obtenerVehiculoById(String id) {
         Vehiculo v = repository.getById(Integer.parseInt(id));
-        VehiculoView vehiculo = new VehiculoView(v, true);
-
-        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream().map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x))).collect(Collectors.toList());
-        vehiculo.setPendientes(listsEvaluacion);
-
-        return vehiculo;
+        return armarVehiculoConPendientes(v);
     }
 
     @Override
@@ -206,13 +201,12 @@ public class VehiculoManager implements IVehiculo {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
-        if (checkVehiculo(id) == null) {
-
+        if(vehiculo.getUsuarioIdUsando() == null){
             vehiculo.setUsuarioIdUsando(loggedUser.getId());
-
+            
             repository.save(vehiculo);
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo tiene una evaluacion en espera.");
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo ya esta en uso.");
         }
     }
 
@@ -231,6 +225,16 @@ public class VehiculoManager implements IVehiculo {
             
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario actual no es el que esta usando este vehiculo.");
         }
+    }
+
+    public VehiculoView getCurrentVehiculo(){
+        // Obtenemos el usuario logeado
+        UsuarioView loggedUser = usuariosManager.getLoggeduser();
+
+        Vehiculo vehiculo = repository.findByusuarioIdUsando(loggedUser.getId());
+        if(vehiculo == null) return null;
+
+        return armarVehiculoConPendientes(vehiculo);
     }
 
     @Transactional
@@ -339,4 +343,11 @@ public class VehiculoManager implements IVehiculo {
         }
     }
 
+    private VehiculoView armarVehiculoConPendientes(Vehiculo v){
+        VehiculoView vehiculo = new VehiculoView(v, true);
+
+        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream().map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x))).collect(Collectors.toList());
+        vehiculo.setPendientes(listsEvaluacion);
+        return vehiculo;
+    }
 }

@@ -89,4 +89,9 @@ public class VehiculoApi {
         .header(HttpHeaders.CONTENT_TYPE, doc.getContentType())
         .body(doc.getData());
     }
+
+    @GetMapping("/vehiculo/current")
+    public VehiculoView getVehiculoEnUso() {
+        return manager.getCurrentVehiculo();
+    }
 }
