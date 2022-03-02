@@ -47,6 +47,8 @@ public class VehiculoView {
     private String linea;
     @JsonProperty("patente")
     private String patente;
+    @JsonProperty("tipo")
+    private String tipo;
     @JsonProperty("fecha_service")
     private LocalDate fechaService;
     @JsonProperty("ultima_evaluacion")
@@ -181,6 +183,17 @@ public class VehiculoView {
         this.pendientes = pendientes;
     }
 
+    @JsonProperty("tipo")
+    public String getTipo() {
+        return this.tipo;
+    }
+
+    @JsonProperty("tipo")
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+
 
     public VehiculoView(Vehiculo v) {
         this(v, false);
@@ -191,6 +204,7 @@ public class VehiculoView {
         nombre = v.getNombre();
         this.enUso = v.getUsuarioIdUsando() != null;
         color = v.getColor();
+        this.tipo = v.getTipoVehiculo();
         
         if (detalle) {
             if(this.enUso){
