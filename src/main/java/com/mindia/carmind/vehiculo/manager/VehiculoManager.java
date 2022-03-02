@@ -232,7 +232,7 @@ public class VehiculoManager implements IVehiculo {
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
         Vehiculo vehiculo = repository.findByusuarioIdUsando(loggedUser.getId());
-        if(vehiculo == null) return null;
+        if(vehiculo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
 
         return armarVehiculoConPendientes(vehiculo);
     }
