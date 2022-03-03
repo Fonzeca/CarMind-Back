@@ -205,6 +205,8 @@ public class VehiculoManager implements IVehiculo {
             vehiculo.setUsuarioIdUsando(loggedUser.getId());
             
             repository.save(vehiculo);
+        }else if(vehiculo.getUsuarioIdUsando() == loggedUser.getId()){
+            return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo ya esta en uso.");
         }
