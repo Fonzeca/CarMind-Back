@@ -68,6 +68,11 @@ public class EvaluacionApi {
         return manager.historialDeEvaluaciones();
     }
 
+    @GetMapping("/evaluacion/historial/loggedUser")
+    public List<LogEvaluacionView> getHistualLogLoggedUser(){
+        return manager.historialDeEvaluacionesByLoggedUser();
+    }
+
     @GetMapping("/evaluacion/historial/{id}")
     public List<LogEvaluacionView> getLogById(@PathVariable int id){
         throw new NotImplementedError();
