@@ -203,7 +203,6 @@ public class VehiculoView {
         id = v.getId();
         nombre = v.getNombre();
         this.enUso = v.getUsuarioIdUsando() != null;
-        color = v.getColor();
         this.tipo = v.getTipoVehiculo();
         
         if (detalle) {
@@ -214,7 +213,6 @@ public class VehiculoView {
             modelo = v.getModelo();
             linea = v.getLinea();
             patente = v.getPatente();
-            fechaService = v.getFechaService();
         }
     }
 

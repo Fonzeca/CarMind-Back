@@ -78,8 +78,6 @@ public class VehiculoManager implements IVehiculo {
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
         vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
-        vehiculo.setColor(pojo.getColor());
-        vehiculo.setFechaService(pojo.getFechaService());
         vehiculo.setLinea(pojo.getLinea());
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
@@ -99,7 +97,6 @@ public class VehiculoManager implements IVehiculo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id incorrecto");
         }
 
-        vehiculo.setColor(pojo.getColor());
         vehiculo.setLinea(pojo.getLinea());
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
