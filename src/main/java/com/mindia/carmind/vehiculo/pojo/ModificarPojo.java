@@ -22,8 +22,6 @@ public class ModificarPojo {
     private String modelo;
     @JsonProperty("linea")
     private String linea;
-    @JsonProperty("color")
-    private String color;
 
     @JsonProperty("id")
     public int getId() {
@@ -65,35 +63,23 @@ public class ModificarPojo {
         this.linea = linea;
     }
 
-    @JsonProperty("color")
-    public String getColor() {
-        return color;
-    }
-
-    @JsonProperty("color")
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     public boolean validate(){
 
         //Busco si verdaderamente existe la marca que se quiere dar de alta
-        MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
+        // MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
+        this.marca = this.marca.trim();
+        this.modelo = this.modelo.trim();
 
-        if(this.marca == null || this.marca.isBlank()
-            || marcaPojo == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca erronea");
+        if(this.marca == null || this.marca.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca vacio");
         }
-        this.marca = marcaPojo.getMarca();
 
         //Se busca si verdaderamente existe el modelo que se quiere dar de alta
-        ModeloPojo modeloPojo = ModeloPojo.buscarModelo(marcaPojo.getModelos().stream(), this.modelo);
+        // ModeloPojo modeloPojo = ModeloPojo.buscarModelo(marcaPojo.getModelos().stream(), this.modelo);
 
-        if(this.modelo == null || this.modelo.isBlank()
-            || modeloPojo == null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo erroneo");
+        if(this.modelo == null || this.modelo.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo vacio");
         }
-        this.modelo = modeloPojo.getModelo();
 
         //Valida si la linea no esta vacia o es mayor a 10 caracteres
         if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){

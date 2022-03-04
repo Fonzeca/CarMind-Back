@@ -78,6 +78,11 @@ public class VehiculoManager implements IVehiculo {
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
         vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
+
+        if(repository.findByPatente(vehiculo.getPatente()) != null){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Patente duplicada");
+        }
+
         vehiculo.setLinea(pojo.getLinea());
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
@@ -94,7 +99,7 @@ public class VehiculoManager implements IVehiculo {
         Vehiculo vehiculo = repository.getById(pojo.getId());
 
         if (vehiculo == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id incorrecto");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehiculo no encontrado");
         }
 
         vehiculo.setLinea(pojo.getLinea());

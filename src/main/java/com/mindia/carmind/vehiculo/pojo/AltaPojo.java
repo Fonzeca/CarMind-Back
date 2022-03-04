@@ -1,7 +1,5 @@
 package com.mindia.carmind.vehiculo.pojo;
 
-import java.time.LocalDate;
-
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,12 +22,8 @@ public class AltaPojo {
     private String modelo;
     @JsonProperty("linea")
     private String linea;
-    @JsonProperty("color")
-    private String color;
     @JsonProperty("tipo")
     private String tipo;
-    @JsonProperty("fecha_service")
-    private LocalDate fechaService;
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -59,26 +53,6 @@ public class AltaPojo {
     @JsonProperty("linea")
     public void setLinea(String linea) {
         this.linea = linea;
-    }
-
-    @JsonProperty("color")
-    public String getColor() {
-        return color;
-    }
-
-    @JsonProperty("color")
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    @JsonProperty("fecha_service")
-    public LocalDate getFechaService() {
-        return fechaService;
-    }
-
-    @JsonProperty("fecha_service")
-    public void setFechaService(LocalDate fechaService) {
-        this.fechaService = fechaService;
     }
 
     @JsonProperty("nombre")
@@ -115,10 +89,26 @@ public class AltaPojo {
 
         this.modelo = this.modelo.trim();
         this.marca = this.marca.trim();
-        
+
         // Valida si la linea no esta vacia o es mayor a 10 caracteres
         if (this.linea == null || this.linea.isBlank() || this.linea.length() > 10) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
+        }
+
+        if(this.nombre == null || this.nombre.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre vacio");
+        }
+
+        if(this.marca == null || this.marca.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca vacio");
+        }
+
+        if(this.modelo == null || this.modelo.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo vacio");
+        }
+        
+        if(this.tipo == null || this.tipo.isBlank()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo vacio");
         }
 
         return true;
