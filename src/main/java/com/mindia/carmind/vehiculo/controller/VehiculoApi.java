@@ -74,6 +74,11 @@ public class VehiculoApi {
         manager.terminarUso(id);
     }
 
+    @GetMapping("/vehiculo/{id}/documentos")
+    public List<String> getDocumentosOfVehiculo(@PathVariable Integer id) {
+        return manager.obtenerDocumentos(id);
+    }
+
     @PostMapping("/vehiculo/{id}/{tipo}/upload")
     public void subirDocumentacion(@PathVariable int id, @RequestParam("file") MultipartFile file, @RequestParam("vencimiento") String vencimiento, @PathVariable("tipo") String tipo){
         manager.subirDocumentacion(id, file, tipo, vencimiento);

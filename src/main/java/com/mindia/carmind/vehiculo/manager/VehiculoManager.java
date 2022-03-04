@@ -289,6 +289,11 @@ public class VehiculoManager implements IVehiculo {
         return doc.get();
     }
 
+    public List<String> obtenerDocumentos(Integer id) {
+        List<Documento> docs = documentoRepository.findByVehiculoId(id);
+        return docs.stream().map(x -> x.getTipoDocumento()).collect(Collectors.toList());
+    }
+
     // -------------------------------------------------------------------------------------------------------------------------------
 
     /**

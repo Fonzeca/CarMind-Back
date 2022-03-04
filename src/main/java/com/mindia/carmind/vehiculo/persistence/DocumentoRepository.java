@@ -17,4 +17,6 @@ public interface DocumentoRepository extends JpaRepository<Documento, Integer> {
 
     //buscar los que esten entre hoy y 14 dias mas
     List<Documento> findByVencimientoBetween(LocalDate fechaDesde, LocalDate fehcaHasta);
+
+    List<Documento> findByVehiculoId(Integer vehiculoId);
 }
