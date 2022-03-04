@@ -55,7 +55,7 @@ public class Vehiculo implements Serializable {
     @Column(name="fecha_service")
     private LocalDate       fechaService ;
 
-    @Column(name="color", nullable=false, length=50)
+    @Column(name="color", nullable=true, length=50)
     private String     color ;
 
     @Column(name="empresa_id", nullable=false)
