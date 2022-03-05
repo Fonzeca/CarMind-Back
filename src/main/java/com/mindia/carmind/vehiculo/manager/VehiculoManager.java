@@ -32,6 +32,7 @@ import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
+import com.mindia.carmind.vehiculo.pojo.DocumentoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -289,9 +290,9 @@ public class VehiculoManager implements IVehiculo {
         return doc.get();
     }
 
-    public List<String> obtenerDocumentos(Integer id) {
+    public List<DocumentoView> obtenerDocumentos(Integer id) {
         List<Documento> docs = documentoRepository.findByVehiculoId(id);
-        return docs.stream().map(x -> x.getTipoDocumento()).collect(Collectors.toList());
+        return docs.stream().map(DocumentoView::new).collect(Collectors.toList());
     }
 
     // -------------------------------------------------------------------------------------------------------------------------------

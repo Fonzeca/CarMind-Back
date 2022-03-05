@@ -7,6 +7,7 @@ import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
+import com.mindia.carmind.vehiculo.pojo.DocumentoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -75,7 +76,7 @@ public class VehiculoApi {
     }
 
     @GetMapping("/vehiculo/{id}/documentos")
-    public List<String> getDocumentosOfVehiculo(@PathVariable Integer id) {
+    public List<DocumentoView> getDocumentosOfVehiculo(@PathVariable Integer id) {
         return manager.obtenerDocumentos(id);
     }
 
