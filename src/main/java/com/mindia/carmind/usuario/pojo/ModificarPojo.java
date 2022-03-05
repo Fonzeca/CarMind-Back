@@ -17,8 +17,6 @@ public class ModificarPojo {
     private String apellido;
     @JsonProperty("username")
     private String username;
-    @JsonProperty("password")
-    private String password;
     @JsonProperty("DNI")
     private String dni;
     @JsonProperty("administrador")
@@ -45,7 +43,6 @@ public class ModificarPojo {
         this.nombre = nombre;
         this.apellido = apellido;
         this.username = username;
-        this.password = password;
         this.dni = dni;
         this.administrador = administrador;
     }
@@ -78,16 +75,6 @@ public class ModificarPojo {
     @JsonProperty("username")
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    @JsonProperty("password")
-    public String getPassword() {
-        return password;
-    }
-
-    @JsonProperty("password")
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @JsonProperty("DNI")

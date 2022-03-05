@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mindia.carmind.entities.Usuario;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "nombre","apellido","email","dni", "empresa", "administrador","fecha_alta" })
+@JsonPropertyOrder({ "id", "nombre","apellido","username","dni", "empresa", "administrador","fecha_alta" })
 @Generated("jsonschema2pojo")
 public class UsuarioView {
 
@@ -18,8 +18,8 @@ public class UsuarioView {
     private String nombre;
     @JsonProperty("apellido")
     private String apellido;
-    @JsonProperty("email")
-    private String email;
+    @JsonProperty("username")
+    private String username;
     @JsonProperty("dni")
     private String dni;
     @JsonProperty("empresa")
@@ -84,14 +84,14 @@ public class UsuarioView {
         this.apellido = apellido;
     }
 
-    @JsonProperty("email")
-    public String getEmail() {
-        return this.email;
+    @JsonProperty("username")
+    public String getUsername() {
+        return this.username;
     }
 
-    @JsonProperty("email")
-    public void setEmail(String email) {
-        this.email = email;
+    @JsonProperty("username")
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @JsonProperty("dni")
@@ -124,7 +124,7 @@ public class UsuarioView {
         empresa = u.getEmpresa();
         id = u.getId();
         dni = u.getDni();
-        email = u.getUsername();
+        username = u.getUsername();
         apellido = u.getApellido();
     }
 

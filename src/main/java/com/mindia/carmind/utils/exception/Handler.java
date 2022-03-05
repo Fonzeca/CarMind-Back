@@ -7,6 +7,7 @@ import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -50,10 +51,18 @@ public class Handler {
         
         return new ResponseEntity<ErrorDetails>(details, HttpStatus.BAD_REQUEST);
     }
+
     
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<?> handleResponseStatusException(HttpMessageNotReadableException ex, WebRequest request){
+        ErrorDetails details = new ErrorDetails("Json malformed", ex.getMessage());
+        
+        return new ResponseEntity<ErrorDetails>(details, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<?> handleException(Exception ex, WebRequest request){
-        ErrorDetails details = new ErrorDetails();
+        ErrorDetails details = new ErrorDetails(ex.getMessage(), "Error");
 
         ex.printStackTrace();
         return new ResponseEntity<ErrorDetails>(details, HttpStatus.INTERNAL_SERVER_ERROR);

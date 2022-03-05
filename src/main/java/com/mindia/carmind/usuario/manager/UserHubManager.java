@@ -130,7 +130,6 @@ public class UserHubManager {
         // Armo el json a mandar
         ObjectNode user = mapper.createObjectNode();
         user.put("userName", pojo.getUsername());
-        user.put("password", pojo.getPassword());
         user.put("firstName", pojo.getNombre());
         user.put("lastName", pojo.getApellido());
         user.set("roles", roles);
@@ -263,7 +262,7 @@ public class UserHubManager {
     //--------------------------------------------
 
     private boolean validate(){
-        RequestBody body = RequestBody.create(null);
+        RequestBody body = RequestBody.create(new byte[0]);
 
         String pathUserHub = "/validate";
 
