@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mindia.carmind.entities.Usuario;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "nombre","apellido","username","dni", "empresa", "administrador","fecha_alta" })
+@JsonPropertyOrder({ "id", "nombre","apellido","username","dni", "empresa", "nombre_empresa", "administrador","fecha_alta" })
 @Generated("jsonschema2pojo")
 public class UsuarioView {
 
@@ -24,6 +24,8 @@ public class UsuarioView {
     private String dni;
     @JsonProperty("empresa")
     private Integer empresa;
+    @JsonProperty("nombre_empresa")
+    private String nombreEmpresa;
     @JsonProperty("administrador")
     private boolean administrador;
     @JsonProperty("fecha_alta")
@@ -114,8 +116,15 @@ public class UsuarioView {
         this.fechaAlta = fechaAlta;
     }
 
+    @JsonProperty("nombre_empresa")
+    public String getNombreEmpresa() {
+        return this.nombreEmpresa;
+    }
 
-
+    @JsonProperty("nombre_empresa")
+    public void setNombreEmpresa(String nombreEmpresa) {
+        this.nombreEmpresa = nombreEmpresa;
+    }
 
 
     public UsuarioView(Usuario u) {
@@ -126,6 +135,7 @@ public class UsuarioView {
         dni = u.getDni();
         username = u.getUsername();
         apellido = u.getApellido();
+        nombreEmpresa = u.getEmpresa2().getNombre();
     }
 
 }
