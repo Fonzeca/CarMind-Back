@@ -53,7 +53,7 @@ public class NotificacionManager {
         int daysInterval = 7;
         log.info("Perform dailyTask, the time is now {}", dateFormat.format(new Date()));
 
-        List<Documento> docs = documentoRepository.findByVencimiento(LocalDate.now().plusDays(daysInterval));
+        List<Documento> docs = documentoRepository.findByVencimientoAndActiveTrue(LocalDate.now().plusDays(daysInterval));
         for (Documento documento : docs) {
 
             Vehiculo vehiculo = documento.getVehiculo();
@@ -73,7 +73,7 @@ public class NotificacionManager {
     private void weeklyTask(){
         log.info("Perform weeklyTask, the time is now {}", dateFormat.format(new Date()));
 
-        List<Documento> docs = documentoRepository.findByVencimientoBetween(LocalDate.now(), LocalDate.now().plusDays(14));
+        List<Documento> docs = documentoRepository.findByVencimientoBetweenAndActiveTrue(LocalDate.now(), LocalDate.now().plusDays(14));
 
         for (Documento documento : docs) {
             log.info(documento.getVehiculoId() + " " + documento.getTipoDocumento());   
