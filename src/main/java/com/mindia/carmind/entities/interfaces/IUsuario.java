@@ -13,7 +13,7 @@ public interface IUsuario {
 
     void modificarConductor(ModificarPojo pojo);
 
-    void bajaConductor(String id);
+    void bajaConductor(Integer id);
 
     UsuarioView obtenerUsuarioById(String id);
 }

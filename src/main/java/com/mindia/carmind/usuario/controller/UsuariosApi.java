@@ -10,6 +10,7 @@ import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,8 +61,8 @@ public class UsuariosApi {
     }
 
     //Funcionalidad no terminada
-    public void borrarUsuario(@PathVariable String id) {
-
+    @DeleteMapping("/usuario/{id}")
+    public void borrarUsuario(@PathVariable Integer id) {
         manager.bajaConductor(id);
     }
 

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Usuario;
+import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.entities.interfaces.IUsuario;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
@@ -13,23 +14,28 @@ import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
+import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class UsuariosManager implements IUsuario {
     @Autowired
-
     UsuariosRepository repository;
+
     @Autowired
     UserHubManager userHubManager;
 
+    @Autowired
+    VehiculosRepository vehiculosRepository;
+
     public TokenView login(String username, String password) {
-        Usuario u = repository.findByUsername(username);
+        Usuario u = repository.findByUsernameAndActiveTrue(username);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario inexistente.");
         }
@@ -52,7 +58,7 @@ public class UsuariosManager implements IUsuario {
         // Le damos de alta en nuestra base de datos
         Usuario usuario = new Usuario();
 
-        if (repository.findByUsername(pojo.getUsername()) != null) {
+        if (repository.findByUsernameAndActiveTrue(pojo.getUsername()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuario duplicado");
         }
 
@@ -75,7 +81,7 @@ public class UsuariosManager implements IUsuario {
     @Override
     public void modificarConductor(ModificarPojo pojo) {
         // Modificamos el usuario en UserHub
-        Usuario usuario = repository.findByUsernameAndEmpresa(pojo.getUsername(), getLoggeduser().getEmpresa());
+        Usuario usuario = repository.findByUsernameAndEmpresaAndActiveTrue(pojo.getUsername(), getLoggeduser().getEmpresa());
 
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
@@ -104,21 +110,29 @@ public class UsuariosManager implements IUsuario {
     }
 
     @Override
-    public void bajaConductor(String id) {
+    @Transactional
+    public void bajaConductor(Integer id) {
+        Usuario user = repository.getById(id);
+        user.setActive(false);
+        for (Vehiculo vehiculo : user.getListOfVehiculo()) {
+            vehiculo.setUsuarioIdUsando(null);
 
-        repository.deleteById(Integer.parseInt(id));
+            vehiculosRepository.save(vehiculo);
+        }
+
+        repository.save(user);
     }
 
     @Override
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuario u = repository.findByIdAndEmpresa(Integer.parseInt(id), getLoggeduser().getEmpresa());
+        Usuario u = repository.findByIdAndEmpresaAndActiveTrue(Integer.parseInt(id), getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
     }
 
     public UsuarioView obtenerUsuarioByUsername(String username) {
-        Usuario u = repository.findByUsernameAndEmpresa(username, getLoggeduser().getEmpresa());
+        Usuario u = repository.findByUsernameAndEmpresaAndActiveTrue(username, getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
@@ -126,12 +140,12 @@ public class UsuariosManager implements IUsuario {
 
     public UsuarioView getLoggeduser() {
         LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Usuario u = repository.findByUsername(logged.getUserName());
+        Usuario u = repository.findByUsernameAndActiveTrue(logged.getUserName());
         return new UsuarioView(u);
     }
 
     public List<UsuarioView> getAllUsuario() {
-        List<Usuario> usuarios = repository.findByEmpresa(getLoggeduser().getEmpresa());
+        List<Usuario> usuarios = repository.findByEmpresaAndActiveTrue(getLoggeduser().getEmpresa());
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
     }
 

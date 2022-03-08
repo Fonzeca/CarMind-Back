@@ -11,12 +11,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsuariosRepository extends JpaRepository<Usuario, Integer> {
 
-    Usuario findByUsername(String username);
+    Usuario findByUsernameAndActiveTrue(String username);
 
-    Usuario findByUsernameAndEmpresa(String username, Integer empresa);
+    Usuario findByUsernameAndEmpresaAndActiveTrue(String username, Integer empresa);
 
-    Usuario findByIdAndEmpresa(Integer id, Integer empresa);
+    Usuario findByIdAndEmpresaAndActiveTrue(Integer id, Integer empresa);
 
-    List<Usuario> findByEmpresa(Integer empresa);
+    List<Usuario> findByEmpresaAndActiveTrue(Integer empresa);
 
 }
