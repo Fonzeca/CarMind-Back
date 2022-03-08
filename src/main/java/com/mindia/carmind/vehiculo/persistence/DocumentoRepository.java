@@ -13,10 +13,10 @@ import org.springframework.stereotype.Repository;
 public interface DocumentoRepository extends JpaRepository<Documento, Integer> {
     
     //buscar todos los que esten a 7 dias mas
-    List<Documento> findByVencimiento(LocalDate vencimiento);
+    List<Documento> findByVencimientoAndActiveTrue(LocalDate vencimiento);
 
     //buscar los que esten entre hoy y 14 dias mas
-    List<Documento> findByVencimientoBetween(LocalDate fechaDesde, LocalDate fehcaHasta);
+    List<Documento> findByVencimientoBetweenAndActiveTrue(LocalDate fechaDesde, LocalDate fehcaHasta);
 
-    List<Documento> findByVehiculoId(Integer vehiculoId);
+    List<Documento> findByVehiculoIdAndActiveTrue(Integer vehiculoId);
 }

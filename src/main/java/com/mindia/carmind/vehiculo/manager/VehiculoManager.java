@@ -245,10 +245,22 @@ public class VehiculoManager implements IVehiculo {
     @Transactional
     public void subirDocumentacion(int id, MultipartFile file, String tipo, String vencimiento) {
         // Buscamos el vehiculo
-        obtenerVehiculoById(id + "");
+        Vehiculo v = repository.getById(id);
 
         if (!tipoDocumentoRepository.findAll().stream().anyMatch(x -> x.getNombre().equals(tipo))) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ese tipo de documento");
+        }
+
+        //Busco los que esten activos
+        var docsActivos = v.getListOfDocumento().stream().filter(x -> x.getActive() && x.getTipoDocumento().equals(tipo)).collect(Collectors.toList());
+
+        //Los desactivo
+        if(docsActivos.size() > 0){
+            for (Documento docActivo : docsActivos) {
+                docActivo.setActive(false);
+
+                documentoRepository.save(docActivo);
+            }
         }
 
         // Seteamos el documento para guardar
@@ -259,6 +271,7 @@ public class VehiculoManager implements IVehiculo {
             doc.setContentType(file.getContentType());
             doc.setTipoDocumento(tipo);
             doc.setVehiculoId(id);
+            doc.setActive(true);
 
             doc.setVencimiento(
                     LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
@@ -281,7 +294,7 @@ public class VehiculoManager implements IVehiculo {
         }
 
         List<Documento> listDoc = v.getListOfDocumento();
-        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo)).findFirst();
+        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo) && x.getActive()).findFirst();
 
         if (doc.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el documento asociado al vehiculo.");
@@ -291,7 +304,7 @@ public class VehiculoManager implements IVehiculo {
     }
 
     public List<DocumentoView> obtenerDocumentos(Integer id) {
-        List<Documento> docs = documentoRepository.findByVehiculoId(id);
+        List<Documento> docs = documentoRepository.findByVehiculoIdAndActiveTrue(id);
         return docs.stream().map(DocumentoView::new).collect(Collectors.toList());
     }
 
