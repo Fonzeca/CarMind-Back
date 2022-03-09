@@ -1,5 +1,7 @@
 package com.mindia.carmind.notificacion.pojo;
 
+import java.time.format.DateTimeFormatter;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -51,7 +53,7 @@ public class NotificacionPojo {
     public NotificacionPojo(Notificaciones notificacion) {
         super();
         this.id = notificacion.getId();
-        this.fechaCreacion = notificacion.getFechaCreacion().toString();
+        this.fechaCreacion = notificacion.getFechaCreacion().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
         this.titulo = notificacion.getTitulo();
         this.texto = notificacion.getTexto();
     }

@@ -35,6 +35,11 @@ public class UsuariosApi {
         return manager.getLoggeduser();
     }
 
+    @GetMapping("/validate")
+    public void validateToken(){
+        return;
+    }
+
     @GetMapping("/test")
     public String test(){
         return "Hello World";
