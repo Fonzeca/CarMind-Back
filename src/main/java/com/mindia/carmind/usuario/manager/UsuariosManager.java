@@ -112,6 +112,12 @@ public class UsuariosManager implements IUsuario {
     @Override
     @Transactional
     public void bajaConductor(Integer id) {
+        UsuarioView logged = getLoggeduser();
+        
+        if(logged.getId().equals(id)){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No podes eliminar tu usuario.");
+        }
+
         Usuario user = repository.getById(id);
         user.setActive(false);
         for (Vehiculo vehiculo : user.getListOfVehiculo()) {
