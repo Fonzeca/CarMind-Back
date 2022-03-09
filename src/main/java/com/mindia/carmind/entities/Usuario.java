@@ -6,7 +6,16 @@ package com.mindia.carmind.entities;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "Usuario"
@@ -46,7 +55,7 @@ public class Usuario implements Serializable {
     private String     dni ;
 
     @Column(name="active", nullable=false)
-    private Boolean    active ;
+    private Boolean    active  = true;
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
