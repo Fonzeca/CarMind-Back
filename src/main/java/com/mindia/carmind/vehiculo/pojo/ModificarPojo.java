@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color" })
+@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color","tipo" })
 @Generated("jsonschema2pojo")
 public class ModificarPojo {
 
@@ -22,6 +22,8 @@ public class ModificarPojo {
     private String modelo;
     @JsonProperty("linea")
     private String linea;
+    @JsonProperty("tipo")
+    private String tipo;
 
     @JsonProperty("id")
     public int getId() {
@@ -62,6 +64,17 @@ public class ModificarPojo {
     public void setLinea(String linea) {
         this.linea = linea;
     }
+
+    @JsonProperty("tipo")
+    public String getTipo() {
+        return this.tipo;
+    }
+
+    @JsonProperty("tipo")
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
 
     public boolean validate(){
 
