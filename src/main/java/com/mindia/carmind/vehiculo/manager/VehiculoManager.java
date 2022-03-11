@@ -205,6 +205,10 @@ public class VehiculoManager implements IVehiculo {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
+        if(vehiculo.getEmpresaId() != loggedUser.getEmpresa()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
+        }
+
         if(vehiculo.getUsuarioIdUsando() == null){
             vehiculo.setUsuarioIdUsando(loggedUser.getId());
             
