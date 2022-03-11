@@ -33,7 +33,7 @@ public class Seccion implements Serializable {
     @Column(name="nombre", nullable=false, length=50)
     private String     nombre ;
 
-    @Column(name="index_orden", nullable=false)
+    @Column(name="index_orden", nullable=true)
     private Integer    indexOrden ;
 
     @Column(name="activo", nullable=false)
