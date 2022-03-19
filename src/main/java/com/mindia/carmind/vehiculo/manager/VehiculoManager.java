@@ -198,6 +198,7 @@ public class VehiculoManager implements IVehiculo {
         return null;
     }
 
+    @Transactional
     public void iniciarUso(Integer id) {
         // Obtenemos el vehiculo
         Vehiculo vehiculo = repository.getById(id);
@@ -210,12 +211,21 @@ public class VehiculoManager implements IVehiculo {
         }
 
         if(vehiculo.getUsuarioIdUsando() == null){
+            //Hago que deje de usar los vehiculos asignados al usuario
+            var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
+            
+            if(vehiculosUsando != null && !vehiculosUsando.isEmpty()){
+                for (Vehiculo v : vehiculosUsando) {
+                    v.setUsuarioIdUsando(null);
+                    repository.save(v);
+                }
+            }
+
+            //Asigno el vehiculo escaneado al usuario
             vehiculo.setUsuarioIdUsando(loggedUser.getId());
 
-
-            
             repository.save(vehiculo);
-        }else if(vehiculo.getUsuarioIdUsando() == loggedUser.getId()){
+        }else if(vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
             return;
         }else{
             throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo ya esta en uso.");
@@ -229,7 +239,7 @@ public class VehiculoManager implements IVehiculo {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
-        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando() == loggedUser.getId()){
+        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
             vehiculo.setUsuarioIdUsando(null);
 
             repository.save(vehiculo);
