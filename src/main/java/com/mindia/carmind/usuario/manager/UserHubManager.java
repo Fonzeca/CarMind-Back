@@ -73,6 +73,7 @@ public class UserHubManager {
         ArrayNode roles = mapper.createArrayNode();
         if (alta.getAdministrador()) {
             roles.add("admin_empresa");
+            roles.add("admin");
         }
 
         roles.add("conductor");

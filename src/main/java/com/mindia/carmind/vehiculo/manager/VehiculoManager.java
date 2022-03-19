@@ -211,6 +211,8 @@ public class VehiculoManager implements IVehiculo {
 
         if(vehiculo.getUsuarioIdUsando() == null){
             vehiculo.setUsuarioIdUsando(loggedUser.getId());
+
+
             
             repository.save(vehiculo);
         }else if(vehiculo.getUsuarioIdUsando() == loggedUser.getId()){
@@ -240,9 +242,14 @@ public class VehiculoManager implements IVehiculo {
     public VehiculoView getCurrentVehiculo(){
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
+        var vehiculos = repository.findByusuarioIdUsando(loggedUser.getId());
+        Vehiculo vehiculo;
 
-        Vehiculo vehiculo = repository.findByusuarioIdUsando(loggedUser.getId());
-        if(vehiculo == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if(vehiculos != null && !vehiculos.isEmpty()){
+            vehiculo = repository.findByusuarioIdUsando(loggedUser.getId()).get(0);
+        }else{
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
 
         return armarVehiculoConPendientes(vehiculo);
     }

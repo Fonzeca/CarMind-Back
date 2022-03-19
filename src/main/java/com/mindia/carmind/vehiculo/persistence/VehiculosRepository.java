@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 public interface VehiculosRepository extends JpaRepository<Vehiculo, Integer> {
     List<Vehiculo> findByEmpresaId(Integer empresaId);
 
-    Vehiculo findByusuarioIdUsando(Integer usuarioId);
+    List<Vehiculo> findByusuarioIdUsando(Integer usuarioId);
 
     Vehiculo findByPatente(String patente);
 }
