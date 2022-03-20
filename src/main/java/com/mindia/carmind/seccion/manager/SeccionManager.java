@@ -37,7 +37,6 @@ public class SeccionManager {
             seccion.setActivo(true);
             seccion.setNombre(alta.getNombre());
             seccion.setEvaluacionId(evaluacionId);
-            seccion.setIndexOrden(alta.getIndex());
     
             seccion = repository.save(seccion);
     

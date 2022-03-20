@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.PreguntaOpcion;
+import com.mindia.carmind.evaluacion.pojo.alta.AltaOpcionPojo;
 import com.mindia.carmind.evaluacion.pojo.alta.AltaPreguntaPojo;
 import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
 import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
@@ -50,15 +51,16 @@ public class PreguntaManager {
             Pregunta pregunta = new Pregunta();
             pregunta.setActivo(true);
             pregunta.setDescripcion(alta.getDescripcion());
-            pregunta.setIndexOrden(alta.getIndex());
             pregunta.setSeccion(seccionId);
             pregunta.setTipo(alta.getTipo());
+            pregunta.setCrucial(alta.getCrucial() != null ? alta.getCrucial() : false);
 
             pregunta = repository.save(pregunta);
             if(alta.getOpciones() != null){
-                for (String opcion : alta.getOpciones()) {
+                for (AltaOpcionPojo opcion : alta.getOpciones()) {
                     PreguntaOpcion opcionDb = new PreguntaOpcion();
-                    opcionDb.setOpcion(opcion);
+                    opcionDb.setOpcion(opcion.getOpcion());
+                    opcionDb.setCrucial(opcion.getCrucial() != null ? opcion.getCrucial() : false);
                     opcionDb.setIdPregunta(pregunta.getId());
     
                     preguntaOpcionRepository.save(opcionDb);

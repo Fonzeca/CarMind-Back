@@ -12,21 +12,21 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "descripcion",
-    "index",
     "tipo",
-    "opciones"
+    "opciones",
+    "crucial"
 })
 @Generated("jsonschema2pojo")
 public class AltaPreguntaPojo {
 
     @JsonProperty("descripcion")
     private String descripcion;
-    @JsonProperty("index")
-    private Integer index;
     @JsonProperty("tipo")
     private String tipo;
     @JsonProperty("opciones")
-    private List<String> opciones = null;
+    private List<AltaOpcionPojo> opciones = null;
+    @JsonProperty("crucial")
+    private Boolean crucial;
 
     /**
      * No args constructor for use in serialization
@@ -40,12 +40,10 @@ public class AltaPreguntaPojo {
      * @param descripcion
      * @param tipo
      * @param opciones
-     * @param index
      */
-    public AltaPreguntaPojo(String descripcion, Integer index, String tipo, List<String> opciones) {
+    public AltaPreguntaPojo(String descripcion, String tipo, List<AltaOpcionPojo> opciones) {
         super();
         this.descripcion = descripcion;
-        this.index = index;
         this.tipo = tipo;
         this.opciones = opciones;
     }
@@ -60,16 +58,6 @@ public class AltaPreguntaPojo {
         this.descripcion = descripcion;
     }
 
-    @JsonProperty("index")
-    public Integer getIndex() {
-        return index;
-    }
-
-    @JsonProperty("index")
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
     @JsonProperty("tipo")
     public String getTipo() {
         return tipo;
@@ -81,13 +69,22 @@ public class AltaPreguntaPojo {
     }
 
     @JsonProperty("opciones")
-    public List<String> getOpciones() {
+    public List<AltaOpcionPojo> getOpciones() {
         return opciones;
     }
 
     @JsonProperty("opciones")
-    public void setOpciones(List<String> opciones) {
+    public void setOpciones(List<AltaOpcionPojo> opciones) {
         this.opciones = opciones;
     }
 
+    @JsonProperty("crucial")
+    public Boolean getCrucial() {
+        return this.crucial;
+    }
+
+    @JsonProperty("crucial")
+    public void setCrucial(Boolean crucial) {
+        this.crucial = crucial;
+    }
 }

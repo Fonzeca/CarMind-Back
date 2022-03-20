@@ -15,7 +15,6 @@ import com.mindia.carmind.entities.Pregunta;
 @JsonPropertyOrder({
     "id",
     "descripcion",
-    "index",
     "tipo",
     "opciones"
 })
@@ -26,8 +25,6 @@ public class PreguntaView {
     private Integer id;
     @JsonProperty("descripcion")
     private String descripcion;
-    @JsonProperty("index")
-    private Integer index;
     @JsonProperty("tipo")
     private String tipo;
     @JsonProperty("opciones")
@@ -45,14 +42,12 @@ public class PreguntaView {
      * @param descripcion
      * @param tipo
      * @param opciones
-     * @param index
      * @param id
      */
-    public PreguntaView(Integer id, String descripcion, Integer index, String tipo, List<OpcionView> opciones) {
+    public PreguntaView(Integer id, String descripcion, String tipo, List<OpcionView> opciones) {
         super();
         this.id = id;
         this.descripcion = descripcion;
-        this.index = index;
         this.tipo = tipo;
         this.opciones = opciones;
     }
@@ -75,16 +70,6 @@ public class PreguntaView {
     @JsonProperty("descripcion")
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
-    }
-
-    @JsonProperty("index")
-    public Integer getIndex() {
-        return index;
-    }
-
-    @JsonProperty("index")
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     @JsonProperty("tipo")
@@ -110,7 +95,6 @@ public class PreguntaView {
     public PreguntaView(Pregunta p){
         this.id = p.getId();
         this.descripcion = p.getDescripcion();
-        this.index = p.getIndexOrden();
         this.tipo = p.getTipoPregunta().getCodigo();
 
         this.opciones = p.getListOfPreguntaOpcion().stream().map(OpcionView::new).collect(Collectors.toList());

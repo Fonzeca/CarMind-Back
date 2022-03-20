@@ -12,7 +12,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "nombre",
-    "index",
     "preguntas"
 })
 @Generated("jsonschema2pojo")
@@ -20,8 +19,6 @@ public class AltaSeccionPojo {
 
     @JsonProperty("nombre")
     private String nombre;
-    @JsonProperty("index")
-    private Integer index;
     @JsonProperty("preguntas")
     private List<AltaPreguntaPojo> preguntas = null;
 
@@ -34,14 +31,12 @@ public class AltaSeccionPojo {
 
     /**
      * 
-     * @param index
      * @param preguntas
      * @param nombre
      */
-    public AltaSeccionPojo(String nombre, Integer index, List<AltaPreguntaPojo> preguntas) {
+    public AltaSeccionPojo(String nombre, List<AltaPreguntaPojo> preguntas) {
         super();
         this.nombre = nombre;
-        this.index = index;
         this.preguntas = preguntas;
     }
 
@@ -53,16 +48,6 @@ public class AltaSeccionPojo {
     @JsonProperty("nombre")
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    @JsonProperty("index")
-    public Integer getIndex() {
-        return index;
-    }
-
-    @JsonProperty("index")
-    public void setIndex(Integer index) {
-        this.index = index;
     }
 
     @JsonProperty("preguntas")

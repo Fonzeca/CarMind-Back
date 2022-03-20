@@ -15,7 +15,6 @@ import com.mindia.carmind.entities.Seccion;
 @JsonPropertyOrder({
     "id",
     "nombre",
-    "index",
     "preguntas"
 })
 @Generated("jsonschema2pojo")
@@ -25,8 +24,6 @@ public class SeccionView {
     private Integer id;
     @JsonProperty("nombre")
     private String nombre;
-    @JsonProperty("index")
-    private Integer index;
     @JsonProperty("preguntas")
     private List<PreguntaView> preguntas = null;
 
@@ -39,16 +36,14 @@ public class SeccionView {
 
     /**
      * 
-     * @param index
      * @param preguntas
      * @param id
      * @param nombre
      */
-    public SeccionView(Integer id, String nombre, Integer index, List<PreguntaView> preguntas) {
+    public SeccionView(Integer id, String nombre, List<PreguntaView> preguntas) {
         super();
         this.id = id;
         this.nombre = nombre;
-        this.index = index;
         this.preguntas = preguntas;
     }
 
@@ -72,15 +67,6 @@ public class SeccionView {
         this.nombre = nombre;
     }
 
-    @JsonProperty("index")
-    public Integer getIndex() {
-        return index;
-    }
-
-    @JsonProperty("index")
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
 
     @JsonProperty("preguntas")
     public List<PreguntaView> getPreguntas() {
@@ -94,7 +80,6 @@ public class SeccionView {
 
     public SeccionView(Seccion s){
         this.id = s.getId();
-        this.index = s.getIndexOrden();
         this.nombre = s.getNombre();
 
 

@@ -4,67 +4,82 @@
     "fecha_inicio": "asdad",
     "secciones": [{
             "nombre": "Seccion vehiculo",
-            "index": 0,
             "preguntas": [{
                     "descripcion": "Luces",
-                    "index": 0,
+                    "crucial": false,
                     "tipo": "S1",
-                    "opciones": [
-                        "Luz delantera",
-                        "Luz trasera",
-                        "Luz de interior"
+                    "opciones": [{
+                            "opcion": "Luz delantera",
+                            "crucial": false
+                        },
+                        {
+                            "opcion": "Luz trasera",
+                            "crucial": true
+                        },
+                        {
+                            "opcion": "Luz de interior",
+                            "crucial": true
+                        }
                     ]
                 },
                 {
                     "descripcion": "Parachoque delantero",
-                    "index": 1,
+                    "crucial": false,
                     "tipo": "F"
                 },
                 {
                     "descripcion": "Interior",
-                    "index": 2,
+                    "crucial": false,
                     "tipo": "S1",
-                    "opciones": [
-                        "Matafuego",
-                        "Antivuelco"
+                    "opciones": [{
+                            "opcion": "Matafuego",
+                            "crucial": true
+                        },
+                        {
+                            "opcion": "Antivuelco",
+                            "crucial": true
+                        }
                     ]
                 },
                 {
                     "descripcion": "Exterior",
-                    "index": 3,
                     "tipo": "S2",
-                    "opciones": [
-                        "Ruedas todoterreno",
-                        "Ruedas lisas"
+                    "opciones": [{
+                            "opcion": "Ruedas todoterreno"
+                        },
+                        {
+                            "opcion": "Ruedas lisas"
+                        }
                     ]
                 },
                 {
                     "descripcion": "¿Enciende el vehiculo?",
-                    "index": 4,
-                    "tipo": "S3"
+                    "tipo": "S3",
+                    "crucial": true
                 },
                 {
                     "descripcion": "Observaciones",
-                    "index": 5,
                     "tipo": "TX"
                 }
             ]
         },
         {
             "nombre": "Seccion conductor",
-            "index": 1,
             "preguntas": [{
                     "descripcion": "Licencias",
-                    "index": 0,
                     "tipo": "S1",
-                    "opciones": [
-                        "Licencia de conducir nacional",
-                        "Licencia de conducir mina"
+                    "opciones": [{
+                            "opcion": "Licencia de conducir nacional",
+                            "crucial": false
+                        },
+                        {
+                            "opcion": "Licencia de conducir mina",
+                            "crucial": true
+                        }
                     ]
                 },
                 {
                     "descripcion": "Observaciones",
-                    "index": 1,
                     "tipo": "TX"
                 }
             ]
