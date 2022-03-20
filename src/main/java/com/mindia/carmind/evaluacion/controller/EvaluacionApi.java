@@ -5,6 +5,7 @@ import java.util.List;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.alta.AltaPojo;
+import com.mindia.carmind.evaluacion.pojo.log_details.LogEvaluacionDetailsView;
 import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import kotlin.NotImplementedError;
 
 @RestController
 public class EvaluacionApi {
@@ -74,8 +73,8 @@ public class EvaluacionApi {
     }
 
     @GetMapping("/evaluacion/historial/{id}")
-    public List<LogEvaluacionView> getLogById(@PathVariable int id){
-        throw new NotImplementedError();
+    public LogEvaluacionDetailsView getLogById(@PathVariable int id){
+        return manager.getLogById(id);
     }
 
 

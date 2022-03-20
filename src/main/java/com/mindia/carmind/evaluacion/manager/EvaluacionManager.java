@@ -17,6 +17,7 @@ import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.alta.AltaPojo;
+import com.mindia.carmind.evaluacion.pojo.log_details.LogEvaluacionDetailsView;
 import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.RespuestaOpcionPojo;
@@ -86,23 +87,6 @@ public class EvaluacionManager {
         evaluacion = repository.save(evaluacion);
 
         seccionManager.createSeccion(evaluacion.getId(), alta.getSecciones());
-
-        
-        // Evaluacion evaluacion = new Evaluacion();
-        // evaluacion.setNombre(alta.getNombre());
-
-        // evaluacion = repository.save(evaluacion);
-
-        // List<EvaluacionPregunta> lstPreguntas = new ArrayList<EvaluacionPregunta>();
-        
-        // for (Integer idPregunta : alta.getIdsPreguntas()) {
-        //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
-        //     manyToMany.setEvaluacion(evaluacion.getId());
-        //     manyToMany.setPregunta(idPregunta);
-        //     lstPreguntas.add(manyToMany);
-        // }
-
-        // evaluacionPreguntaRepository.saveAll(lstPreguntas);
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
@@ -264,9 +248,9 @@ public class EvaluacionManager {
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
 
-    public List<LogEvaluacionView> getLogById(int id){
-        List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
-        return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
+    public LogEvaluacionDetailsView getLogById(int id){
+        LogEvaluacion log = logEvaluacionRepository.getById(id);
+        return new LogEvaluacionDetailsView(log);
     }
 
     //---------------------------------------PRIVATE-----------------------------------------------------
