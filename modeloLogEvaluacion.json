@@ -1,0 +1,30 @@
+{
+    "evaluacion_id": 1,
+    "log_id": 1,
+    "evaluacion_nombre": "Nombre de una evaluacion",
+    "fecha_relizacion": "20/03/2022",
+    "usuario_id": 1,
+    "usuario_nombre": "John Fabio",
+    "vehiculo_id": 1,
+    "vehiculo_nombre": "Vehiculo supervisor camino",
+    "secciones": [{
+        "seccion_id": 2,
+        "seccion_nombre": "Seccion del vehiculo",
+        "preguntas": [{
+            "log_id": 1,
+            "pregunta_id": 1,
+            "pregunta": "¿Funciona el vehiculo?",
+            "tipo": "S3",
+            "texto": "DEPENDE DEL TIPO- puede ser null",
+            "base64_image": "DEPENDE DEL TIPO- puede ser null",
+            "tick_correcto": false,
+            "crucial": false,
+            "opciones": [{
+                "log_id": 3,
+                "opcion": "Opcion modelo",
+                "tick_correcto": false,
+                "crucial": false
+            }]
+        }]
+    }]
+}

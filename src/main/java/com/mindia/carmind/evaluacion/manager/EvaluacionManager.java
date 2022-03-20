@@ -253,6 +253,16 @@ public class EvaluacionManager {
         return new LogEvaluacionDetailsView(log);
     }
 
+
+    public void setFalseRevisarLogEvaluacion(Integer vehiculoId, Integer revisionId){
+        var logs = logEvaluacionRepository.findByVehiculoIdAndParaRevisarTrue(vehiculoId);
+        for(LogEvaluacion log : logs){
+            log.setParaRevisar(false);
+            log.setRevisionId(revisionId);
+            logEvaluacionRepository.save(log);
+        }
+    }
+
     //---------------------------------------PRIVATE-----------------------------------------------------
 
     private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){
