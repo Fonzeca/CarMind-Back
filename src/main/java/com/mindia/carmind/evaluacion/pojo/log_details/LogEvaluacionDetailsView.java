@@ -22,6 +22,7 @@ import com.mindia.carmind.entities.LogEvaluacion;
     "usuario_nombre",
     "vehiculo_id",
     "vehiculo_nombre",
+    "para_revisar",
     "secciones"
 })
 @Generated("jsonschema2pojo")
@@ -43,6 +44,8 @@ public class LogEvaluacionDetailsView {
     private Integer vehiculoId;
     @JsonProperty("vehiculo_nombre")
     private String vehiculoNombre;
+    @JsonProperty("para_revisar")
+    private Boolean paraRevisar;
     @JsonProperty("secciones")
     private List<LogSeccionDetailsView> secciones = null;
 
@@ -88,6 +91,7 @@ public class LogEvaluacionDetailsView {
         this.usuarioNombre = log.getUsuario().getNombre() + log.getUsuario().getApellido();
         this.vehiculoId = log.getVehiculoId();
         this.vehiculoNombre = log.getVehiculo().getNombre();
+        this.paraRevisar = log.getParaRevisar();
 
         var seccionesEva = log.getEvaluacion().getListOfSeccion();
         var logsPregunta = log.getListOfLogPregunta();
@@ -183,5 +187,16 @@ public class LogEvaluacionDetailsView {
     public void setSecciones(List<LogSeccionDetailsView> secciones) {
         this.secciones = secciones;
     }
+
+    @JsonProperty("para_revisar")
+    public Boolean getParaRevisar() {
+        return this.paraRevisar;
+    }
+
+    @JsonProperty("para_revisar")
+    public void setParaRevisar(Boolean paraRevisar) {
+        this.paraRevisar = paraRevisar;
+    }
+
 
 }
