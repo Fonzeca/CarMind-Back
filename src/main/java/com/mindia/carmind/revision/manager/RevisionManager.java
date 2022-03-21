@@ -3,10 +3,12 @@ package com.mindia.carmind.revision.manager;
 import java.time.LocalDateTime;
 
 import com.mindia.carmind.entities.Revision;
+import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.revision.persistence.RevisionRepository;
 import com.mindia.carmind.revision.pojo.AltaRevision;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
+import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,7 @@ public class RevisionManager {
     EvaluacionManager evaluacionManager;
 
     @Autowired
-
+    VehiculosRepository vehiculosRepository;
 
     @Transactional
     public void altaRevision(AltaRevision alta){
@@ -44,6 +46,10 @@ public class RevisionManager {
         revision.setUsuarioId(usuariosManager.getLoggeduser().getId());
 
         revision = repository.save(revision);
+
+        Vehiculo vehiculo = vehiculosRepository.getById(alta.getVehiculoId());
+        vehiculo.setAveriado(false);
+        vehiculosRepository.save(vehiculo);
 
         evaluacionManager.setFalseRevisarLogEvaluacion(alta.getVehiculoId(), revision.getId());
     }

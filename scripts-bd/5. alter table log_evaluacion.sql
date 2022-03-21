@@ -1,0 +1,1 @@
+ALTER TABLE `log_evaluacion` ADD `para_revisar` BOOLEAN NOT NULL DEFAULT FALSE AFTER `usuario_id`;

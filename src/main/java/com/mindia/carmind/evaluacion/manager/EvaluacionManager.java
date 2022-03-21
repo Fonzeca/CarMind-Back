@@ -195,6 +195,14 @@ public class EvaluacionManager {
                                 for (RespuestaOpcionPojo optRes : res.getOpciones()) {
                                     LogOption log_opt = new LogOption();
                                     log_opt.setTickCheck(optRes.getTickCorrecto());
+
+                                    if(pregunta.getTipo().equals("S1") && pregunta.getCrucial() && !optRes.getTickCorrecto()){
+                                        //Se avisa que esta para revisar
+                                        if(!log.getParaRevisar()){
+                                            setEvaluacionParaRevisar(log, vehiculo);
+                                        }
+                                    }
+
                                     log_opt.setIdOption(optRes.getOpcionId());
                                     log_opt.setIdLogPregunta(logPregunta.getId());
 
@@ -208,6 +216,14 @@ public class EvaluacionManager {
                         case "S3":
                             logPregunta.setTickCorrecto(res.getTickCorrecto());
                             if(!res.getTickCorrecto()){
+
+                                //Se avisa que esta para revisar
+                                if(pregunta.getCrucial()){
+                                    if(!log.getParaRevisar()){
+                                        setEvaluacionParaRevisar(log, vehiculo);
+                                    }
+                                }
+
                                 logPregunta.setNota(res.getTexto());
                             }
                             break;
@@ -273,6 +289,14 @@ public class EvaluacionManager {
         });
 
         return preguntasDb.stream().map(x -> x.getId()).collect(Collectors.toList());
+    }
+
+    private void setEvaluacionParaRevisar(LogEvaluacion log, Vehiculo vehiculo){
+        log.setParaRevisar(true);
+        vehiculo.setAveriado(true);
+        
+        vehiculosRepository.save(vehiculo);
+        logEvaluacionRepository.save(log);
     }
 
 }

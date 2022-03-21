@@ -16,6 +16,7 @@ import com.mindia.carmind.entities.Pregunta;
     "id",
     "descripcion",
     "tipo",
+    "crucial",
     "opciones"
 })
 @Generated("jsonschema2pojo")
@@ -27,6 +28,8 @@ public class PreguntaView {
     private String descripcion;
     @JsonProperty("tipo")
     private String tipo;
+    @JsonProperty("crucial")
+    private Boolean crucial;
     @JsonProperty("opciones")
     private List<OpcionView> opciones = null;
 
@@ -92,10 +95,22 @@ public class PreguntaView {
         this.opciones = opciones;
     }
 
+    @JsonProperty("crucial")
+    public Boolean getCrucial() {
+        return this.crucial;
+    }
+
+    @JsonProperty("crucial")
+    public void setCrucial(Boolean crucial) {
+        this.crucial = crucial;
+    }
+
+
     public PreguntaView(Pregunta p){
         this.id = p.getId();
         this.descripcion = p.getDescripcion();
         this.tipo = p.getTipoPregunta().getCodigo();
+        this.crucial = p.getCrucial();
 
         this.opciones = p.getListOfPreguntaOpcion().stream().map(OpcionView::new).collect(Collectors.toList());
     }

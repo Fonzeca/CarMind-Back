@@ -23,6 +23,7 @@ import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
         "linea",
         "patente",
         "fecha_service",
+        "averiado",
         "ultima_evaluacion",
         "pendientes"
 })
@@ -51,6 +52,8 @@ public class VehiculoView {
     private String tipo;
     @JsonProperty("fecha_service")
     private LocalDate fechaService;
+    @JsonProperty("averiado")
+    private Boolean averiado;
     @JsonProperty("ultima_evaluacion")
     private String ultimaEvaluacion;
     @JsonProperty("pendientes")
@@ -193,6 +196,17 @@ public class VehiculoView {
         this.tipo = tipo;
     }
 
+    @JsonProperty("averiado")
+    public Boolean getAveriado() {
+        return this.averiado;
+    }
+
+    @JsonProperty("averiado")
+    public void setAveriado(Boolean averiado) {
+        this.averiado = averiado;
+    }
+
+
 
 
     public VehiculoView(Vehiculo v) {
@@ -204,6 +218,7 @@ public class VehiculoView {
         nombre = v.getNombre();
         this.enUso = v.getUsuarioIdUsando() != null;
         this.tipo = v.getTipoVehiculo();
+        this.averiado = v.getAveriado();
         
         if (detalle) {
             if(this.enUso){

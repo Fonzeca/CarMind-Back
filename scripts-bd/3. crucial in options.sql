@@ -1,0 +1,1 @@
+ALTER TABLE `pregunta_opcion` ADD `crucial` BOOLEAN NOT NULL DEFAULT FALSE AFTER `opcion`;
