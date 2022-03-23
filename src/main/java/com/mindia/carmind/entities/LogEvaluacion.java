@@ -53,7 +53,7 @@ public class LogEvaluacion implements Serializable {
     private Integer    usuarioId ;
 
     @Column(name="para_revisar", nullable=false)
-    private Boolean    paraRevisar ;
+    private Boolean    paraRevisar  = false;
 
     @Column(name="revision_id")
     private Integer    revisionId ;
