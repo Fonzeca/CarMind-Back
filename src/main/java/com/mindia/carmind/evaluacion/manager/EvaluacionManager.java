@@ -101,31 +101,6 @@ public class EvaluacionManager {
         repository.save(e);
     }
 
-    // public void changePreguntasOfEvaluacion(int id, AltaEvaluacionPojo alta) {
-    //     // Evaluacion evaluacion = repository.getById(id);
-        
-    //     // List<EvaluacionPregunta> preguntasViejas = evaluacion.getListOfEvaluacionPregunta();
-
-    //     // List<Integer> preguntasNuevas = alta.getIdsPreguntas();
-
-    //     // for (EvaluacionPregunta pregunta : preguntasViejas) {
-
-    //     //     if(!preguntasNuevas.contains(pregunta.getPregunta())){
-    //     //         evaluacionPreguntaRepository.delete(pregunta);
-    //     //     }else{
-    //     //         preguntasNuevas.remove(pregunta.getPregunta());
-    //     //     }
-    //     // }
-
-    //     // for (Integer idPregunta : preguntasNuevas) {
-    //     //     EvaluacionPregunta manyToMany = new EvaluacionPregunta();
-    //     //     manyToMany.setEvaluacion(evaluacion.getId());
-    //     //     manyToMany.setPregunta(idPregunta);
-
-    //     //     evaluacionPreguntaRepository.save(manyToMany);
-    //     // }
-    // }
-
     @Transactional
     public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas){
         //Validamos el pojo

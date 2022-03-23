@@ -21,6 +21,7 @@ import com.mindia.carmind.entities.VehiculoEvaluacion;
 import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
+import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
@@ -328,6 +329,16 @@ public class VehiculoManager implements IVehiculo {
     public List<DocumentoView> obtenerDocumentos(Integer id) {
         List<Documento> docs = documentoRepository.findByVehiculoIdAndActiveTrue(id);
         return docs.stream().map(DocumentoView::new).collect(Collectors.toList());
+    }
+
+    public List<EvaluacionView> obtenerFormularios(Integer id){
+        var evaluaciones = vehiculoEvaluacionRepository.findByVehiculoId(id).stream().map(x -> new EvaluacionView(x.getEvaluacion())).collect(Collectors.toList());
+        return evaluaciones;
+    }
+
+    public List<LogEvaluacionView> obtenerLogsFormularios(Integer id){
+        var evaluaciones = logEvaluacionRepository.findByVehiculoIdOrderByFechaDesc(id).stream().map(x -> new LogEvaluacionView(x)).collect(Collectors.toList());
+        return evaluaciones;
     }
 
     // -------------------------------------------------------------------------------------------------------------------------------

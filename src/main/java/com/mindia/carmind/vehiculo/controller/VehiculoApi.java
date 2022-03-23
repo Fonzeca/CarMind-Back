@@ -3,6 +3,7 @@ package com.mindia.carmind.vehiculo.controller;
 import java.util.List;
 
 import com.mindia.carmind.entities.Documento;
+import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
@@ -99,5 +100,15 @@ public class VehiculoApi {
     @GetMapping("/vehiculo/current")
     public VehiculoView getVehiculoEnUso() {
         return manager.getCurrentVehiculo();
+    }
+
+    @GetMapping("vehiculo/{id}/formularios")
+    public List<EvaluacionView> getFormularios(@PathVariable Integer id) {
+        return manager.obtenerFormularios(id);
+    }
+
+    @GetMapping("vehiculo/{id}/formularios/historial")
+    public List<LogEvaluacionView> getLogsFormularios(@PathVariable Integer id) {
+        return manager.obtenerLogsFormularios(id);
     }
 }
