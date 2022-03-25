@@ -27,7 +27,7 @@ public class RevisionApi {
 
     @GetMapping("/vehiculo/{id}/revision")
     public List<RevisionView> getAllRevisionOfVehiculo(@PathVariable Integer id){
-        return getAllRevisionOfVehiculo(id);
+        return manager.getRevisionOfVehiculo(id);
     }
     
 
