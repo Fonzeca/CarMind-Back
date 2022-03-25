@@ -6,12 +6,14 @@ package com.mindia.carmind.entities;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -47,6 +49,9 @@ public class Revision implements Serializable {
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
+    @OneToMany(mappedBy="revision")
+    private List<LogEvaluacion> listOfLogEvaluacion ; 
+
 
     /**
      * Constructor
@@ -92,6 +97,10 @@ public class Revision implements Serializable {
     }
 
     //--- GETTERS FOR LINKS
+    public List<LogEvaluacion> getListOfLogEvaluacion() {
+        return this.listOfLogEvaluacion;
+    } 
+
     //--- toString specific method
 	@Override
     public String toString() { 

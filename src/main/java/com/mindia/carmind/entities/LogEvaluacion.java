@@ -60,6 +60,10 @@ public class LogEvaluacion implements Serializable {
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
+    @ManyToOne
+    @JoinColumn(name="revision_id", referencedColumnName="id", insertable=false, updatable=false)
+    private Revision   revision ; 
+
     @OneToMany(mappedBy="logEvaluacion2")
     private List<LogPregunta> listOfLogPregunta ; 
 
@@ -141,6 +145,10 @@ public class LogEvaluacion implements Serializable {
     }
 
     //--- GETTERS FOR LINKS
+    public Revision getRevision() {
+        return this.revision;
+    } 
+
     public List<LogPregunta> getListOfLogPregunta() {
         return this.listOfLogPregunta;
     } 

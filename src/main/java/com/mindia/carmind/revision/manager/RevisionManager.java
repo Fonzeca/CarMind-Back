@@ -1,12 +1,18 @@
 package com.mindia.carmind.revision.manager;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.mindia.carmind.entities.LogEvaluacion;
 import com.mindia.carmind.entities.Revision;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
+import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
+import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
 import com.mindia.carmind.revision.persistence.RevisionRepository;
 import com.mindia.carmind.revision.pojo.AltaRevision;
+import com.mindia.carmind.revision.pojo.RevisionView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
@@ -30,6 +36,9 @@ public class RevisionManager {
 
     @Autowired
     VehiculosRepository vehiculosRepository;
+    
+    @Autowired
+    LogEvaluacionRepository logEvaluacionRepository;
 
     @Transactional
     public void altaRevision(AltaRevision alta){
@@ -51,7 +60,26 @@ public class RevisionManager {
         vehiculo.setAveriado(false);
         vehiculosRepository.save(vehiculo);
 
-        evaluacionManager.setFalseRevisarLogEvaluacion(alta.getVehiculoId(), revision.getId());
+        setFalseRevisarLogEvaluacion(alta.getVehiculoId(), revision.getId());
+    }
+
+    public List<RevisionView> getRevisionOfVehiculo(Integer vehiculoId){
+        return repository.findByVehiculoId(vehiculoId).stream().map(RevisionView::new).collect(Collectors.toList());
+    }
+
+    public List<LogEvaluacionView> getLogsParaRevisar(Integer vehiculoId){
+        return logEvaluacionRepository.findByVehiculoIdAndParaRevisarTrue(vehiculoId).stream().map(LogEvaluacionView::new).collect(Collectors.toList());
+    }
+
+    //---------------------------------------PRIVATE-----------------------------------------------------
+
+    private void setFalseRevisarLogEvaluacion(Integer vehiculoId, Integer revisionId){
+        var logs = logEvaluacionRepository.findByVehiculoIdAndParaRevisarTrue(vehiculoId);
+        for(LogEvaluacion log : logs){
+            log.setParaRevisar(false);
+            log.setRevisionId(revisionId);
+            logEvaluacionRepository.save(log);
+        }
     }
 
 }
