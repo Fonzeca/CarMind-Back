@@ -71,13 +71,13 @@ public class EvaluacionManager {
 
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        return repository.findByIdAndByEmpresaId(intId, empresaId);
+        return repository.findByIdAndEmpresaId(intId, empresaId);
     }
 
     public EvaluacionView getEvaluacionViewById(int id){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        Evaluacion e = repository.findByIdAndByEmpresaId(id, empresaId);
+        Evaluacion e = repository.findByIdAndEmpresaId(id, empresaId);
 
         return EvaluacionView.getEvaluacionDetails(e);
     }
@@ -115,7 +115,7 @@ public class EvaluacionManager {
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
         //Obtenemos la evaluacion
-        Evaluacion evaluacion = repository.findByIdAndByEmpresaId(id, empresaId);
+        Evaluacion evaluacion = repository.findByIdAndEmpresaId(id, empresaId);
         if(evaluacion == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluacion no encontrada.");
         }
