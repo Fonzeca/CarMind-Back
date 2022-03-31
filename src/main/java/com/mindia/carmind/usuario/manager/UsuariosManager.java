@@ -87,7 +87,7 @@ public class UsuariosManager implements IUsuario {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
         }
 
-        pojo.setAdministrador(usuario.getAdministrador());
+        // pojo.setAdministrador(usuario.getAdministrador());
 
         if (pojo.getApellido() == null)
             pojo.setApellido(usuario.getApellido());
