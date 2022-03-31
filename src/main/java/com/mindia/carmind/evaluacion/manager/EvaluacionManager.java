@@ -88,6 +88,9 @@ public class EvaluacionManager {
         Evaluacion evaluacion = new Evaluacion();
         evaluacion.setNombre(alta.getTitulo());
 
+        int empresaId = usuariosManager.getLoggeduser().getEmpresa();
+        evaluacion.setEmpresaId(empresaId);
+
         evaluacion = repository.save(evaluacion);
 
         seccionManager.createSeccion(evaluacion.getId(), alta.getSecciones());

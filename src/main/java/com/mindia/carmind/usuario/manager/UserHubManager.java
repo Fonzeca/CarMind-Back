@@ -124,6 +124,7 @@ public class UserHubManager {
         ArrayNode roles = mapper.createArrayNode();
         if (pojo.getAdministrador()) {
             roles.add("admin_empresa");
+            roles.add("admin");
         }
 
         roles.add("conductor");
