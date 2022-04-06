@@ -133,6 +133,13 @@ public class VehiculoManager implements IVehiculo {
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
     }
 
+    public List<VehiculoView> getAllVehiculosWithPendientes() {
+        UsuarioView usuario = usuariosManager.getLoggeduser();
+
+        List<Vehiculo> v = repository.findByEmpresaId(usuario.getEmpresa());
+        return v.stream().map(x -> armarVehiculoConPendientes(x)).collect(Collectors.toList());
+    }
+
     public void asignarEvaluacion(String vehiculoId, AsignacionPojo pojo) {
         int intId = Integer.parseInt(vehiculoId);
 

@@ -104,6 +104,14 @@ public class EvaluacionManager {
         return evaluaciones.stream().map(EvaluacionView::new).collect(Collectors.toList());
     }
 
+    public List<EvaluacionView> getAllEvaluacionesWithDetails(){
+        int empresaId = usuariosManager.getLoggeduser().getEmpresa();
+
+        List<Evaluacion> evaluaciones = repository.findByEmpresaId(empresaId);
+
+        return evaluaciones.stream().map(x -> EvaluacionView.getEvaluacionDetails(x)).collect(Collectors.toList());
+    }
+
     public void changeNameOfEvaluacion(int id, String newName){
         Evaluacion e = repository.getById(id);
         e.setNombre(newName);
@@ -240,7 +248,12 @@ public class EvaluacionManager {
     }
 
     public List<LogEvaluacionView> historialDeEvaluaciones(){
+        int empresaId = usuariosManager.getLoggeduser().getEmpresa();
+
+
         List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
+        logs.stream().filter(x -> x.getEvaluacion().getEmpresaId().equals(empresaId)).collect(Collectors.toList());
+        
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
 

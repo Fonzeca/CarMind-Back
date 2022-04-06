@@ -5,6 +5,7 @@ import java.util.List;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
+import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
@@ -65,10 +66,14 @@ public class UsuariosApi {
         manager.modificarConductor(pojo);
     }
 
-    //Funcionalidad no terminada
     @DeleteMapping("/usuario/{id}")
     public void borrarUsuario(@PathVariable Integer id) {
         manager.bajaConductor(id);
+    }
+
+    @GetMapping("/usuario/modo-offline")
+    public OfflineDatosView pasarModoOffline(){
+        return manager.obtenerBaseDeDatosOffline();
     }
 
     @PostMapping("/public/usuario/recuperar")

@@ -6,14 +6,17 @@ import java.util.stream.Collectors;
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.entities.interfaces.IUsuario;
+import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
+import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
+import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,12 @@ public class UsuariosManager implements IUsuario {
 
     @Autowired
     VehiculosRepository vehiculosRepository;
+
+    @Autowired
+    VehiculoManager vehiculoManager;
+
+    @Autowired
+    EvaluacionManager evaluacionManager;
 
     public TokenView login(String username, String password) {
         Usuario u = repository.findByUsernameAndActiveTrue(username);
@@ -165,6 +174,15 @@ public class UsuariosManager implements IUsuario {
 
     public void resetPassword(RecuperacionPojo pojo) {
         userHubManager.resetPassword(pojo);
+    }
+
+    public OfflineDatosView obtenerBaseDeDatosOffline(){
+        OfflineDatosView data = new OfflineDatosView();
+        data.setLoggedUser(this.getLoggeduser());
+        data.setEvaluaciones(evaluacionManager.getAllEvaluacionesWithDetails());
+        data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser());
+        data.setVehiculos(vehiculoManager.getAllVehiculosWithPendientes());
+        return data;
     }
 
 }
