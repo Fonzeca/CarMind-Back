@@ -187,6 +187,11 @@ public class UsuariosManager implements IUsuario {
         data.setEvaluaciones(evaluacionManager.getAllEvaluacionesWithDetails());
         data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser());
         data.setVehiculos(vehiculoManager.getAllVehiculosWithPendientes());
+        
+        var current = vehiculoManager.getCurrentVehiculo();
+        if(current != null){
+            data.setIdVehiculoActual(current.getId());
+        }
         return data;
     }
 

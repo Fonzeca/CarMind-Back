@@ -13,6 +13,7 @@ import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+        "idVehiculoActual",
         "loggedUser",
         "vehiculos",
         "evaluaciones",
@@ -29,6 +30,8 @@ public class OfflineDatosView {
     private List<EvaluacionView> evaluaciones = null;
     @JsonProperty("logEvaluacion")
     private List<LogEvaluacionView> logEvaluacion = null;
+    @JsonProperty("idVehiculoActual")
+    private int idVehiculoActual;
 
     /**
      * No args constructor for use in serialization
@@ -91,6 +94,14 @@ public class OfflineDatosView {
     @JsonProperty("logEvaluacion")
     public void setLogEvaluacion(List<LogEvaluacionView> logEvaluacion) {
         this.logEvaluacion = logEvaluacion;
+    }
+
+    public int getIdVehiculoActual() {
+        return this.idVehiculoActual;
+    }
+
+    public void setIdVehiculoActual(int idVehiculoActual) {
+        this.idVehiculoActual = idVehiculoActual;
     }
 
 }
