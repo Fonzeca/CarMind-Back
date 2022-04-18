@@ -200,7 +200,7 @@ public class UsuariosManager implements IUsuario {
             public int compare(LogUsoView o1, LogUsoView o2) {
                 LocalDateTime date1 = LocalDateTime.parse(o1.getFecha(), format);
                 LocalDateTime date2 = LocalDateTime.parse(o2.getFecha(), format);
-                return date1.compareTo(date2);
+                return date2.compareTo(date1);
             }
         }).findFirst();
 
