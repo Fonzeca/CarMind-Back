@@ -192,7 +192,7 @@ public class UsuariosManager implements IUsuario {
 
     public void sincronizarDatos(SyncView sync){
         //Ordeno los datos para que quede primero el ultimo log
-        var format = DateTimeFormatter.ofPattern("dd/MM/YYYY hh:mm");
+        var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         var optLog = sync.getLogUso().stream().sorted(new Comparator<LogUsoView>() {
 
