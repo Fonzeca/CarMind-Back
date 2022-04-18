@@ -8,6 +8,7 @@ import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.sync.SyncView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -74,6 +75,11 @@ public class UsuariosApi {
     @GetMapping("/usuario/modo-offline")
     public OfflineDatosView pasarModoOffline(){
         return manager.obtenerBaseDeDatosOffline();
+    }
+
+    @PostMapping("/usuario/sync")
+    public void sincronizarDatos(@RequestBody SyncView pojo){
+        manager.sincronizarDatos(pojo);
     }
 
     @PostMapping("/public/usuario/recuperar")

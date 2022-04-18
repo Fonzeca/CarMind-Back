@@ -1,5 +1,8 @@
 package com.mindia.carmind.usuario.manager;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,6 +16,8 @@ import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.sync.LogUsoView;
+import com.mindia.carmind.usuario.pojo.sync.SyncView;
 import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
@@ -183,6 +188,39 @@ public class UsuariosManager implements IUsuario {
         data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser());
         data.setVehiculos(vehiculoManager.getAllVehiculosWithPendientes());
         return data;
+    }
+
+    public void sincronizarDatos(SyncView sync){
+        //Ordeno los datos para que quede primero el ultimo log
+        var format = DateTimeFormatter.ofPattern("dd/MM/YYYY hh:mm");
+
+        var optLog = sync.getLogUso().stream().sorted(new Comparator<LogUsoView>() {
+
+            @Override
+            public int compare(LogUsoView o1, LogUsoView o2) {
+                LocalDateTime date1 = LocalDateTime.parse(o1.getFecha(), format);
+                LocalDateTime date2 = LocalDateTime.parse(o2.getFecha(), format);
+                return date1.compareTo(date2);
+            }
+        }).findFirst();
+
+        //Verifico que exista el primero
+        if(optLog.isPresent()){
+            var log = optLog.get();
+            //Si fue un "en uso" llamo a la manager para que inicie el uso
+            if(log.getEnUso()){
+                vehiculoManager.iniciarUso(log.getVehiculoId());
+            }
+        }
+
+        //----------
+
+        sync.getEvaluacionesRealizadas().stream().forEach(x -> {
+            LocalDateTime date = LocalDateTime.parse(x.getFecha(), format);
+
+            evaluacionManager.realizarEvaluacion(x.getEvaluacionId(), x.getRespuesta(), date);
+        });
+
     }
 
 }

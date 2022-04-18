@@ -118,8 +118,18 @@ public class EvaluacionManager {
         repository.save(e);
     }
 
-    @Transactional
+    /**
+     * Funcion sobrecargada
+     * @param id
+     * @param respuestas
+     */
     public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas){
+        realizarEvaluacion(id, respuestas, null);
+    }
+
+    
+    @Transactional
+    public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas, LocalDateTime logFecha){
         //Validamos el pojo
         respuestas.validate();
 
@@ -154,7 +164,11 @@ public class EvaluacionManager {
                 //LogEvaluacion
                 LogEvaluacion log = new LogEvaluacion();
                 log.setEvaluacionId(id);
-                log.setFecha(LocalDateTime.now());
+                if(logFecha != null){
+                    log.setFecha(logFecha);
+                }else{
+                    log.setFecha(LocalDateTime.now());
+                }
                 log.setVehiculoId(vehiculo.getId());
                 log.setUsuarioId(loggedUser.getId());
 
