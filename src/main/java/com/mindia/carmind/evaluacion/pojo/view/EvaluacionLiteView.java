@@ -83,7 +83,7 @@ public class EvaluacionLiteView {
         this.id = e.getId();
         this.titulo = e.getNombre();
         if(fechaProxima != null){
-            this.fechaVencimiento = fechaProxima.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+            this.fechaVencimiento = fechaProxima.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         }
         this.intervaloDias = intervaloDias;
     }
