@@ -409,7 +409,10 @@ public class VehiculoManager implements IVehiculo {
     private VehiculoView armarVehiculoConPendientes(Vehiculo v){
         VehiculoView vehiculo = new VehiculoView(v, true);
 
-        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream().map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x))).collect(Collectors.toList());
+        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream()
+            .map(x -> new EvaluacionLiteView(x.getEvaluacion(), fechaProximoCheck(x).atStartOfDay().toLocalDate(), x.getIntervaloDias()))
+            .collect(Collectors.toList());
+            
         vehiculo.setPendientes(listsEvaluacion);
         return vehiculo;
     }
