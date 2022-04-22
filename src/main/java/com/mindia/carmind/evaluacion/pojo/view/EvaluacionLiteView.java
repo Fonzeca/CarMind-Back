@@ -1,8 +1,5 @@
 package com.mindia.carmind.evaluacion.pojo.view;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-
 import javax.annotation.processing.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -16,7 +13,6 @@ import com.mindia.carmind.entities.Evaluacion;
     "id",
     "titulo",
     "pendiente",
-    "intervaloDias"
 })
 @Generated("jsonschema2pojo")
 public class EvaluacionLiteView {
@@ -25,11 +21,12 @@ public class EvaluacionLiteView {
     private Integer id;
     @JsonProperty("titulo")
     private String titulo;
-    @JsonProperty("fechaVencimiento")
-    private String fechaVencimiento;
+    @JsonProperty("pendiente")
+    private boolean pendiente;
+    @JsonProperty("vencimiento")
+    private int vencimiento;
     @JsonProperty("intervaloDias")
     private int intervaloDias;
-
 
     /**
      * No args constructor for use in serialization
@@ -58,14 +55,29 @@ public class EvaluacionLiteView {
         this.titulo = titulo;
     }
 
-    @JsonProperty("fechaVencimiento")
-    public String getVencimiento() {
-        return this.fechaVencimiento;
+    @JsonProperty("pendiente")
+    public boolean isPendiente() {
+        return this.pendiente;
     }
 
-    @JsonProperty("fechaVencimiento")
-    public void setVencimiento(String vencimiento) {
-        this.fechaVencimiento = vencimiento;
+    @JsonProperty("pendiente")
+    public boolean getPendiente() {
+        return this.pendiente;
+    }
+    
+    @JsonProperty("pendiente")
+    public void setPendiente(boolean pendiente) {
+        this.pendiente = pendiente;
+    }
+
+    @JsonProperty("vencimiento")
+    public int getVencimiento() {
+        return this.vencimiento;
+    }
+
+    @JsonProperty("vencimiento")
+    public void setVencimiento(int vencimiento) {
+        this.vencimiento = vencimiento;
     }
 
     @JsonProperty("intervaloDias")
@@ -79,13 +91,12 @@ public class EvaluacionLiteView {
     }
 
 
-    public EvaluacionLiteView(Evaluacion e, LocalDate fechaProxima, int intervaloDias){
+    public EvaluacionLiteView(Evaluacion e, int vencimiento, int intervaloDias){
         this.id = e.getId();
         this.titulo = e.getNombre();
-        if(fechaProxima != null){
-            this.fechaVencimiento = fechaProxima.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        }
+        this.vencimiento = vencimiento;
         this.intervaloDias = intervaloDias;
+        this.pendiente = vencimiento <= 0;
     }
 
 }
