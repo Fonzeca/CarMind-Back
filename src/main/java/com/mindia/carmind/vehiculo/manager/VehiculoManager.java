@@ -266,7 +266,7 @@ public class VehiculoManager implements IVehiculo {
         if(vehiculos != null && !vehiculos.isEmpty()){
             vehiculo = repository.findByusuarioIdUsando(loggedUser.getId()).get(0);
         }else{
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay un vehiculo actual");
         }
 
         return armarVehiculoConPendientes(vehiculo);
