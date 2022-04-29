@@ -16,6 +16,8 @@ public class ModificarPojo {
 
     @JsonProperty("id")
     private int id;
+    @JsonProperty("nombre")
+    private String nombre;
     @JsonProperty("marca")
     private String marca;
     @JsonProperty("modelo")
@@ -75,11 +77,20 @@ public class ModificarPojo {
         this.tipo = tipo;
     }
 
+    @JsonProperty("nombre")
+    public String getNombre() {
+        return this.nombre;
+    }
+
+    @JsonProperty("nombre")
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+
 
     public boolean validate(){
 
-        //Busco si verdaderamente existe la marca que se quiere dar de alta
-        // MarcaPojo marcaPojo = MarcaPojo.buscarMarca(this.marca);
         this.marca = this.marca.trim();
         this.modelo = this.modelo.trim();
 
@@ -88,8 +99,6 @@ public class ModificarPojo {
         }
 
         //Se busca si verdaderamente existe el modelo que se quiere dar de alta
-        // ModeloPojo modeloPojo = ModeloPojo.buscarModelo(marcaPojo.getModelos().stream(), this.modelo);
-
         if(this.modelo == null || this.modelo.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo vacio");
         }

@@ -104,6 +104,7 @@ public class VehiculoManager implements IVehiculo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Vehiculo no encontrado");
         }
 
+        vehiculo.setNombre(pojo.getNombre());
         vehiculo.setLinea(pojo.getLinea());
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
