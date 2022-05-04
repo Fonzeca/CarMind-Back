@@ -266,7 +266,7 @@ public class EvaluacionManager {
 
 
         List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
-        logs.stream().filter(x -> x.getEvaluacion().getEmpresaId().equals(empresaId)).collect(Collectors.toList());
+        logs = logs.stream().filter(x -> x.getEvaluacion().getEmpresaId().equals(empresaId)).collect(Collectors.toList());
         
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
