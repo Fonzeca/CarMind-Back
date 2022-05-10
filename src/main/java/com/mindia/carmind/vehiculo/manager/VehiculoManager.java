@@ -219,7 +219,7 @@ public class VehiculoManager implements IVehiculo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
         }
 
-        if(vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
+        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
             return;
         }
 
