@@ -219,26 +219,24 @@ public class VehiculoManager implements IVehiculo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
         }
 
-        if(vehiculo.getUsuarioIdUsando() == null){
-            //Hago que deje de usar los vehiculos asignados al usuario
-            var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
-            
-            if(vehiculosUsando != null && !vehiculosUsando.isEmpty()){
-                for (Vehiculo v : vehiculosUsando) {
-                    v.setUsuarioIdUsando(null);
-                    repository.save(v);
-                }
-            }
-
-            //Asigno el vehiculo escaneado al usuario
-            vehiculo.setUsuarioIdUsando(loggedUser.getId());
-
-            repository.save(vehiculo);
-        }else if(vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
+        if(vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
             return;
-        }else{
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "El vehiculo ya esta en uso.");
         }
+
+        //Hago que deje de usar los vehiculos asignados al usuario
+        var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
+        
+        if(vehiculosUsando != null && !vehiculosUsando.isEmpty()){
+            for (Vehiculo v : vehiculosUsando) {
+                v.setUsuarioIdUsando(null);
+                repository.save(v);
+            }
+        }
+
+        //Asigno el vehiculo escaneado al usuario
+        vehiculo.setUsuarioIdUsando(loggedUser.getId());
+
+        repository.save(vehiculo);
     }
 
     public void terminarUso(Integer id) {
