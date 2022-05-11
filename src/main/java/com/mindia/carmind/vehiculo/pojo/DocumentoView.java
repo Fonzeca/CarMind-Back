@@ -36,7 +36,9 @@ public class DocumentoView {
         this.id = d.getId();
         this.vehiculoId = d.getVehiculoId();
         this.tipoDocumento = d.getTipoDocumento();
-        this.fechaVencimiento = d.getVencimiento().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+        if(d.getVencimiento() != null){
+            this.fechaVencimiento = d.getVencimiento().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
+        }
     }
 
 
