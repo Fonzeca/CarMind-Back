@@ -1,1 +1,0 @@
-ALTER TABLE `log_evaluacion` ADD `revision_id` INT NULL AFTER `para_revisar`;

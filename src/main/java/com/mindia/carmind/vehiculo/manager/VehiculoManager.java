@@ -303,9 +303,12 @@ public class VehiculoManager implements IVehiculo {
             doc.setTipoDocumento(tipo);
             doc.setVehiculoId(id);
             doc.setActive(true);
-
-            doc.setVencimiento(
-                    LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
+            
+            if(vencimiento != null){
+                doc.setVencimiento(
+                        LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
+            }
+            
             doc.setAvisoVencimiento(false);
 
             // Lo guardamos, obtenemos el id

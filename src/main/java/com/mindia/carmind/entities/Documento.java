@@ -52,7 +52,7 @@ public class Documento implements Serializable {
     @Column(name="tipo_documento", nullable=false, length=20)
     private String     tipoDocumento ;
 
-    @Column(name="vencimiento", nullable=false)
+    @Column(name="vencimiento", nullable=true)
     private LocalDate       vencimiento ;
 
     @Column(name="aviso_vencimiento", nullable=false)

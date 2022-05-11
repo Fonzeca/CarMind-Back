@@ -1,1 +1,0 @@
-CREATE TABLE `carmind`.`revision` ( `id` INT NOT NULL AUTO_INCREMENT , `fecha` DATETIME NOT NULL , `usuario_id` INT NOT NULL , `vehiculo_id` INT NOT NULL , `nota` VARCHAR(1000) NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;

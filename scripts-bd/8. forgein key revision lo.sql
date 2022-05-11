@@ -1,1 +1,0 @@
-ALTER TABLE `log_evaluacion` ADD CONSTRAINT `log_evaluacion_revision` FOREIGN KEY (`revision_id`) REFERENCES `revision`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
