@@ -167,11 +167,11 @@ public class UserHubManager {
     }
 
 
-    public boolean enviarTokenRecuperacionPassword(String email){
+    public boolean enviarTokenRecuperacionPassword(String email, String name){
 
         RequestBody body = RequestBody.create(new byte[0]);
 
-        String pathUserHub = "/public/recoverPassword?email=" + email;
+        String pathUserHub = "/public/recoverPassword?email=" + email + "&name=" + name;
 
         // Armo el request para mandar a UserHub
         Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)

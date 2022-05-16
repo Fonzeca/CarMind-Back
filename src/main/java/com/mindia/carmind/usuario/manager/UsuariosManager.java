@@ -170,7 +170,12 @@ public class UsuariosManager implements IUsuario {
     }
 
     public void enviarTokenRecuperacionPassword(String email) {
-        userHubManager.enviarTokenRecuperacionPassword(email);
+        UsuarioView user = obtenerUsuarioByUsername(email);
+        if(user == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no existe");
+        }
+
+        userHubManager.enviarTokenRecuperacionPassword(email, user.getNombre());
     }
 
     public void validateRecoverToken(RecuperacionPojo pojo) {
