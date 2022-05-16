@@ -83,7 +83,7 @@ public class SeccionView {
         this.nombre = s.getNombre();
 
 
-        this.preguntas = s.getListOfPregunta().stream().map(PreguntaView::new).collect(Collectors.toList());
+        this.preguntas = s.getListOfPregunta().stream().filter(x -> x.getActivo()).map(PreguntaView::new).collect(Collectors.toList());
     }
 
 }
