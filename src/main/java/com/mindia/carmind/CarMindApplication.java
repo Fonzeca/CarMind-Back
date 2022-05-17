@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableConfigurationProperties(UserHubConfig.class)
 @EnableScheduling
-public class CarMindApplication{
+public class CarMindApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(CarMindApplication.class, args);

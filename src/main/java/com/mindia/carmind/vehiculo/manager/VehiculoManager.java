@@ -79,10 +79,14 @@ public class VehiculoManager implements IVehiculo {
 
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
-        vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
 
-        if(repository.findByPatente(vehiculo.getPatente()) != null){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Patente duplicada");
+        if (vehiculo.getPatente() != null && !vehiculo.getPatente().isEmpty()) {
+
+            vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
+
+            if (repository.findByPatente(vehiculo.getPatente()) != null) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Patente duplicada");
+            }
         }
 
         vehiculo.setLinea(pojo.getLinea());
@@ -215,25 +219,25 @@ public class VehiculoManager implements IVehiculo {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
-        if(!vehiculo.getEmpresaId().equals(loggedUser.getEmpresa())){
+        if (!vehiculo.getEmpresaId().equals(loggedUser.getEmpresa())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
         }
 
-        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
+        if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
             return;
         }
 
-        //Hago que deje de usar los vehiculos asignados al usuario
+        // Hago que deje de usar los vehiculos asignados al usuario
         var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
-        
-        if(vehiculosUsando != null && !vehiculosUsando.isEmpty()){
+
+        if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
                 v.setUsuarioIdUsando(null);
                 repository.save(v);
             }
         }
 
-        //Asigno el vehiculo escaneado al usuario
+        // Asigno el vehiculo escaneado al usuario
         vehiculo.setUsuarioIdUsando(loggedUser.getId());
 
         repository.save(vehiculo);
@@ -246,27 +250,29 @@ public class VehiculoManager implements IVehiculo {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
-        if(vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())){
+        if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
             vehiculo.setUsuarioIdUsando(null);
 
             repository.save(vehiculo);
-        }else{
-            
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "El usuario actual no es el que esta usando este vehiculo.");
+        } else {
+
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                    "El usuario actual no es el que esta usando este vehiculo.");
         }
     }
 
-    public VehiculoView getCurrentVehiculo(){
+    public VehiculoView getCurrentVehiculo() {
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
         var vehiculos = repository.findByusuarioIdUsando(loggedUser.getId());
         Vehiculo vehiculo;
 
-        if(vehiculos != null && !vehiculos.isEmpty()){
+        if (vehiculos != null && !vehiculos.isEmpty()) {
             vehiculo = repository.findByusuarioIdUsando(loggedUser.getId()).get(0);
-        }else{
+        } else {
             // CAR-103
-            // throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay un vehiculo actual");
+            // throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No hay un vehiculo
+            // actual");
             return null;
         }
 
@@ -282,11 +288,12 @@ public class VehiculoManager implements IVehiculo {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ese tipo de documento");
         }
 
-        //Busco los que esten activos
-        var docsActivos = v.getListOfDocumento().stream().filter(x -> x.getActive() && x.getTipoDocumento().equals(tipo)).collect(Collectors.toList());
+        // Busco los que esten activos
+        var docsActivos = v.getListOfDocumento().stream()
+                .filter(x -> x.getActive() && x.getTipoDocumento().equals(tipo)).collect(Collectors.toList());
 
-        //Los desactivo
-        if(docsActivos.size() > 0){
+        // Los desactivo
+        if (docsActivos.size() > 0) {
             for (Documento docActivo : docsActivos) {
                 docActivo.setActive(false);
 
@@ -303,8 +310,8 @@ public class VehiculoManager implements IVehiculo {
             doc.setTipoDocumento(tipo);
             doc.setVehiculoId(id);
             doc.setActive(true);
-            
-            if(vencimiento != null && !vencimiento.isEmpty()){
+
+            if (vencimiento != null && !vencimiento.isEmpty()) {
                 doc.setVencimiento(
                         LocalDate.parse(vencimiento, DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault())));
             }
@@ -328,7 +335,8 @@ public class VehiculoManager implements IVehiculo {
         }
 
         List<Documento> listDoc = v.getListOfDocumento();
-        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo) && x.getActive()).findFirst();
+        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo) && x.getActive())
+                .findFirst();
 
         if (doc.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe el documento asociado al vehiculo.");
@@ -342,13 +350,15 @@ public class VehiculoManager implements IVehiculo {
         return docs.stream().map(DocumentoView::new).collect(Collectors.toList());
     }
 
-    public List<EvaluacionView> obtenerFormularios(Integer id){
-        var evaluaciones = vehiculoEvaluacionRepository.findByVehiculoId(id).stream().map(x -> new EvaluacionView(x.getEvaluacion())).collect(Collectors.toList());
+    public List<EvaluacionView> obtenerFormularios(Integer id) {
+        var evaluaciones = vehiculoEvaluacionRepository.findByVehiculoId(id).stream()
+                .map(x -> new EvaluacionView(x.getEvaluacion())).collect(Collectors.toList());
         return evaluaciones;
     }
 
-    public List<LogEvaluacionView> obtenerLogsFormularios(Integer id){
-        var evaluaciones = logEvaluacionRepository.findByVehiculoIdOrderByFechaDesc(id).stream().map(x -> new LogEvaluacionView(x)).collect(Collectors.toList());
+    public List<LogEvaluacionView> obtenerLogsFormularios(Integer id) {
+        var evaluaciones = logEvaluacionRepository.findByVehiculoIdOrderByFechaDesc(id).stream()
+                .map(x -> new LogEvaluacionView(x)).collect(Collectors.toList());
         return evaluaciones;
     }
 
@@ -375,7 +385,7 @@ public class VehiculoManager implements IVehiculo {
         return fechaPeriodo;
     }
 
-    private int getVencimientoOfEvaluacion(VehiculoEvaluacion vehiculoEvaluacion){
+    private int getVencimientoOfEvaluacion(VehiculoEvaluacion vehiculoEvaluacion) {
         // Obtenemos el ultimo log de la evaluacion
         LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
 
@@ -389,19 +399,20 @@ public class VehiculoManager implements IVehiculo {
 
             // Fecha de la proxima vez que se deberia realizar la evaluacion
             LocalDateTime fechaProxima = fechaProximoCheck(vehiculoEvaluacion).atStartOfDay();
-            
+
             LocalDateTime fechaAnterior = fechaProxima.minusDays(intervaloDias);
 
-            int vencimiento = (int) LocalDateTime.now().toLocalDate().atStartOfDay().until(fechaProxima, ChronoUnit.DAYS);
-            
-            if(dateLog.isBefore(fechaAnterior)){
+            int vencimiento = (int) LocalDateTime.now().toLocalDate().atStartOfDay().until(fechaProxima,
+                    ChronoUnit.DAYS);
+
+            if (dateLog.isBefore(fechaAnterior)) {
                 return 0;
             }
 
             return vencimiento;
-        }else{
+        } else {
 
-            if(!vehiculoEvaluacion.getFechaInicio().isBefore(LocalDate.now())){
+            if (!vehiculoEvaluacion.getFechaInicio().isBefore(LocalDate.now())) {
                 int vencimiento = (int) LocalDate.now().datesUntil(vehiculoEvaluacion.getFechaInicio()).count();
                 return vencimiento;
             }
@@ -410,13 +421,14 @@ public class VehiculoManager implements IVehiculo {
         }
     }
 
-    private VehiculoView armarVehiculoConPendientes(Vehiculo v){
+    private VehiculoView armarVehiculoConPendientes(Vehiculo v) {
         VehiculoView vehiculo = new VehiculoView(v, true);
 
         var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream()
-            .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x), x.getIntervaloDias()))
-            .collect(Collectors.toList());
-            
+                .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x),
+                        x.getIntervaloDias()))
+                .collect(Collectors.toList());
+
         vehiculo.setPendientes(listsEvaluacion);
         return vehiculo;
     }

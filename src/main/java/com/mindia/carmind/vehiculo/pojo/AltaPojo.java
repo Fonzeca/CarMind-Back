@@ -89,6 +89,7 @@ public class AltaPojo {
 
         this.modelo = this.modelo.trim();
         this.marca = this.marca.trim();
+        this.patente = this.patente.trim();
 
         // Valida si la linea no esta vacia o es mayor a 10 caracteres
         if (this.linea == null || this.linea.isBlank() || this.linea.length() > 10) {
