@@ -170,7 +170,7 @@ public class UsuariosManager implements IUsuario {
     }
 
     public void enviarTokenRecuperacionPassword(String email) {
-        UsuarioView user = obtenerUsuarioByUsername(email);
+        Usuario user = repository.findByUsernameAndActiveTrue(email);
         if(user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no existe");
         }
