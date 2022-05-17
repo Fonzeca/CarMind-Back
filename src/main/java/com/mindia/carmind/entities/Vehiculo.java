@@ -42,7 +42,7 @@ public class Vehiculo implements Serializable {
     @Column(name="nombre", nullable=false, length=50)
     private String     nombre ;
 
-    @Column(name="patente", nullable=false, length=20)
+    @Column(name="patente", nullable=true, length=20)
     private String     patente ;
 
     @Column(name="modelo", nullable=false, length=50)
