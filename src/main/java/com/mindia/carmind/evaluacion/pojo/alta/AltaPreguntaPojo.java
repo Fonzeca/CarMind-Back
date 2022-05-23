@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "id",
     "descripcion",
     "tipo",
     "opciones",
@@ -19,6 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @Generated("jsonschema2pojo")
 public class AltaPreguntaPojo {
 
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("descripcion")
     private String descripcion;
     @JsonProperty("tipo")
@@ -86,5 +89,15 @@ public class AltaPreguntaPojo {
     @JsonProperty("crucial")
     public void setCrucial(Boolean crucial) {
         this.crucial = crucial;
+    }
+
+    @JsonProperty("id")
+    public Integer getId() {
+        return this.id;
+    }
+
+    @JsonProperty("id")
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

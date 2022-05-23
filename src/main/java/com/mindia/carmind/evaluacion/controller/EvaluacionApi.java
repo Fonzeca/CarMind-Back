@@ -49,11 +49,11 @@ public class EvaluacionApi {
         manager.changeNameOfEvaluacion(id, newName);
     }
 
-    // @PutMapping("/evaluacion/{id}/changePreguntas")
-    // @PreAuthorize("hasRole('admin_empresa')")
-    // public void changePreguntas(@PathVariable int id, @RequestBody AltaEvaluacionPojo alta){
-    //     manager.changePreguntasOfEvaluacion(id, alta);
-    // }
+    @PutMapping("/evaluacion/{id}/modify")
+    @PreAuthorize("hasRole('admin_empresa')")
+    public void changePreguntas(@PathVariable int id, @RequestBody AltaPojo alta){
+        manager.modifyEvaluacion(id, alta);
+    }
 
     @PostMapping("/evaluacion/{id}/realizar")
     public void realizarEvaluacion(@PathVariable int id, @RequestBody AltaEvaluacionTerminadaPojo respuestas){

@@ -12,5 +12,7 @@ public interface SeccionRepository extends JpaRepository<Seccion, Integer> {
 
     Seccion findByIdAndActivoTrue(Integer id);
 
+    List<Seccion> findByEvaluacionId(Integer id);
+
     List<Seccion> findByActivoTrue();
 }

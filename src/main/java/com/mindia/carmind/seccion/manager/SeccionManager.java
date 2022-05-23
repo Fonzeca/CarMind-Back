@@ -1,15 +1,15 @@
 package com.mindia.carmind.seccion.manager;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Seccion;
 import com.mindia.carmind.evaluacion.pojo.alta.AltaSeccionPojo;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class SeccionManager {
@@ -44,31 +44,75 @@ public class SeccionManager {
         }
     }
 
-    public void desactivateSeccion(String id){
-        int intId = Integer.parseInt(id);
+    // public void desacoplarSecciones(int idEvaluacion){
+    //     var list = repository.findByEvaluacionId(idEvaluacion);
 
-        Seccion seccion = repository.findByIdAndActivoTrue(intId);
-        if(seccion == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Seccion no encontrada");
+    //     list.stream().forEach(x -> x.setEvaluacionId(null));
+
+    //     repository.saveAll(list);
+    // }
+
+    public void compararSecciones(int evaluacionId, List<AltaSeccionPojo> secciones){
+        var list = repository.findByEvaluacionId(evaluacionId);
+
+        var listNewIds = secciones.stream().map(x -> x.getId()).collect(Collectors.toList());
+        var listOldIds = list.stream().map(x -> x.getId()).collect(Collectors.toList());
+
+        //Lista de ids de secciones para sacar
+        var quitarSecc = listOldIds.stream().dropWhile(x -> listNewIds.contains(x)).collect(Collectors.toList());
+
+        //Recorremos y desacoplamos
+        for (Integer idSacar : quitarSecc) {
+            var optSecc = repository.findById(idSacar);
+            if(optSecc.isPresent()){
+                var seccionSacada = optSecc.get();
+                seccionSacada.setEvaluacionId(null);
+                repository.save(seccionSacada);
+
+                //TODO: limpiar secciones colgadas
+            }
         }
-        seccion.setActivo(false);
+        
+        
 
-        repository.save(seccion);
+        for (AltaSeccionPojo seccion : secciones) {
+            Optional<Seccion> secc = repository.findById(seccion.getId()!=null ? seccion.getId() : -1);
+    
+            if(secc.isPresent()){
+                
+            }else{
+                //Se agrega
+                createSeccion(evaluacionId, List.of(seccion));
+            }
+        }
+
     }
+
+    // public void desactivateSeccion(String id){
+    //     int intId = Integer.parseInt(id);
+
+    //     Seccion seccion = repository.findByIdAndActivoTrue(intId);
+    //     if(seccion == null){
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Seccion no encontrada");
+    //     }
+    //     seccion.setActivo(false);
+
+    //     repository.save(seccion);
+    // }
 
     // public List<SeccionView> getAll(){
     //     return repository.findByActivoTrue().stream().map(SeccionView::new).collect(Collectors.toList());
     // }
 
-    public Seccion getSeccionActivaById(String id){
-        int intId = Integer.parseInt(id);
+    // public Seccion getSeccionActivaById(String id){
+    //     int intId = Integer.parseInt(id);
 
-        Seccion seccion = repository.findByIdAndActivoTrue(intId);
-        if(seccion == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Seccion no encontrada");
-        }
-        return seccion;
-    }
+    //     Seccion seccion = repository.findByIdAndActivoTrue(intId);
+    //     if(seccion == null){
+    //         throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Seccion no encontrada");
+    //     }
+    //     return seccion;
+    // }
 
 
 }

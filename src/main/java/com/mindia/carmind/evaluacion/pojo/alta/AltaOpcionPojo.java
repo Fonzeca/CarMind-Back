@@ -8,11 +8,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "id",
     "opcion",
     "crucial"
 })
 @Generated("jsonschema2pojo")
 public class AltaOpcionPojo {
+
+    @JsonProperty("id")
+    private Integer id;
     @JsonProperty("opcion")
     private String opcion;
     @JsonProperty("crucial")
@@ -36,6 +40,16 @@ public class AltaOpcionPojo {
     @JsonProperty("crucial")
     public void setCrucial(Boolean crucial) {
         this.crucial = crucial;
+    }
+
+    @JsonProperty("id")
+    public Integer getId() {
+        return this.id;
+    }
+
+    @JsonProperty("id")
+    public void setId(Integer id) {
+        this.id = id;
     }
 
 }

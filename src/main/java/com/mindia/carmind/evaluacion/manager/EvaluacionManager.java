@@ -118,6 +118,23 @@ public class EvaluacionManager {
         repository.save(e);
     }
 
+    public void modifyEvaluacion(int id, AltaPojo alta){
+        Evaluacion e = repository.getById(id);
+        UsuarioView logged = usuariosManager.getLoggeduser();
+
+        if(!logged.getEmpresa().equals(e.getEmpresaId())){
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE, "Este formulario no pertenece a su empresa.");
+        }
+
+        if(!e.getNombre().equals(alta.getTitulo())){
+            e.setNombre(alta.getTitulo());
+            repository.save(e);
+        }
+
+        //Creamos nuevas secciones y 
+        seccionManager.compararSecciones(id, alta.getSecciones());
+    }
+
     /**
      * Funcion sobrecargada
      * @param id

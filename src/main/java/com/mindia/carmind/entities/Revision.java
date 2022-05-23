@@ -44,7 +44,7 @@ public class Revision implements Serializable {
     @Column(name="vehiculo_id", nullable=false)
     private Integer    vehiculoId ;
 
-    @Column(name="nota", length=500)
+    @Column(name="nota", length=1000)
     private String     nota ;
 
 
