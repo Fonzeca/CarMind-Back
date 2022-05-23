@@ -9,8 +9,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.mindia.carmind.entities.Evaluacion;
-import com.mindia.carmind.entities.Pregunta;
-import com.mindia.carmind.entities.Seccion;
 
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -123,19 +121,6 @@ public class EvaluacionView {
         ev.setPreguntas(e.getListOfPregunta().stream().map(PreguntaView::new).collect(Collectors.toList()));
 
         return ev;
-    }
-
-    public EvaluacionView(Evaluacion e, List<Pregunta> preguntas, List<Seccion> secciones){
-        // this.id = e.getId();
-        // this.nombre = e.getNombre();
-        // this.secciones = new ArrayList<SeccionView>();
-
-        // for (Seccion seccion : secciones) {
-        //     List<Pregunta> preguntasxSeccion = preguntas.stream().filter(x -> x.getSeccion() == seccion.getId()).collect(Collectors.toList());
-
-        //     this.secciones.add(new SeccionView(seccion, preguntasxSeccion));
-        // }
-
     }
 
 }

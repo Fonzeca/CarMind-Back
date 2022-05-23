@@ -11,8 +11,10 @@ import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.pregunta.persistence.PreguntaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PreguntaManager {
@@ -24,6 +26,9 @@ public class PreguntaManager {
 
     @Transactional
     public void createPreguntas( int evaluacionId, List<AltaPreguntaPojo> altaPreguntaPojo){
+        if(altaPreguntaPojo == null || altaPreguntaPojo.isEmpty()){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No hay preguntas.");
+        }
         for (AltaPreguntaPojo alta : altaPreguntaPojo) {
             Pregunta pregunta = new Pregunta();
 
