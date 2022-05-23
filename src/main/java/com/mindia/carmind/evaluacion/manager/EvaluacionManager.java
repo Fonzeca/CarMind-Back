@@ -131,8 +131,7 @@ public class EvaluacionManager {
             repository.save(e);
         }
 
-        //Creamos nuevas secciones y 
-        // seccionManager.compararSecciones(id, alta.getSecciones());
+        preguntaManager.modifyPreguntas(id, alta.getPreguntas());
     }
 
     /**

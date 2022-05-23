@@ -51,6 +51,14 @@ public class PreguntaManager {
         }
     }
 
+    @Transactional
+    public void modifyPreguntas(int evaluacionId, List<AltaPreguntaPojo> altaPreguntaPojo){
+        List<Pregunta> preguntas = repository.findByEvaluacionId(evaluacionId);
+        repository.deleteAll(preguntas);
+
+        createPreguntas(evaluacionId, altaPreguntaPojo);
+    }
+
     public PreguntaView getPreguntaById(Integer id){
         return new PreguntaView(repository.getById(id));
     }

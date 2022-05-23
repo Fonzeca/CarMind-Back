@@ -20,3 +20,5 @@ ALTER TABLE `log_pregunta` ADD CONSTRAINT `logpregunta_tipopregunta` FOREIGN KEY
 
 ALTER TABLE `pregunta` ADD `evaluacion_id` INT NOT NULL AFTER `crucial`;
 ALTER TABLE `pregunta` ADD CONSTRAINT `pregunta_evaluacion` FOREIGN KEY (`evaluacion_id`) REFERENCES `evaluacion`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `pregunta_opcion` DROP FOREIGN KEY `id_pregunta_pregunta`; ALTER TABLE `pregunta_opcion` ADD CONSTRAINT `id_pregunta_pregunta` FOREIGN KEY (`id_pregunta`) REFERENCES `pregunta`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
