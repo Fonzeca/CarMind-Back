@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "vehiculo_id",
     "titulo",
     "fecha_inicio",
-    "secciones"
+    "preguntas"
 })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
@@ -25,8 +25,8 @@ public class AltaPojo {
     private String titulo;
     @JsonProperty("fecha_inicio")
     private String fechaInicio;
-    @JsonProperty("secciones")
-    private List<AltaSeccionPojo> secciones = null;
+    @JsonProperty("preguntas")
+    private List<AltaPreguntaPojo> preguntas = null;
 
     /**
      * No args constructor for use in serialization
@@ -40,14 +40,14 @@ public class AltaPojo {
      * @param vehiculoId
      * @param fechaInicio
      * @param titulo
-     * @param secciones
+     * @param preguntas
      */
-    public AltaPojo(Integer vehiculoId, String titulo, String fechaInicio, List<AltaSeccionPojo> secciones) {
+    public AltaPojo(Integer vehiculoId, String titulo, String fechaInicio, List<AltaPreguntaPojo> preguntas) {
         super();
         this.vehiculoId = vehiculoId;
         this.titulo = titulo;
         this.fechaInicio = fechaInicio;
-        this.secciones = secciones;
+        this.preguntas = preguntas;
     }
 
     @JsonProperty("vehiculo_id")
@@ -80,14 +80,14 @@ public class AltaPojo {
         this.fechaInicio = fechaInicio;
     }
 
-    @JsonProperty("secciones")
-    public List<AltaSeccionPojo> getSecciones() {
-        return secciones;
+    @JsonProperty("preguntas")
+    public List<AltaPreguntaPojo> getPreguntas() {
+        return this.preguntas;
     }
 
-    @JsonProperty("secciones")
-    public void setSecciones(List<AltaSeccionPojo> secciones) {
-        this.secciones = secciones;
+    @JsonProperty("preguntas")
+    public void setPreguntas(List<AltaPreguntaPojo> preguntas) {
+        this.preguntas = preguntas;
     }
 
 }

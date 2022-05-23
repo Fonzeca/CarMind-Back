@@ -3,9 +3,6 @@ package com.mindia.carmind.pregunta.controller;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,11 +25,12 @@ public class PreguntaApi {
     //     return manager.getAllActivos();
     // }
 
-    @PreAuthorize("hasRole('admin_empresa')")
-    @PutMapping("/pregunta/{id}/desactivate")
-    public void desactivatePreguntaById(@PathVariable String id){
-        manager.desactivatePregunta(id);
-    }
+    // @PreAuthorize("hasRole('admin_empresa')")
+    // @PutMapping("/pregunta/{id}/desactivate")
+    // public void desactivatePreguntaById(@PathVariable String id){
+    //     manager.desactivatePregunta(id);
+    // }
+
     
 
 

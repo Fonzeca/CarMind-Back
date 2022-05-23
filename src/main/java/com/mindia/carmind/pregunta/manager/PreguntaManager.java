@@ -9,13 +9,10 @@ import com.mindia.carmind.evaluacion.pojo.alta.AltaPreguntaPojo;
 import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
 import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.pregunta.persistence.PreguntaRepository;
-import com.mindia.carmind.seccion.manager.SeccionManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class PreguntaManager {
@@ -23,35 +20,15 @@ public class PreguntaManager {
     PreguntaRepository repository;
 
     @Autowired
-    SeccionManager seccionManager;
-
-    @Autowired
     PreguntaOpcionRepository preguntaOpcionRepository;
 
-    // public void createPregunta(AltaPreguntaPojo alta){
-    //     alta.validate();
-
-    //     Pregunta pregunta = new Pregunta();
-
-    //     pregunta.setActivo(true);
-    //     pregunta.setDescripcion(alta.getDescripcion());
-
-    //     //Buscamos la seccion, y si no exite o esta desactivado, la misma funcion larga la exception
-    //     seccionManager.getSeccionActivaById(alta.getSeccionId() + "");
-        
-    //     pregunta.setSeccion(alta.getSeccionId());
-
-    //     repository.save(pregunta);
-    // }
-    
     @Transactional
-    public void createPreguntas( int seccionId, List<AltaPreguntaPojo> altaPreguntaPojo){
+    public void createPreguntas( int evaluacionId, List<AltaPreguntaPojo> altaPreguntaPojo){
         for (AltaPreguntaPojo alta : altaPreguntaPojo) {
-            
             Pregunta pregunta = new Pregunta();
-            pregunta.setActivo(true);
+
+            pregunta.setEvaluacionId(evaluacionId);
             pregunta.setDescripcion(alta.getDescripcion());
-            pregunta.setSeccion(seccionId);
             pregunta.setTipo(alta.getTipo());
             pregunta.setCrucial(alta.getCrucial() != null ? alta.getCrucial() : false);
 
@@ -71,24 +48,6 @@ public class PreguntaManager {
 
     public PreguntaView getPreguntaById(Integer id){
         return new PreguntaView(repository.getById(id));
-    }
-
-    // public List<PreguntaView> getAllActivos(){
-    //     return repository.findByActivoTrue().stream().map(PreguntaView::new).collect(Collectors.toList());
-    // }
-
-    public void desactivatePregunta(String id){
-        int intId = Integer.parseInt(id);
-
-        Pregunta pregunta = repository.findByIdAndActivoTrue(intId);
-
-        if(pregunta == null){
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pregunta no encontrada");
-        }
-
-        pregunta.setActivo(false);
-
-        repository.save(pregunta);
     }
 
 }

@@ -29,8 +29,6 @@ public class LogPreguntaDetailsView {
 
     @JsonProperty("log_id")
     private Integer logId;
-    @JsonProperty("pregunta_id")
-    private Integer preguntaId;
     @JsonProperty("pregunta")
     private String pregunta;
     @JsonProperty("tipo")
@@ -65,10 +63,9 @@ public class LogPreguntaDetailsView {
      * @param tickCorrecto
      * @param pregunta
      */
-    public LogPreguntaDetailsView(Integer logId, Integer preguntaId, String pregunta, String tipo, String texto, String base64Image, Boolean tickCorrecto, Boolean crucial, List<LogOpcionDetailsView> opciones) {
+    public LogPreguntaDetailsView(Integer logId, String pregunta, String tipo, String texto, String base64Image, Boolean tickCorrecto, Boolean crucial, List<LogOpcionDetailsView> opciones) {
         super();
         this.logId = logId;
-        this.preguntaId = preguntaId;
         this.pregunta = pregunta;
         this.tipo = tipo;
         this.texto = texto;
@@ -81,10 +78,9 @@ public class LogPreguntaDetailsView {
     public LogPreguntaDetailsView(LogPregunta log) {
         super();
         this.logId = log.getId();
-        this.preguntaId = log.getIdPregunta();
-        this.pregunta = log.getPregunta().getDescripcion();
-        this.tipo = log.getPregunta().getTipo();
-        this.crucial = log.getPregunta().getCrucial();
+        this.pregunta = log.getDescripcion();
+        this.tipo = log.getTipo();
+        this.crucial = log.getCrucial();
 
         this.texto = log.getNota();
 
@@ -107,16 +103,6 @@ public class LogPreguntaDetailsView {
     @JsonProperty("log_id")
     public void setLogId(Integer logId) {
         this.logId = logId;
-    }
-
-    @JsonProperty("pregunta_id")
-    public Integer getPreguntaId() {
-        return preguntaId;
-    }
-
-    @JsonProperty("pregunta_id")
-    public void setPreguntaId(Integer preguntaId) {
-        this.preguntaId = preguntaId;
     }
 
     @JsonProperty("pregunta")

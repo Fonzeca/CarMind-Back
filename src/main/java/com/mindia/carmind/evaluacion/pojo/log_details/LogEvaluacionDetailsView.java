@@ -46,8 +46,8 @@ public class LogEvaluacionDetailsView {
     private String vehiculoNombre;
     @JsonProperty("para_revisar")
     private Boolean paraRevisar;
-    @JsonProperty("secciones")
-    private List<LogSeccionDetailsView> secciones = null;
+    @JsonProperty("preguntas")
+    private List<LogPreguntaDetailsView> preguntas = null;
 
     /**
      * No args constructor for use in serialization
@@ -65,10 +65,10 @@ public class LogEvaluacionDetailsView {
      * @param evaluacionId
      * @param usuarioId
      * @param usuarioNombre
-     * @param secciones
+     * @param preguntas
      * @param evaluacionNombre
      */
-    public LogEvaluacionDetailsView(Integer evaluacionId, Integer logId, String evaluacionNombre, String fechaRelizacion, Integer usuarioId, String usuarioNombre, Integer vehiculoId, String vehiculoNombre, List<LogSeccionDetailsView> secciones) {
+    public LogEvaluacionDetailsView(Integer evaluacionId, Integer logId, String evaluacionNombre, String fechaRelizacion, Integer usuarioId, String usuarioNombre, Integer vehiculoId, String vehiculoNombre, List<LogPreguntaDetailsView> preguntas) {
         super();
         this.evaluacionId = evaluacionId;
         this.logId = logId;
@@ -78,7 +78,7 @@ public class LogEvaluacionDetailsView {
         this.usuarioNombre = usuarioNombre;
         this.vehiculoId = vehiculoId;
         this.vehiculoNombre = vehiculoNombre;
-        this.secciones = secciones;
+        this.preguntas = preguntas;
     }
 
     public LogEvaluacionDetailsView(LogEvaluacion log) {
@@ -92,10 +92,7 @@ public class LogEvaluacionDetailsView {
         this.vehiculoId = log.getVehiculoId();
         this.vehiculoNombre = log.getVehiculo().getNombre();
         this.paraRevisar = log.getParaRevisar();
-
-        var seccionesEva = log.getEvaluacion().getListOfSeccion();
-        var logsPregunta = log.getListOfLogPregunta();
-        this.secciones = seccionesEva.stream().map(x -> new LogSeccionDetailsView(x, logsPregunta)).collect(Collectors.toList());
+        this.preguntas = log.getListOfLogPregunta().stream().map(LogPreguntaDetailsView::new).collect(Collectors.toList());
     }
 
     @JsonProperty("evaluacion_id")
@@ -178,14 +175,14 @@ public class LogEvaluacionDetailsView {
         this.vehiculoNombre = vehiculoNombre;
     }
 
-    @JsonProperty("secciones")
-    public List<LogSeccionDetailsView> getSecciones() {
-        return secciones;
+    @JsonProperty("preguntas")
+    public List<LogPreguntaDetailsView> getPreguntas() {
+        return this.preguntas;
     }
 
-    @JsonProperty("secciones")
-    public void setSecciones(List<LogSeccionDetailsView> secciones) {
-        this.secciones = secciones;
+    @JsonProperty("preguntas")
+    public void setPreguntas(List<LogPreguntaDetailsView> preguntas) {
+        this.preguntas = preguntas;
     }
 
     @JsonProperty("para_revisar")

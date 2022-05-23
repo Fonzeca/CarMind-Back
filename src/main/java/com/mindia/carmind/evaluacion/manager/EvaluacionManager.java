@@ -1,7 +1,6 @@
 package com.mindia.carmind.evaluacion.manager;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +11,7 @@ import com.mindia.carmind.entities.LogEvaluacion;
 import com.mindia.carmind.entities.LogOption;
 import com.mindia.carmind.entities.LogPregunta;
 import com.mindia.carmind.entities.Pregunta;
+import com.mindia.carmind.entities.PreguntaOpcion;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
@@ -26,7 +26,7 @@ import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 import com.mindia.carmind.pregunta.persistence.LogOptionRepository;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
-import com.mindia.carmind.seccion.manager.SeccionManager;
+import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
@@ -52,10 +52,10 @@ public class EvaluacionManager {
     LogPreguntaRepository logPreguntaRepository;
 
     @Autowired
-    UsuariosManager usuariosManager;
+    PreguntaOpcionRepository preguntaOpcionRepository;
 
     @Autowired
-    SeccionManager seccionManager;
+    UsuariosManager usuariosManager;
 
     @Autowired
     EmpresaManager empresaManager;
@@ -93,7 +93,7 @@ public class EvaluacionManager {
 
         evaluacion = repository.save(evaluacion);
 
-        seccionManager.createSeccion(evaluacion.getId(), alta.getSecciones());
+        preguntaManager.createPreguntas(evaluacion.getId(), alta.getPreguntas());
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
@@ -132,7 +132,7 @@ public class EvaluacionManager {
         }
 
         //Creamos nuevas secciones y 
-        seccionManager.compararSecciones(id, alta.getSecciones());
+        // seccionManager.compararSecciones(id, alta.getSecciones());
     }
 
     /**
@@ -181,11 +181,14 @@ public class EvaluacionManager {
                 //LogEvaluacion
                 LogEvaluacion log = new LogEvaluacion();
                 log.setEvaluacionId(id);
+
+                //Para cuando se hace offline
                 if(logFecha != null){
                     log.setFecha(logFecha);
                 }else{
                     log.setFecha(LocalDateTime.now());
                 }
+
                 log.setVehiculoId(vehiculo.getId());
                 log.setUsuarioId(loggedUser.getId());
 
@@ -194,13 +197,17 @@ public class EvaluacionManager {
                 
                 //Recorremos las respuestas del view
                 for (AltaRespuestaPojo res : respuestas.getRespuestas()) {
-                    //Creamos el log de la pregunta
-                    LogPregunta logPregunta = new LogPregunta();
-                    logPregunta.setIdPregunta(res.getPreguntaId());
-                    logPregunta.setLogEvaluacion(log.getId());
-
                     //Obtenemos la pregunta a responder, para validar el tipo
                     PreguntaView pregunta = preguntaManager.getPreguntaById(res.getPreguntaId());
+
+                    //Creamos el log de la pregunta
+                    LogPregunta logPregunta = new LogPregunta();
+
+                    logPregunta.setDescripcion(pregunta.getDescripcion());
+                    logPregunta.setCrucial(pregunta.getCrucial());
+                    logPregunta.setTipo(pregunta.getTipo());
+                    logPregunta.setLogEvaluacion(log.getId());
+
 
                     //depende del tipo de pregunta, cambia su comportamiento
                     switch(pregunta.getTipo()){
@@ -221,6 +228,8 @@ public class EvaluacionManager {
                                 //Guardamos antes el log, para que tengamos un id.
                                 logPregunta = logPreguntaRepository.save(logPregunta);
                                 for (RespuestaOpcionPojo optRes : res.getOpciones()) {
+                                    PreguntaOpcion opcion = preguntaOpcionRepository.getById(optRes.getOpcionId());
+
                                     LogOption log_opt = new LogOption();
                                     log_opt.setTickCheck(optRes.getTickCorrecto());
 
@@ -231,8 +240,9 @@ public class EvaluacionManager {
                                         }
                                     }
 
-                                    log_opt.setIdOption(optRes.getOpcionId());
                                     log_opt.setIdLogPregunta(logPregunta.getId());
+                                    log_opt.setDescripcion(opcion.getOpcion());
+                                    log_opt.setCrucial(opcion.getCrucial());
 
                                     //TODO: validar las ids  .constraint fails (`carmind`.`log_option`, CONSTRAINT `option_log_option` FOREIGN KEY (`id_option`) REFERENCES `pregunta_opcion` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)
                                     logOptionRepository.save(log_opt);
@@ -305,12 +315,7 @@ public class EvaluacionManager {
     //---------------------------------------PRIVATE-----------------------------------------------------
 
     private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){
-        List<Pregunta> preguntasDb = new ArrayList<Pregunta>();
-
-        e.getListOfSeccion().stream().forEach(x -> {
-            preguntasDb.addAll(x.getListOfPregunta());
-        });
-
+        List<Pregunta> preguntasDb = e.getListOfPregunta();
         return preguntasDb.stream().map(x -> x.getId()).collect(Collectors.toList());
     }
 

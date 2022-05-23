@@ -5,9 +5,18 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "LogEvaluacion"
@@ -28,9 +37,8 @@ public class LogEvaluacion implements Serializable {
     private Integer    id ;
 
     //--- ENTITY DATA FIELDS 
-    @Temporal(TemporalType.DATE)
     @Column(name="fecha", nullable=false)
-    private Date       fecha ;
+    private LocalDateTime       fecha ;
 
     @Column(name="evaluacion_id", nullable=false)
     private Integer    evaluacionId ;
@@ -84,10 +92,10 @@ public class LogEvaluacion implements Serializable {
         return this.id;
     }
 
-    public void setFecha( Date fecha ) {
+    public void setFecha( LocalDateTime fecha ) {
         this.fecha = fecha ;
     }
-    public Date getFecha() {
+    public LocalDateTime getFecha() {
         return this.fecha;
     }
 

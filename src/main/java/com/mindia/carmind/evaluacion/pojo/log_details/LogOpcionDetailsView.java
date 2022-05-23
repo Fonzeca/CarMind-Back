@@ -52,8 +52,8 @@ public class LogOpcionDetailsView {
     public LogOpcionDetailsView(LogOption log) {
         super();
         this.logId = log.getId();
-        this.opcion = log.getPreguntaOpcion().getOpcion();
-        this.crucial = log.getPreguntaOpcion().getCrucial();
+        this.opcion = log.getDescripcion();
+        this.crucial = log.getCrucial();
         this.tickCorrecto = log.getTickCheck();
     }
 

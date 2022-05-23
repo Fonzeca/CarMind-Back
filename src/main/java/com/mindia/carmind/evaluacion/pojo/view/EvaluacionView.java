@@ -19,7 +19,7 @@ import com.mindia.carmind.entities.Seccion;
     "vehiculo_id",
     "titulo",
     "fecha_inicio",
-    "secciones"
+    "preguntas"
 })
 @Generated("jsonschema2pojo")
 public class EvaluacionView {
@@ -32,8 +32,8 @@ public class EvaluacionView {
     private String titulo;
     @JsonProperty("fecha_inicio")
     private String fechaInicio;
-    @JsonProperty("secciones")
-    private List<SeccionView> secciones = null;
+    @JsonProperty("preguntas")
+    private List<PreguntaView> preguntas = null;
 
     /**
      * No args constructor for use in serialization
@@ -48,15 +48,15 @@ public class EvaluacionView {
      * @param fechaInicio
      * @param titulo
      * @param id
-     * @param secciones
+     * @param preguntas
      */
-    public EvaluacionView(Integer id, List<Integer> vehiculoId, String titulo, String fechaInicio, List<SeccionView> secciones) {
+    public EvaluacionView(Integer id, List<Integer> vehiculoId, String titulo, String fechaInicio, List<PreguntaView> preguntas) {
         super();
         this.id = id;
         this.vehiculoId = vehiculoId;
         this.titulo = titulo;
         this.fechaInicio = fechaInicio;
-        this.secciones = secciones;
+        this.preguntas = preguntas;
     }
 
     @JsonProperty("id")
@@ -99,26 +99,28 @@ public class EvaluacionView {
         this.fechaInicio = fechaInicio;
     }
 
-    @JsonProperty("secciones")
-    public List<SeccionView> getSecciones() {
-        return secciones;
+    @JsonProperty("preguntas")
+    public List<PreguntaView> getPreguntas() {
+        return this.preguntas;
     }
 
-    @JsonProperty("secciones")
-    public void setSecciones(List<SeccionView> secciones) {
-        this.secciones = secciones;
+    @JsonProperty("preguntas")
+    public void setPreguntas(List<PreguntaView> preguntas) {
+        this.preguntas = preguntas;
     }
+
 
     public EvaluacionView(Evaluacion e){
         this.id = e.getId();
         this.titulo = e.getNombre();
     }
+
     public static EvaluacionView getEvaluacionDetails(Evaluacion e){
         EvaluacionView ev = new EvaluacionView(e);
 
         ev.setVehiculoId(e.getListOfVehiculoEvaluacion().stream().map(x -> x.getVehiculoId()).collect(Collectors.toList()));
 
-        ev.setSecciones(e.getListOfSeccion().stream().map(SeccionView::new).collect(Collectors.toList()));
+        ev.setPreguntas(e.getListOfPregunta().stream().map(PreguntaView::new).collect(Collectors.toList()));
 
         return ev;
     }
