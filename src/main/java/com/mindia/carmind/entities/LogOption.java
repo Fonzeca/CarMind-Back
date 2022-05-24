@@ -5,7 +5,15 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "LogOption"
@@ -21,6 +29,7 @@ public class LogOption implements Serializable {
 
     //--- ENTITY PRIMARY KEY 
     @Id
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="id", nullable=false)
     private Integer    id ;
 
