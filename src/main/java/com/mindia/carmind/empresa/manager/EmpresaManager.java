@@ -72,6 +72,6 @@ public class EmpresaManager {
     }
 
     public List<TipoPojo> getTiposPregunta(){
-        return tipoPreguntaRepository.findAll().stream().map(x -> new TipoPojo(x.getCodigo(), x.getNombre())).collect(Collectors.toList());
+        return tipoPreguntaRepository.findAll().stream().map(x -> new TipoPojo(x.getCodigo(), x.getNombre(), x.getInfo())).collect(Collectors.toList());
     }
 }

@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "id",
-        "value"
+        "value",
+        "info"
 })
 @Generated("jsonschema2pojo")
 public class TipoPojo {
@@ -18,6 +19,8 @@ public class TipoPojo {
     private String id;
     @JsonProperty("value")
     private String value;
+    @JsonProperty("info")
+    private String info;
 
     /**
      * No args constructor for use in serialization
@@ -31,10 +34,11 @@ public class TipoPojo {
      * @param id
      * @param value
      */
-    public TipoPojo(String id, String value) {
+    public TipoPojo(String id, String value, String info) {
         super();
         this.id = id;
         this.value = value;
+        this.info = info;
     }
 
     @JsonProperty("id")
@@ -55,6 +59,16 @@ public class TipoPojo {
     @JsonProperty("value")
     public void setValue(String value) {
         this.value = value;
+    }
+
+    @JsonProperty("info")
+    public String getInfo() {
+        return this.info;
+    }
+
+    @JsonProperty("info")
+    public void setInfo(String info) {
+        this.info = info;
     }
 
 }
