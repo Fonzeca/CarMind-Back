@@ -15,6 +15,7 @@ import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -34,8 +35,6 @@ public class UserHubManager {
     private final OkHttpClient client = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    private String tokenAdmin;
-
     protected TokenView login(String username, String password) {
         // Armo el json a mandar
         LoginView loginView = new LoginView(username, password);
@@ -47,7 +46,7 @@ public class UserHubManager {
         String pathUserHub = "/login";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub).post(body).build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -65,10 +64,6 @@ public class UserHubManager {
     }
 
     protected boolean altaUsuario(AltaPojo alta) {
-        if (tokenAdmin == null || !validate()) {
-            loginAsAdmin();
-        }
-
         // Los roles que va a tener el usuario
         ArrayNode roles = mapper.createArrayNode();
         if (alta.getAdministrador()) {
@@ -95,10 +90,7 @@ public class UserHubManager {
         String pathUserHub = "/admin/user";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-            .post(body)
-            .addHeader("Authorization", "Bearer " + tokenAdmin)
-            .build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -116,10 +108,6 @@ public class UserHubManager {
     }
 
     protected boolean modifyUsuario(ModificarPojo pojo){
-        if (tokenAdmin == null || !validate()) {
-            loginAsAdmin();
-        }
-
         // Los roles que va a tener el usuario
         ArrayNode roles = mapper.createArrayNode();
         if (pojo.getAdministrador()) {
@@ -145,10 +133,7 @@ public class UserHubManager {
         String pathUserHub = "/admin/user";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-            .put(body)
-            .addHeader("Authorization", "Bearer " + tokenAdmin)
-            .build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.PUT);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -174,9 +159,7 @@ public class UserHubManager {
         String pathUserHub = "/public/recoverPassword?email=" + email + "&name=" + name;
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-            .post(body)
-            .build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -207,9 +190,7 @@ public class UserHubManager {
         String pathUserHub = "/public/validateRecoverToken";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-            .method("POST", body)
-            .build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -242,9 +223,7 @@ public class UserHubManager {
         String pathUserHub = "/public/resetPassword";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-            .post(body)
-            .build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -269,7 +248,7 @@ public class UserHubManager {
         String pathUserHub = "/validate";
 
         // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub).post(body).build();
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
 
         // Llamo a la api
         try (Response response = client.newCall(request).execute()) {
@@ -286,32 +265,40 @@ public class UserHubManager {
         }
     }
 
-    private void loginAsAdmin(){
-        // Armo el json a mandar
-        LoginView loginView = new LoginView(userHubConfig.getAdminUserName(), userHubConfig.getAdminPassword());
-
-        // Armo el body
-        RequestBody body = RequestBody.create(Convertions.toJson(loginView),
-                MediaType.get("application/json; charset=utf-8"));
-
-        String pathUserHub = "/login";
-
-        // Armo el request para mandar a UserHub
-        Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub).post(body).build();
-
-        // Llamo a la api
-        try (Response response = client.newCall(request).execute()) {
-
-            if (response.code() != 200) {
-                // Si el code no es 200, paso algo en UserHub
-                throw new UserHubException(response.body().string());
-            } else {
-                TokenView token = mapper.readValue(response.body().string(), TokenView.class);
-                tokenAdmin = token.getToken();
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-        }
+    public Request armadoRequest(String path, RequestBody body, org.springframework.http.HttpMethod met){
+        return new Request.Builder()
+        .url(userHubConfig.getUrl() + path)
+        .method(met.name(), body)
+        .addHeader("apikey", userHubConfig.getApikey())
+        .build();
     }
+
+    // private void loginAsAdmin(){
+    //     // Armo el json a mandar
+    //     LoginView loginView = new LoginView(userHubConfig.getAdminUserName(), userHubConfig.getAdminPassword());
+
+    //     // Armo el body
+    //     RequestBody body = RequestBody.create(Convertions.toJson(loginView),
+    //             MediaType.get("application/json; charset=utf-8"));
+
+    //     String pathUserHub = "/login";
+
+    //     // Armo el request para mandar a UserHub
+    //     Request request = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub).post(body).build();
+
+    //     // Llamo a la api
+    //     try (Response response = client.newCall(request).execute()) {
+
+    //         if (response.code() != 200) {
+    //             // Si el code no es 200, paso algo en UserHub
+    //             throw new UserHubException(response.body().string());
+    //         } else {
+    //             TokenView token = mapper.readValue(response.body().string(), TokenView.class);
+    //             tokenAdmin = token.getToken();
+    //         }
+    //     } catch (IOException ex) {
+    //         ex.printStackTrace();
+    //         throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+    //     }
+    // }
 }

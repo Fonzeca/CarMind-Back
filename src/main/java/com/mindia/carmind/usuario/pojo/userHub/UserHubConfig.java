@@ -7,23 +7,14 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "userhub")
 public class UserHubConfig {
     private String url;
-    private String adminUserName;
-    private String adminPassword;
+    private String apikey;
 
-    public String getAdminUserName() {
-        return this.adminUserName;
+    public String getApikey() {
+        return this.apikey;
     }
 
-    public void setAdminUserName(String adminUserName) {
-        this.adminUserName = adminUserName;
-    }
-
-    public String getAdminPassword() {
-        return this.adminPassword;
-    }
-
-    public void setAdminPassword(String adminPassword) {
-        this.adminPassword = adminPassword;
+    public void setApikey(String apikey) {
+        this.apikey = apikey;
     }
 
     public String getUrl() {

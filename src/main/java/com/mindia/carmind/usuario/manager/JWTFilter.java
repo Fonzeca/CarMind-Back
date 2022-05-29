@@ -82,7 +82,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
         // Armo el request para mandar a UserHub
         Request userHubRequest = new Request.Builder().url(userHubConfig.getUrl() + pathUserHub)
-                .addHeader(HEADER, token).get().build();
+                .addHeader(HEADER, token).get().addHeader("apikey", userHubConfig.getApikey()).build();
 
         // Llamo a la api
         try (Response userHubResponse = client.newCall(userHubRequest).execute()) {
