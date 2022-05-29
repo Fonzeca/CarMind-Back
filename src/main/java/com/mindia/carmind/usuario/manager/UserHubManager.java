@@ -151,6 +151,28 @@ public class UserHubManager {
         
     }
 
+    protected boolean deleteUsuario(String username){
+        RequestBody body = RequestBody.create(new byte[0]);
+
+        String pathUserHub = "/admin/user?username=" + username;
+
+        // Armo el request para mandar a UserHub
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.DELETE);
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                throw new UserHubException(response.body().string());
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
+    }
 
     public boolean enviarTokenRecuperacionPassword(String email, String name){
 

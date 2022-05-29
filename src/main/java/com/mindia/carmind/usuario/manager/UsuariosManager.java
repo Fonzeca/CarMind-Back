@@ -139,8 +139,9 @@ public class UsuariosManager implements IUsuario {
 
             vehiculosRepository.save(vehiculo);
         }
+        repository.delete(user);
 
-        repository.save(user);
+        userHubManager.deleteUsuario(user.getUsername());
     }
 
     @Override
