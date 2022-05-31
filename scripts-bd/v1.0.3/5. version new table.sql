@@ -1,0 +1,1 @@
+CREATE TABLE `carmind`.`version` ( `id` INT NOT NULL AUTO_INCREMENT , `storeVersion` VARCHAR(15) NOT NULL , `storeReleaseNotes` VARCHAR(1000) NULL , `storeType` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`storeVersion`)) ENGINE = InnoDB;
