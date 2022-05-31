@@ -47,7 +47,8 @@ public class JWTFilter extends OncePerRequestFilter {
             String authenticationHeader = request.getHeader(HEADER);
 
             //Preguntamos si la llamada que hacemos es la del login
-            if (request.getRequestURI().equals("/login")) {
+            if (request.getRequestURI().equals("/login")
+            || request.getRequestURI().startsWith("/public")) {
 
                 //Si es la del login, no necesita auth
                 chain.doFilter(request, response);
