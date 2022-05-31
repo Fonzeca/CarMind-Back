@@ -22,27 +22,27 @@ public class VersionApi {
     @Autowired
     VersionManager manager;
 
-    @GetMapping("/version")
+    @GetMapping("/public/version")
     public List<VersionView> getAllVersiones() {
         return manager.getAllVersiones();
     }
 
-    @GetMapping("/version/{version}")
+    @GetMapping("/public/version/{version}")
     public VersionView getVersion(@PathVariable String version) {
         return manager.obtenerVersionByVersion(version);
     }
 
-    @PostMapping("/version")
+    @PostMapping("/public/version")
     public void altaVersion(@RequestBody AltaPojo pojo) {
         manager.altaVersion(pojo);
     }
 
-    @PutMapping("/version")
+    @PutMapping("/public/version")
     public void editarVersion(@RequestBody ModificarPojo pojo) {
         manager.modificarVersion(pojo);
     }
 
-    @DeleteMapping("/version/{version}")
+    @DeleteMapping("/public/version/{version}")
     public void borrarVersion(@PathVariable String version) {
         manager.bajaVersion(version);
     }
