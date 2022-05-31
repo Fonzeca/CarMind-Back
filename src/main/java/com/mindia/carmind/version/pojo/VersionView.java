@@ -75,9 +75,9 @@ public class VersionView {
 
     public VersionView(Version v) {
         id = v.getId();
-        storeVersion = v.getStoreVersion();
-        storeReleaseNotes = v.getStoreReleaseNotes();
-        storeType = v.getStoreType();
+        storeVersion = v.getStoreversion();
+        storeReleaseNotes = v.getStorereleasenotes();
+        storeType = v.getStoretype();
     }
 
 }

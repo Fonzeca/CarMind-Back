@@ -31,9 +31,9 @@ public class VersionManager implements IVersion {
 
         Version version = new Version();
        
-        version.setStoreVersion(pojo.getStoreVersion());
-        version.setStoreReleaseNotes(pojo.getStoreReleaseNotes());
-        version.setStoreType(pojo.getStoreType());
+        version.setStoreversion(pojo.getStoreVersion());
+        version.setStorereleasenotes(pojo.getStoreReleaseNotes());
+        version.setStoretype(pojo.getStoreType());
 
         repository.save(version);
     }
@@ -48,9 +48,9 @@ public class VersionManager implements IVersion {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Version no encontrada");
         }
 
-        version.setStoreVersion(pojo.getStoreVersion());
-        version.setStoreReleaseNotes(pojo.getStoreReleaseNotes());
-        version.setStoreType(pojo.getStoreType());
+        version.setStoreversion(pojo.getStoreVersion());
+        version.setStorereleasenotes(pojo.getStoreReleaseNotes());
+        version.setStoretype(pojo.getStoreType());
 
         repository.save(version);
     }
