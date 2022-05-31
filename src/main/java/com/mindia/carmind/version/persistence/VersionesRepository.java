@@ -7,7 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface VersionesRepository extends JpaRepository<Version, Integer> {
 
-    Version getByVersion(String version);
-    void deleteByVersion(String version);
+    Version findByStoreVersion(String version);
     
 }
