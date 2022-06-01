@@ -66,7 +66,7 @@ public class ModificarPojo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de tienda vacío");
         }
 
-        if(this.storeType == "App Store" || this.storeType == "Play Store"){
+        if(this.storeType.equals("App Store")  || this.storeType.equals("Play Store") ){
             return true;
         }
         

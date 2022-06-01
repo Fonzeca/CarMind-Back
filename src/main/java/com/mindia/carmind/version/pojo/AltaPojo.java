@@ -51,18 +51,20 @@ public class AltaPojo {
 
     public boolean validate() {
 
-        this.storeVersion = this.storeVersion.trim();
-        this.storeType = this.storeType.trim();
-
+        
         if(this.storeVersion == null || this.storeVersion.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Versión vacía");
         }
-
+        
+        
         if(this.storeType == null || this.storeType.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo de tienda vacío");
         }
-
-        if(this.storeType == "App Store" || this.storeType == "Play Store"){
+        
+        this.storeVersion = this.storeVersion.trim();
+        this.storeType = this.storeType.trim();
+        
+        if(this.storeType.equals("App Store")  || this.storeType.equals("Play Store") ){
             return true;
         }
         
