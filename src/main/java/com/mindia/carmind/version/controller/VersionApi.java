@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mindia.carmind.version.manager.VersionManager;
 import com.mindia.carmind.version.pojo.AltaPojo;
+import com.mindia.carmind.version.pojo.LastVersionView;
 import com.mindia.carmind.version.pojo.ModificarPojo;
 import com.mindia.carmind.version.pojo.VersionView;
 
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -30,6 +32,11 @@ public class VersionApi {
     @GetMapping("/public/version/{version}")
     public VersionView getVersion(@PathVariable String version) {
         return manager.obtenerVersionByVersion(version);
+    }
+
+    @GetMapping("/public/lastVersion")
+    public LastVersionView enviarTokenRecuperacionPassword(@RequestParam("platform") String platform ){
+        return manager.getLastVersionByPlatform(platform);
     }
 
     @PostMapping("/public/version")
