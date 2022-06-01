@@ -9,6 +9,7 @@ import com.mindia.carmind.entities.Version;
 import com.mindia.carmind.entities.interfaces.IVersion;
 import com.mindia.carmind.version.persistence.VersionesRepository;
 import com.mindia.carmind.version.pojo.AltaPojo;
+import com.mindia.carmind.version.pojo.LastVersionView;
 import com.mindia.carmind.version.pojo.ModificarPojo;
 import com.mindia.carmind.version.pojo.VersionView;
 
@@ -74,6 +75,11 @@ public class VersionManager implements IVersion {
     public List<VersionView> getAllVersiones() {
         List<Version> v = repository.findAll();
         return v.stream().map(VersionView::new).collect(Collectors.toList());
+    }
+
+    public LastVersionView getLastVersionByPlatform(String platform){
+        Version v = repository.findByStoreTypeOrderByIdDesc(platform.replace('_', ' '));
+        return new LastVersionView(v);
     }
 
 }
