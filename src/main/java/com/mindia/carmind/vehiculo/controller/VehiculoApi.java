@@ -9,6 +9,7 @@ import com.mindia.carmind.vehiculo.manager.VehiculoManager;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.DocumentoView;
+import com.mindia.carmind.vehiculo.pojo.LogUsoVehiculoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -110,5 +111,10 @@ public class VehiculoApi {
     @GetMapping("vehiculo/{id}/formularios/historial")
     public List<LogEvaluacionView> getLogsFormularios(@PathVariable Integer id) {
         return manager.obtenerLogsFormularios(id);
+    }
+
+    @GetMapping("vehiculo/{id}/historial/vehiculosUsados")
+    public List<LogUsoVehiculoView> getLogsVehiculosUsados(@PathVariable Integer id) {
+        return manager.obtenerLogsVehiculosUsados(id);
     }
 }

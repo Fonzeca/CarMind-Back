@@ -16,9 +16,9 @@ import javax.persistence.EntityNotFoundException;
 import com.mindia.carmind.entities.Documento;
 import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.LogEvaluacion;
+import com.mindia.carmind.entities.LogUsoVehiculo;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.entities.VehiculoEvaluacion;
-import com.mindia.carmind.entities.interfaces.IVehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.evaluacion.pojo.LogEvaluacionView;
@@ -28,12 +28,14 @@ import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
 import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
+import com.mindia.carmind.vehiculo.persistence.LogUsoVehiculoRepository;
 import com.mindia.carmind.vehiculo.persistence.TipoDocumentoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 import com.mindia.carmind.vehiculo.pojo.AltaPojo;
 import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.DocumentoView;
+import com.mindia.carmind.vehiculo.pojo.LogUsoVehiculoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
@@ -47,7 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class VehiculoManager implements IVehiculo {
+public class VehiculoManager {
     Convertions c;
 
     @Autowired
@@ -58,6 +60,9 @@ public class VehiculoManager implements IVehiculo {
 
     @Autowired
     LogEvaluacionRepository logEvaluacionRepository;
+
+    @Autowired
+    LogUsoVehiculoRepository logUsoVehiculoRepository;
 
     @Autowired
     EvaluacionManager evaluacionManager;
@@ -130,7 +135,6 @@ public class VehiculoManager implements IVehiculo {
         return armarVehiculoConPendientes(v);
     }
 
-    @Override
     public List<VehiculoView> getAllVehiculos() {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
@@ -218,6 +222,7 @@ public class VehiculoManager implements IVehiculo {
 
         // Obtenemos el usuario logeado
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
+        
 
         if (!vehiculo.getEmpresaId().equals(loggedUser.getEmpresa())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
@@ -241,6 +246,9 @@ public class VehiculoManager implements IVehiculo {
         vehiculo.setUsuarioIdUsando(loggedUser.getId());
 
         repository.save(vehiculo);
+
+        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo(loggedUser.getId(), id);
+        logUsoVehiculoRepository.save(logUsoVehiculo);
     }
 
     public void terminarUso(Integer id) {
@@ -254,6 +262,15 @@ public class VehiculoManager implements IVehiculo {
             vehiculo.setUsuarioIdUsando(null);
 
             repository.save(vehiculo);
+
+            try{
+                LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
+                logUsoVehiculo.setFechaFin(LocalDate.now());
+                logUsoVehiculoRepository.save(logUsoVehiculo);
+            }catch(Exception e){
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                "El Vehiculo se ha detenido pero no se ha guardado la detención en el historial de uso debido a que no existe en el historial ningún inicio de uso del Vehiculo");
+            }
         } else {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -362,6 +379,11 @@ public class VehiculoManager implements IVehiculo {
         return evaluaciones;
     }
 
+    public List<LogUsoVehiculoView> obtenerLogsVehiculosUsados(Integer VehiculoId){
+        List<LogUsoVehiculo> logs = logUsoVehiculoRepository.findAllByVehiculoId(VehiculoId);
+        return logs.stream().map(LogUsoVehiculoView::new).collect(Collectors.toList());
+    }
+
     // -------------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -432,4 +454,5 @@ public class VehiculoManager implements IVehiculo {
         vehiculo.setPendientes(listsEvaluacion);
         return vehiculo;
     }
+
 }

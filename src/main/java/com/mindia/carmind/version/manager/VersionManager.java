@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import com.mindia.carmind.entities.Version;
-import com.mindia.carmind.entities.interfaces.IVersion;
 import com.mindia.carmind.version.persistence.VersionesRepository;
 import com.mindia.carmind.version.pojo.AltaPojo;
 import com.mindia.carmind.version.pojo.LastVersionView;
@@ -20,7 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class VersionManager implements IVersion {
+public class VersionManager {
 
     @Autowired
     VersionesRepository repository;
@@ -75,7 +74,6 @@ public class VersionManager implements IVersion {
         }
     }
 
-    @Override
     public List<VersionView> getAllVersiones() {
         List<Version> v = repository.findAll();
         return v.stream().map(VersionView::new).collect(Collectors.toList());
