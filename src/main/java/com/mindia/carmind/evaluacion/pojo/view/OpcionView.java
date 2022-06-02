@@ -11,15 +11,15 @@ import com.mindia.carmind.entities.PreguntaOpcion;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "id",
-    "texto"
+    "opcion"
 })
 @Generated("jsonschema2pojo")
 public class OpcionView {
 
     @JsonProperty("id")
     private Integer id;
-    @JsonProperty("texto")
-    private String texto;
+    @JsonProperty("opcion")
+    private String opcion;
 
     /**
      * No args constructor for use in serialization
@@ -30,13 +30,13 @@ public class OpcionView {
 
     /**
      * 
-     * @param texto
+     * @param opcion
      * @param id
      */
-    public OpcionView(Integer id, String texto) {
+    public OpcionView(Integer id, String opcion) {
         super();
         this.id = id;
-        this.texto = texto;
+        this.opcion = opcion;
     }
 
     @JsonProperty("id")
@@ -49,19 +49,20 @@ public class OpcionView {
         this.id = id;
     }
 
-    @JsonProperty("texto")
-    public String getTexto() {
-        return texto;
+    @JsonProperty("opcion")
+    public String getOpcion() {
+        return this.opcion;
     }
 
-    @JsonProperty("texto")
-    public void setTexto(String texto) {
-        this.texto = texto;
+    @JsonProperty("opcion")
+    public void setOpcion(String opcion) {
+        this.opcion = opcion;
     }
+
 
     public OpcionView(PreguntaOpcion o){
         this.id = o.getId();
-        this.texto = o.getOpcion();
+        this.opcion = o.getOpcion();
     }
 
 }
