@@ -297,11 +297,11 @@ public class EvaluacionManager {
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
 
-    public List<LogEvaluacionView> historialDeEvaluacionesByLoggedUser(){
+    public List<LogEvaluacionView> historialDeEvaluacionesByLoggedUser(int limit){
         //Obtenemos el usuario
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
-        List<LogEvaluacion> logs = logEvaluacionRepository.getAllByUserIdFechaDesc(loggedUser.getId());
+        List<LogEvaluacion> logs = logEvaluacionRepository.getAllByUserIdFechaDesc(loggedUser.getId(),limit);
 
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }

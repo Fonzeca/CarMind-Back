@@ -189,7 +189,7 @@ public class UsuariosManager {
         OfflineDatosView data = new OfflineDatosView();
         data.setLoggedUser(this.getLoggeduser());
         data.setEvaluaciones(evaluacionManager.getAllEvaluacionesWithDetails());
-        data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser());
+        data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser(50));
         data.setVehiculos(vehiculoManager.getAllVehiculosWithPendientes());
 
         try {
