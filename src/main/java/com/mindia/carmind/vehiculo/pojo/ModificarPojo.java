@@ -27,7 +27,7 @@ public class ModificarPojo {
     @JsonProperty("tipo")
     private String tipo;
     @JsonProperty("kilometraje")
-    private String kilometraje;
+    private Integer kilometraje;
 
     @JsonProperty("id")
     public int getId() {
@@ -90,12 +90,12 @@ public class ModificarPojo {
     }
 
     @JsonProperty("kilometraje")
-    public String getKilometraje() {
+    public Integer getKilometraje() {
         return this.kilometraje;
     }
 
     @JsonProperty("kilometraje")
-    public void setKilometraje(String kilometraje) {
+    public void setKilometraje(Integer kilometraje) {
         this.kilometraje = kilometraje;
     }
 

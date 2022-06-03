@@ -60,7 +60,7 @@ public class VehiculoView {
     @JsonProperty("pendientes")
     private List<EvaluacionLiteView> pendientes;
     @JsonProperty("kilometraje")
-    private String     kilometraje ;
+    private Integer     kilometraje ;
 
     /**
      * No args constructor for use in serialization
@@ -210,12 +210,12 @@ public class VehiculoView {
     }
 
     @JsonProperty("kilometraje")
-    public String getKilometraje(){
+    public Integer getKilometraje(){
         return this.kilometraje;
     }
 
     @JsonProperty("kilometraje")
-    public void setKilometraje(String kilometraje){
+    public void setKilometraje(Integer kilometraje){
         this.kilometraje = kilometraje;
     }
 

@@ -63,8 +63,8 @@ public class Vehiculo implements Serializable {
     @Column(name="tipo_vehiculo", nullable=false, length=50)
     private String     tipoVehiculo ;
 
-    @Column(name="kilometraje", length=15)
-    private String     kilometraje ;
+    @Column(name="kilometraje")
+    private Integer     kilometraje ;
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
@@ -168,11 +168,11 @@ public class Vehiculo implements Serializable {
         return this.tipoVehiculo;
     }
 
-    public String getKilometraje(){
+    public Integer getKilometraje(){
         return this.kilometraje;
     }
 
-    public void setKilometraje(String kilometraje){
+    public void setKilometraje(Integer kilometraje){
         this.kilometraje = kilometraje;
     }
 

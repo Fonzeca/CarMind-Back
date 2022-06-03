@@ -25,7 +25,7 @@ public class AltaPojo {
     @JsonProperty("tipo")
     private String tipo;
     @JsonProperty("kilometraje")
-    private String kilometraje;
+    private Integer kilometraje;
 
     @JsonProperty("marca")
     public String getMarca() {
@@ -88,12 +88,12 @@ public class AltaPojo {
     }
 
     @JsonProperty("kilometraje")
-    public String getKilometraje(){
+    public Integer getKilometraje(){
         return this.kilometraje;
     }
 
     @JsonProperty("kilometraje")
-    public void setKilometraje(String kilometraje){
+    public void setKilometraje(Integer kilometraje){
         kilometraje = this.kilometraje;
     }
 
