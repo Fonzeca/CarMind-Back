@@ -63,6 +63,9 @@ public class Vehiculo implements Serializable {
     @Column(name="tipo_vehiculo", nullable=false, length=50)
     private String     tipoVehiculo ;
 
+    @Column(name="kilometraje", length=15)
+    private String     kilometraje ;
+
 
     //--- ENTITY LINKS ( RELATIONSHIP )
     @ManyToOne
@@ -164,6 +167,15 @@ public class Vehiculo implements Serializable {
     public String getTipoVehiculo() {
         return this.tipoVehiculo;
     }
+
+    public String getKilometraje(){
+        return this.kilometraje;
+    }
+
+    public void setKilometraje(String kilometraje){
+        this.kilometraje = kilometraje;
+    }
+
 
     //--- GETTERS FOR LINKS
     public Empresa getEmpresa() {
