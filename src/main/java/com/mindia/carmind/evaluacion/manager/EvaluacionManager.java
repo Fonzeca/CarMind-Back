@@ -267,6 +267,11 @@ public class EvaluacionManager {
                         case "TX":
                             logPregunta.setNota(res.getTexto());
                             break;
+                        case "KM":
+                            logPregunta.setNota(res.getTexto());
+                            vehiculo.setKilometraje(Integer.parseInt(res.getTexto()));
+                            vehiculosRepository.save(vehiculo);
+                            break;
                     }
                     //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
                     if(logPregunta.getId() == null){
