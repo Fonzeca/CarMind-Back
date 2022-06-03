@@ -119,6 +119,7 @@ public class VehiculoManager {
         vehiculo.setMarca(pojo.getMarca());
         vehiculo.setModelo(pojo.getModelo());
         vehiculo.setTipoVehiculo(pojo.getTipo());
+        vehiculo.setKilometraje(pojo.getKilometraje());
 
         repository.save(vehiculo);
     }
