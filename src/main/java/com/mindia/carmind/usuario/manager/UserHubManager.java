@@ -262,6 +262,31 @@ public class UserHubManager {
         }
     }
 
+    public boolean newPasswordFirstLogin(String username, String password){
+
+        // Armo el body
+        RequestBody body = RequestBody.create(new byte[0]);
+
+        String pathUserHub = "/firstLoginResetPassword?newPassword=" + password + "&username=" + username;
+
+        // Armo el request para mandar a UserHub
+        Request request = armadoRequest(pathUserHub, body, HttpMethod.POST);
+
+        // Llamo a la api
+        try (Response response = client.newCall(request).execute()) {
+
+            if (response.code() != 200) {
+                // Si el code no es 200, paso algo en UserHub
+                throw new UserHubException(response.body().string());
+            } else {
+                return true;
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        }
+    }
+
     //--------------------------------------------
 
     private boolean validate(){

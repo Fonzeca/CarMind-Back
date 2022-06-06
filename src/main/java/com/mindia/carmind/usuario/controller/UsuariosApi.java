@@ -82,6 +82,11 @@ public class UsuariosApi {
         manager.sincronizarDatos(pojo);
     }
 
+    @PostMapping("/usuario/newPassword")
+    public void nuevaContraseñaFirstLogin(@RequestParam("password") String password){
+        manager.cambiarContraseñaFirstLogin(password);
+    }
+
     @PostMapping("/public/usuario/recuperar")
     public void enviarTokenRecuperacionPassword(@RequestParam("email") String email){
         manager.enviarTokenRecuperacionPassword(email);

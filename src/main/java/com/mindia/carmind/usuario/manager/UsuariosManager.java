@@ -234,4 +234,9 @@ public class UsuariosManager {
 
     }
 
+
+    public void cambiarContraseñaFirstLogin(String password){
+        var user = getLoggeduser();
+        userHubManager.newPasswordFirstLogin(user.getUsername(), password);
+    }
 }
