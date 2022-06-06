@@ -6,6 +6,7 @@ import com.mindia.carmind.entities.LogEvaluacion;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,8 +18,8 @@ public interface LogEvaluacionRepository extends JpaRepository<LogEvaluacion, In
     @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion ORDER BY fecha DESC")
     List<LogEvaluacion> getAllFechaDesc();
 
-    @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE usuario_id = ?1 ORDER BY fecha DESC")
-    List<LogEvaluacion> getAllByUserIdFechaDesc(int userId);
+    @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE usuario_id = ?1 LIMIT ?2")
+    List<LogEvaluacion> getAllByUserIdFechaDesc(int userId, @Param("limit") int limit);
 
     List<LogEvaluacion> findByVehiculoIdOrderByFechaDesc(Integer vehiculoId);
 

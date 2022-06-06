@@ -68,8 +68,8 @@ public class EvaluacionApi {
     }
 
     @GetMapping("/evaluacion/historial/loggedUser")
-    public List<LogEvaluacionView> getHistualLogLoggedUser(){
-        return manager.historialDeEvaluacionesByLoggedUser();
+    public List<LogEvaluacionView> getHistualLogLoggedUser(@RequestParam("limit") int limit){
+        return manager.historialDeEvaluacionesByLoggedUser(limit);
     }
 
     @GetMapping("/evaluacion/historial/{id}")

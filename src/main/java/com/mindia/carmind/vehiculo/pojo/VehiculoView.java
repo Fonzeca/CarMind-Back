@@ -25,7 +25,8 @@ import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
         "fecha_service",
         "averiado",
         "ultima_evaluacion",
-        "pendientes"
+        "pendientes",
+        "kilometraje",
 })
 @Generated("jsonschema2pojo")
 public class VehiculoView {
@@ -58,6 +59,8 @@ public class VehiculoView {
     private String ultimaEvaluacion;
     @JsonProperty("pendientes")
     private List<EvaluacionLiteView> pendientes;
+    @JsonProperty("kilometraje")
+    private Integer     kilometraje ;
 
     /**
      * No args constructor for use in serialization
@@ -206,6 +209,16 @@ public class VehiculoView {
         this.averiado = averiado;
     }
 
+    @JsonProperty("kilometraje")
+    public Integer getKilometraje(){
+        return this.kilometraje;
+    }
+
+    @JsonProperty("kilometraje")
+    public void setKilometraje(Integer kilometraje){
+        this.kilometraje = kilometraje;
+    }
+
 
 
 
@@ -219,6 +232,7 @@ public class VehiculoView {
         this.enUso = v.getUsuarioIdUsando() != null;
         this.tipo = v.getTipoVehiculo();
         this.averiado = v.getAveriado();
+        this.kilometraje = v.getKilometraje();
         
         if (detalle) {
             if(this.enUso){

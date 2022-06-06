@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
-import com.mindia.carmind.entities.interfaces.IUsuario;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
@@ -32,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
-public class UsuariosManager implements IUsuario {
+public class UsuariosManager {
     @Autowired
     UsuariosRepository repository;
 
@@ -56,7 +55,6 @@ public class UsuariosManager implements IUsuario {
         return userHubManager.login(username, password);
     }
 
-    @Override
     public void altaUsuario(AltaPojo pojo, Integer idEmpresa) {
         // Le damos de alta al usuario en userHub
         try {
@@ -92,7 +90,7 @@ public class UsuariosManager implements IUsuario {
         repository.save(usuario);
     }
 
-    @Override
+    
     public void modificarConductor(ModificarPojo pojo) {
         // Modificamos el usuario en UserHub
         Usuario usuario = repository.findByUsernameAndEmpresaAndActiveTrue(pojo.getUsername(), getLoggeduser().getEmpresa());
@@ -123,7 +121,7 @@ public class UsuariosManager implements IUsuario {
         repository.save(usuario);
     }
 
-    @Override
+    
     @Transactional
     public void bajaConductor(Integer id) {
         UsuarioView logged = getLoggeduser();
@@ -144,7 +142,7 @@ public class UsuariosManager implements IUsuario {
         userHubManager.deleteUsuario(user.getUsername());
     }
 
-    @Override
+    
     public UsuarioView obtenerUsuarioById(String id) {
         Usuario u = repository.findByIdAndEmpresaAndActiveTrue(Integer.parseInt(id), getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
@@ -191,7 +189,7 @@ public class UsuariosManager implements IUsuario {
         OfflineDatosView data = new OfflineDatosView();
         data.setLoggedUser(this.getLoggeduser());
         data.setEvaluaciones(evaluacionManager.getAllEvaluacionesWithDetails());
-        data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser());
+        data.setLogEvaluacion(evaluacionManager.historialDeEvaluacionesByLoggedUser(50));
         data.setVehiculos(vehiculoManager.getAllVehiculosWithPendientes());
 
         try {
@@ -236,4 +234,9 @@ public class UsuariosManager implements IUsuario {
 
     }
 
+
+    public void cambiarContraseñaFirstLogin(String password){
+        var user = getLoggeduser();
+        userHubManager.newPasswordFirstLogin(user.getUsername(), password);
+    }
 }

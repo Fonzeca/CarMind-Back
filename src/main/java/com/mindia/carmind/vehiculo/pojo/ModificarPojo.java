@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color","tipo" })
+@JsonPropertyOrder({ "id", "marca", "modelo", "linea", "color","tipo","kilometraje" })
 @Generated("jsonschema2pojo")
 public class ModificarPojo {
 
@@ -26,6 +26,8 @@ public class ModificarPojo {
     private String linea;
     @JsonProperty("tipo")
     private String tipo;
+    @JsonProperty("kilometraje")
+    private Integer kilometraje;
 
     @JsonProperty("id")
     public int getId() {
@@ -87,7 +89,15 @@ public class ModificarPojo {
         this.nombre = nombre;
     }
 
+    @JsonProperty("kilometraje")
+    public Integer getKilometraje() {
+        return this.kilometraje;
+    }
 
+    @JsonProperty("kilometraje")
+    public void setKilometraje(Integer kilometraje) {
+        this.kilometraje = kilometraje;
+    }
 
     public boolean validate(){
 
