@@ -20,7 +20,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "LastName",
     "Roles",
     "DocumentType",
-    "DocumentNumber"
+    "DocumentNumber",
+    "HadPasswordChange"
 })
 @Generated("jsonschema2pojo")
 public class LoggedView {
@@ -47,6 +48,8 @@ public class LoggedView {
     private String documentNumber;
     @JsonProperty("RecoverPasswordToken")
     private String recoverPasswordToken;
+    @JsonProperty("HadPasswordChange")
+    private boolean HadPasswordChange;
 
     /**
      * No args constructor for use in serialization
@@ -190,6 +193,16 @@ public class LoggedView {
     @JsonProperty("RecoverPasswordToken")
     public void setRecoverPasswordToken(String recoverPasswordToken) {
         this.recoverPasswordToken = recoverPasswordToken;
+    }
+
+    @JsonProperty("HadPasswordChange")
+    public boolean getHadPasswordChange() {
+        return this.HadPasswordChange;
+    }
+
+    @JsonProperty("HadPasswordChange")
+    public void setHadPasswordChange(boolean HadPasswordChange) {
+        this.HadPasswordChange = HadPasswordChange;
     }
 
 
