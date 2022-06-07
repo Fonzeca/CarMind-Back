@@ -17,7 +17,7 @@ public class TokenView {
     @JsonProperty("token")
     private String token;
     @JsonProperty("mustChangePassword")
-    private String mustChangePassword;
+    private boolean mustChangePassword;
 
     /**
      * No args constructor for use in serialization
@@ -47,12 +47,12 @@ public class TokenView {
 
 
     @JsonProperty("mustChangePassword")
-    public String getMustChangePassword() {
+    public boolean getMustChangePassword() {
         return this.mustChangePassword;
     }
 
     @JsonProperty("mustChangePassword")
-    public void setMustChangePassword(String mustChangePassword) {
+    public void setMustChangePassword(boolean mustChangePassword) {
         this.mustChangePassword = mustChangePassword;
     }
 
