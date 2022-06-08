@@ -240,6 +240,7 @@ public class VehiculoManager {
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
                 v.setUsuarioIdUsando(null);
+                updateFechaFinLogDeUso(v.getUsuarioIdUsando());
                 repository.save(v);
             }
         }
@@ -265,15 +266,19 @@ public class VehiculoManager {
 
             repository.save(vehiculo);
 
-            LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
-            if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
-                logUsoVehiculo.setFechaFin(LocalDate.now());
-                logUsoVehiculoRepository.save(logUsoVehiculo);
-            }
+            updateFechaFinLogDeUso(id);
         } else {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "El usuario actual no es el que esta usando este vehiculo.");
+        }
+    }
+
+    private void updateFechaFinLogDeUso(Integer id){
+        LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
+        if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
+            logUsoVehiculo.setFechaFin(LocalDate.now());
+            logUsoVehiculoRepository.save(logUsoVehiculo);
         }
     }
 
