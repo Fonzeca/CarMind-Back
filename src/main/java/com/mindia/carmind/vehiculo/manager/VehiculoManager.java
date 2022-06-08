@@ -237,13 +237,17 @@ public class VehiculoManager {
         // Hago que deje de usar los vehiculos asignados al usuario
         var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
 
+        if(vehiculo.getUsuarioIdUsando() != null){
+            updateFechaFinLogDeUso(id, vehiculo.getUsuarioIdUsando());
+        }
+
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
-                updateFechaFinLogDeUso(v.getId(), v.getUsuarioIdUsando());
                 v.setUsuarioIdUsando(null);
                 repository.save(v);
             }
         }
+
 
         // Asigno el vehiculo escaneado al usuario
         vehiculo.setUsuarioIdUsando(loggedUser.getId());
