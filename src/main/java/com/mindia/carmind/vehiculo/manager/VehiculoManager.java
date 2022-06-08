@@ -265,13 +265,10 @@ public class VehiculoManager {
 
             repository.save(vehiculo);
 
-            try{
-                LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
+            LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
+            if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
                 logUsoVehiculo.setFechaFin(LocalDate.now());
                 logUsoVehiculoRepository.save(logUsoVehiculo);
-            }catch(Exception e){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "El Vehiculo se ha detenido pero no se ha guardado la detención en el historial de uso debido a que no existe en el historial ningún inicio de uso del Vehiculo");
             }
         } else {
 
