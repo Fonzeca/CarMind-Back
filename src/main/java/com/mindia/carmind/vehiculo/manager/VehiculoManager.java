@@ -240,7 +240,7 @@ public class VehiculoManager {
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
                 v.setUsuarioIdUsando(null);
-                updateFechaFinLogDeUso(v.getUsuarioIdUsando());
+                updateFechaFinLogDeUso(v.getId());
                 repository.save(v);
             }
         }
