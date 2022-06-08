@@ -239,8 +239,8 @@ public class VehiculoManager {
 
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
+                updateFechaFinLogDeUso(v.getId(), v.getUsuarioIdUsando());
                 v.setUsuarioIdUsando(null);
-                updateFechaFinLogDeUso(v.getId());
                 repository.save(v);
             }
         }
@@ -262,11 +262,9 @@ public class VehiculoManager {
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
         if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
+            updateFechaFinLogDeUso(id, loggedUser.getId());
             vehiculo.setUsuarioIdUsando(null);
-
             repository.save(vehiculo);
-
-            updateFechaFinLogDeUso(id);
         } else {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
@@ -274,8 +272,8 @@ public class VehiculoManager {
         }
     }
 
-    private void updateFechaFinLogDeUso(Integer id){
-        LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
+    private void updateFechaFinLogDeUso(Integer vehiculoId, Integer userId){
+        LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndUsuarioIdAndFechaFin(vehiculoId, userId, null);
         if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
             logUsoVehiculo.setFechaFin(LocalDate.now());
             logUsoVehiculoRepository.save(logUsoVehiculo);
