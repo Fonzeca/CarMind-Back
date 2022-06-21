@@ -42,7 +42,7 @@ public class NotificacionManager {
     UsuariosManager usuariosManager;
 
     public List<NotificacionPojo> getAllNotificaciones(){
-        List<Notificaciones> notificaciones = notificacionRepository.findByEmpresaId(usuariosManager.getLoggeduser().getEmpresa());
+        List<Notificaciones> notificaciones = notificacionRepository.findTop10ByEmpresaId(usuariosManager.getLoggeduser().getEmpresa());
         return notificaciones.stream().map(NotificacionPojo::new).collect(Collectors.toList());
     }
 
