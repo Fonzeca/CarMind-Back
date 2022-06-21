@@ -5,7 +5,8 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import javax.persistence.*;
 
 /**
@@ -28,10 +29,10 @@ public class LogUsoVehiculo implements Serializable {
 
     //--- ENTITY DATA FIELDS 
     @Column(name="fecha_inicio", nullable=false)
-    private LocalDate  fechaInicio ;
+    private LocalDateTime  fechaInicio ;
 
     @Column(name="fecha_fin")
-    private LocalDate  fechaFin ;
+    private LocalDateTime  fechaFin ;
 
     @Column(name="usuario_id", nullable=false)
     private int        usuarioId ;
@@ -65,17 +66,17 @@ public class LogUsoVehiculo implements Serializable {
         return this.id;
     }
 
-    public void setFechaInicio( LocalDate fechaInicio ) {
+    public void setFechaInicio( LocalDateTime fechaInicio ) {
         this.fechaInicio = fechaInicio ;
     }
-    public LocalDate getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return this.fechaInicio;
     }
 
-    public void setFechaFin( LocalDate fechaFin ) {
+    public void setFechaFin( LocalDateTime fechaFin ) {
         this.fechaFin = fechaFin ;
     }
-    public LocalDate getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return this.fechaFin;
     }
 
@@ -103,7 +104,7 @@ public class LogUsoVehiculo implements Serializable {
     } 
 
     public LogUsoVehiculo(Integer usuarioId, Integer vehiculoId) {
-        this.fechaInicio = LocalDate.now(); 
+        this.fechaInicio = LocalDateTime.now(); 
         this.usuarioId = usuarioId;
         this.vehiculoId = vehiculoId;
     }

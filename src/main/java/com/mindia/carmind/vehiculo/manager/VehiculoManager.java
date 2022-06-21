@@ -279,7 +279,7 @@ public class VehiculoManager {
     private void updateFechaFinLogDeUso(Integer vehiculoId, Integer userId){
         LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndUsuarioIdAndFechaFin(vehiculoId, userId, null);
         if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
-            logUsoVehiculo.setFechaFin(LocalDate.now());
+            logUsoVehiculo.setFechaFin(LocalDateTime.now());
             logUsoVehiculoRepository.save(logUsoVehiculo);
         }
     }
