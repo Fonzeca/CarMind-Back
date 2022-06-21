@@ -47,12 +47,12 @@ public class UsuariosManager {
     @Autowired
     EvaluacionManager evaluacionManager;
 
-    public TokenView login(String username, String password) {
+    public TokenView login(String username, String password, String FCMToken) {
         Usuario u = repository.findByUsernameAndActiveTrue(username);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario inexistente.");
         }
-        return userHubManager.login(username, password);
+        return userHubManager.login(username, password, FCMToken);
     }
 
     public void altaUsuario(AltaPojo pojo, Integer idEmpresa) {
