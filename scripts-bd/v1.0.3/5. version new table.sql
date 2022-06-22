@@ -1,1 +1,6 @@
-CREATE TABLE `carmind`.`version` ( `id` INT NOT NULL AUTO_INCREMENT , `storeVersion` VARCHAR(15) NOT NULL , `storeReleaseNotes` VARCHAR(1000) NULL , `storeType` VARCHAR(50) NOT NULL , PRIMARY KEY (`id`), UNIQUE (`storeVersion`)) ENGINE = InnoDB;
+CREATE TABLE `version` (
+  `id` int NOT NULL,
+  `store_release_notes` varchar(1000) DEFAULT NULL,
+  `store_type` varchar(50) NOT NULL,
+  `store_version` varchar(15) NOT NULL
+) ENGINE=InnoDB

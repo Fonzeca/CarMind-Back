@@ -50,6 +50,10 @@ public class LoggedView {
     private String recoverPasswordToken;
     @JsonProperty("HadPasswordChange")
     private boolean HadPasswordChange;
+    @JsonProperty("FCMToken")
+    private String FCMToken;
+    @JsonProperty("FCMCreateTimeStamp")
+    private String FCMCreateTimeStamp;
 
     /**
      * No args constructor for use in serialization
@@ -203,6 +207,26 @@ public class LoggedView {
     @JsonProperty("HadPasswordChange")
     public void setHadPasswordChange(boolean HadPasswordChange) {
         this.HadPasswordChange = HadPasswordChange;
+    }
+
+    @JsonProperty("FCMToken")
+    public String getFCMToken() {
+        return this.FCMToken;
+    }
+
+    @JsonProperty("FCMToken")
+    public void setFCMToken(String FCMToken) {
+        this.FCMToken = FCMToken;
+    }
+
+    @JsonProperty("FCMCreateTimeStamp")
+    public String getFCMCreateTimeStamp() {
+        return this.FCMCreateTimeStamp;
+    }
+
+    @JsonProperty("FCMCreateTimeStamp")
+    public void setFCMCreateTimeStamp(String FCMCreateTimeStamp) {
+        this.FCMCreateTimeStamp = FCMCreateTimeStamp;
     }
 
 
