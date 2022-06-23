@@ -91,8 +91,8 @@ public class LogEvaluacionDetailsView {
         this.usuarioNombre = log.getUsuario().getNombre() + log.getUsuario().getApellido();
         this.vehiculoId = log.getVehiculoId();
         this.vehiculoNombre = log.getVehiculo().getNombre();
-        this.paraRevisar = log.getParaRevisar();
-        this.preguntas = log.getListOfLogPregunta().stream().map(LogPreguntaDetailsView::new).collect(Collectors.toList());
+        this.paraRevisar = log.isParaRevisar();
+        this.preguntas = log.getLogpreguntaList().stream().map(LogPreguntaDetailsView::new).collect(Collectors.toList());
     }
 
     @JsonProperty("evaluacion_id")

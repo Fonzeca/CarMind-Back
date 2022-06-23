@@ -1,27 +1,48 @@
 package com.mindia.carmind.notificacion.manager;
 
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import javax.transaction.Transactional;
 
+import com.mindia.carmind.empresa.persistence.EmpresaRepository;
 import com.mindia.carmind.entities.Documento;
+import com.mindia.carmind.entities.Empresa;
 import com.mindia.carmind.entities.Notificaciones;
+import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.notificacion.persistence.NotificacionRepository;
+import com.mindia.carmind.notificacion.pojo.NotificacionDocumentacionView;
 import com.mindia.carmind.notificacion.pojo.NotificacionPojo;
+import com.mindia.carmind.notificacion.pojo.VencimientoView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
+import com.mindia.carmind.usuario.persistence.UsuariosRepository;
+import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
+import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 
 @Service
 public class NotificacionManager {
@@ -34,6 +55,15 @@ public class NotificacionManager {
 
     @Autowired
     DocumentoRepository documentoRepository;
+
+    @Autowired
+    VehiculosRepository vehiculosRepository;
+
+    @Autowired
+    EmpresaRepository empresaRepository;
+
+    @Autowired
+    UsuariosRepository usuariosRepository;
 
     @Autowired
     NotificacionRepository notificacionRepository;
@@ -70,16 +100,62 @@ public class NotificacionManager {
         log.info("Finish dailyTask, the time is now {}", dateFormat.format(new Date()));
     }
 
-    private void weeklyTask(){
+    @Scheduled(cron = "*/10 * * * * *")
+    @Transactional
+    private void everyMondayTask(){
+        
+        int daysInterval = 14;
         log.info("Perform weeklyTask, the time is now {}", dateFormat.format(new Date()));
 
-        List<Documento> docs = documentoRepository.findByVencimientoBetweenAndActiveTrue(LocalDate.now(), LocalDate.now().plusDays(14));
+        LocalDate dateNow = LocalDate.now();
 
-        for (Documento documento : docs) {
-            log.info(documento.getVehiculoId() + " " + documento.getTipoDocumento());   
+        List<Empresa> empresas = empresaRepository.findAll();
+
+        for(Empresa empresa : empresas){
+
+            List<Vehiculo> vehiculos = vehiculosRepository.findByEmpresaId(empresa.getId());
+            List<VencimientoView> vencimientos = new ArrayList<VencimientoView>();
+
+            for(Vehiculo vehiculo : vehiculos){
+                List<Documento> docsVencidos = documentoRepository.findByVehiculoIdAndVencimientoBetweenAndActiveTrue(vehiculo.getId(), dateNow, dateNow.plusDays(daysInterval));
+                IntStream.range(0, docsVencidos.size()).forEach(i ->    
+                    vencimientos.add(
+                        new VencimientoView( 
+                        docsVencidos.get(i).getTipoDocumento(), 
+                        vehiculo.getNombre(),
+                        differenceInDays(dateNow, docsVencidos.get(i).getVencimiento())
+                    ))
+                );
+            }
+            List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrue(empresa.getId());
+            usuarios.stream().forEach(usuario -> {sendEmail(usuario.getNombre(), vencimientos);});
         }
+    }
+    
+    private Integer differenceInDays(LocalDate from, LocalDate to){
+        Period period = Period.between(from, to);
+        return Math.abs(period.getDays());
+    }
 
+    private void sendEmail(String nombre, List<VencimientoView> vencimientos){
+        
+        String url = "http://localhost:5896";
+        String path = "/sendDocsCloseToExpire";
+        final OkHttpClient client = new OkHttpClient();
+        
+        NotificacionDocumentacionView notificacion = new NotificacionDocumentacionView(nombre, vencimientos);
+        RequestBody body = RequestBody.create(Convertions.toJson(notificacion),
+        MediaType.get("application/json; charset=utf-8"));
 
-        log.info("Finish weeklyTask, the time is now {}", dateFormat.format(new Date()));
+        if(vencimientos.isEmpty()) path =  "/sendNoneDocsCloseToExpire";
+
+        Request fastEmailRequest = new Request.Builder().url(url + path)
+        .addHeader("Content-Type", "application/json").post(body).build();
+    
+        try (Response fastEmailResponse = client.newCall(fastEmailRequest).execute()) {
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+        } 
     }
 }

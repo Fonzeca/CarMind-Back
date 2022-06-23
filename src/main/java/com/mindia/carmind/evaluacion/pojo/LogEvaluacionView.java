@@ -176,8 +176,8 @@ public class LogEvaluacionView {
     }
 
     @JsonProperty("para_revisar")
-    public void setParaRevisar(Boolean paraRevisar) {
-        this.paraRevisar = paraRevisar;
+    public void setParaRevisar(Boolean isParaRevisar) {
+        this.paraRevisar = isParaRevisar;
     }
 
 
@@ -191,7 +191,7 @@ public class LogEvaluacionView {
         this.usuarioId = log.getUsuarioId();
         this.nombreUsuario = log.getUsuario().getNombre();
         this.apellidoUsuario = log.getUsuario().getApellido();
-        this.paraRevisar = log.getParaRevisar();
+        this.paraRevisar = log.isParaRevisar();
     }
 
 }

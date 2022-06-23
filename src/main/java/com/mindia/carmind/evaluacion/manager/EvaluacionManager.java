@@ -139,13 +139,13 @@ public class EvaluacionManager {
      * @param id
      * @param respuestas
      */
-    public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas){
+    public void realizarEvaluacion(Integer id, AltaEvaluacionTerminadaPojo respuestas){
         realizarEvaluacion(id, respuestas, null);
     }
 
     
     @Transactional
-    public void realizarEvaluacion(int id, AltaEvaluacionTerminadaPojo respuestas, LocalDateTime logFecha){
+    public void realizarEvaluacion(Integer id, AltaEvaluacionTerminadaPojo respuestas, LocalDateTime logFecha){
         //Validamos el pojo
         respuestas.validate();
 
@@ -164,7 +164,7 @@ public class EvaluacionManager {
         Vehiculo vehiculo = vehiculosRepository.getById(respuestas.getVehiculoId());
 
         //Obtenemos todas las evaluaciones del vehiculo
-        List<Integer> idEvaluacionesVehiculo = vehiculo.getListOfVehiculoEvaluacion().stream().map(x -> x.getEvaluacionId()).collect(Collectors.toList());
+        List<Integer> idEvaluacionesVehiculo = vehiculo.getVehiculoevaluacionList().stream().map(x -> x.getEvaluacionId()).collect(Collectors.toList());
 
         //Nos aseguramos que la evaluacion que se quiere hacer, la tenga el vehiculo
         if(idEvaluacionesVehiculo.contains(evaluacion.getId())){
@@ -234,14 +234,14 @@ public class EvaluacionManager {
 
                                     if(pregunta.getTipo().equals("S1") && pregunta.getCrucial() && !optRes.getTickCorrecto()){
                                         //Se avisa que esta para revisar
-                                        if(!log.getParaRevisar()){
+                                        if(!log.isParaRevisar()){
                                             setEvaluacionParaRevisar(log, vehiculo);
                                         }
                                     }
 
                                     log_opt.setIdLogPregunta(logPregunta.getId());
                                     log_opt.setDescripcion(opcion.getOpcion());
-                                    log_opt.setCrucial(opcion.getCrucial());
+                                    log_opt.setCrucial(opcion.isCrucial());
 
                                     //TODO: validar las ids  .constraint fails (`carmind`.`log_option`, CONSTRAINT `option_log_option` FOREIGN KEY (`id_option`) REFERENCES `pregunta_opcion` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT)
                                     logOptionRepository.save(log_opt);
@@ -256,7 +256,7 @@ public class EvaluacionManager {
 
                                 //Se avisa que esta para revisar
                                 if(pregunta.getCrucial()){
-                                    if(!log.getParaRevisar()){
+                                    if(!log.isParaRevisar()){
                                         setEvaluacionParaRevisar(log, vehiculo);
                                     }
                                 }
@@ -274,9 +274,8 @@ public class EvaluacionManager {
                             break;
                     }
                     //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
-                    if(logPregunta.getId() == null){
-                        logPregunta = logPreguntaRepository.save(logPregunta);
-                    }
+                    //if(logPregunta.getId() == null){    así estaba antes
+                    if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
                 }
                 
                 return;
@@ -297,7 +296,7 @@ public class EvaluacionManager {
 
 
         List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
-        logs = logs.stream().filter(x -> x.getEvaluacion().getEmpresaId().equals(empresaId)).collect(Collectors.toList());
+        logs = logs.stream().filter(x -> x.getEvaluacion().getEmpresaId() == (empresaId)).collect(Collectors.toList());
         
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
@@ -319,7 +318,7 @@ public class EvaluacionManager {
     //---------------------------------------PRIVATE-----------------------------------------------------
 
     private List<Integer> getIdsPreguntasOfEvaluacion(Evaluacion e){
-        List<Pregunta> preguntasDb = e.getListOfPregunta();
+        List<Pregunta> preguntasDb = e.getPreguntaList();
         return preguntasDb.stream().map(x -> x.getId()).collect(Collectors.toList());
     }
 

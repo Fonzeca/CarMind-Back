@@ -53,8 +53,8 @@ public class LogOpcionDetailsView {
         super();
         this.logId = log.getId();
         this.opcion = log.getDescripcion();
-        this.crucial = log.getCrucial();
-        this.tickCorrecto = log.getTickCheck();
+        this.crucial = log.isCrucial();
+        this.tickCorrecto = log.isTickCheck();
     }
 
     @JsonProperty("log_id")

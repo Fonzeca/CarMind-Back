@@ -80,7 +80,7 @@ public class LogPreguntaDetailsView {
         this.logId = log.getId();
         this.pregunta = log.getDescripcion();
         this.tipo = log.getTipo();
-        this.crucial = log.getCrucial();
+        this.crucial = log.isCrucial();
 
         this.texto = log.getNota();
 
@@ -90,8 +90,8 @@ public class LogPreguntaDetailsView {
 
         this.tickCorrecto = log.getTickCorrecto();
         
-        if(log.getListOfLogOption() != null && !log.getListOfLogOption().isEmpty()){
-            this.opciones = log.getListOfLogOption().stream().map(LogOpcionDetailsView::new).collect(Collectors.toList());
+        if(log.getLogoptionList() != null && !log.getLogoptionList().isEmpty()){
+            this.opciones = log.getLogoptionList().stream().map(LogOpcionDetailsView::new).collect(Collectors.toList());
         }
     }
 
