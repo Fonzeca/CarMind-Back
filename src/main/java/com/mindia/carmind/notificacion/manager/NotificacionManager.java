@@ -38,6 +38,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -46,6 +47,8 @@ import org.springframework.web.server.ResponseStatusException;
 
 @Service
 public class NotificacionManager {
+
+    private Environment env;
 
     private static final Logger log = LoggerFactory.getLogger(NotificacionManager.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(" HH:mm:ss");
@@ -100,7 +103,7 @@ public class NotificacionManager {
         log.info("Finish dailyTask, the time is now {}", dateFormat.format(new Date()));
     }
 
-    @Scheduled(cron = "*/10 * * * * *")
+    @Scheduled(cron = "0 0 0 * * MON")
     @Transactional
     private void everyMondayTask(){
         
@@ -128,7 +131,7 @@ public class NotificacionManager {
                 );
             }
             List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrue(empresa.getId());
-            usuarios.stream().forEach(usuario -> {sendEmail(usuario.getNombre(), vencimientos);});
+            usuarios.stream().forEach(usuario -> {sendEmail(usuario.getUsername(), usuario.getNombre(), vencimientos);});
         }
     }
     
@@ -137,13 +140,13 @@ public class NotificacionManager {
         return Math.abs(period.getDays());
     }
 
-    private void sendEmail(String nombre, List<VencimientoView> vencimientos){
+    private void sendEmail(String email, String nombre, List<VencimientoView> vencimientos){
         
-        String url = "http://localhost:5896";
+        String url = env.getProperty("fastemail.url");
         String path = "/sendDocsCloseToExpire";
         final OkHttpClient client = new OkHttpClient();
         
-        NotificacionDocumentacionView notificacion = new NotificacionDocumentacionView(nombre, vencimientos);
+        NotificacionDocumentacionView notificacion = new NotificacionDocumentacionView(email, nombre, vencimientos);
         RequestBody body = RequestBody.create(Convertions.toJson(notificacion),
         MediaType.get("application/json; charset=utf-8"));
 

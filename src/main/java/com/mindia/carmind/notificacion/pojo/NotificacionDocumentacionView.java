@@ -6,11 +6,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({
+    "email",
     "nombre",
     "vencimientos"
 })
 public class NotificacionDocumentacionView {
 
+    @JsonProperty("email")
+    private String email;
     @JsonProperty("nombre")
     private String nombre;
     @JsonProperty("vencimientos")
@@ -19,8 +22,9 @@ public class NotificacionDocumentacionView {
     public NotificacionDocumentacionView() {
     }
 
-    public NotificacionDocumentacionView(String nombre, List<VencimientoView> vencimientos) {
+    public NotificacionDocumentacionView(String email, String nombre, List<VencimientoView> vencimientos) {
         super();
+        this.email = email;
         this.nombre = nombre;
         if(!vencimientos.isEmpty()){
             this.vencimientos = vencimientos;
