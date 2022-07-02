@@ -1,5 +1,6 @@
 package com.mindia.carmind.usuario.manager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -135,7 +136,7 @@ public class UsuariosManager {
 
         Usuario user = repository.getById(id);
         user.setActive(false);
-        for (Vehiculo vehiculo : user.getListOfVehiculo()) {
+        for (Vehiculo vehiculo : user.getVehiculoList()) {
             vehiculo.setUsuarioIdUsando(null);
 
             vehiculosRepository.save(vehiculo);
@@ -212,8 +213,8 @@ public class UsuariosManager {
 
             @Override
             public int compare(LogUsoView o1, LogUsoView o2) {
-                LocalDateTime date1 = LocalDateTime.parse(o1.getFecha(), format);
-                LocalDateTime date2 = LocalDateTime.parse(o2.getFecha(), format);
+                LocalDate date1 = LocalDate.parse(o1.getFecha(), format);
+                LocalDate date2 = LocalDate.parse(o2.getFecha(), format);
                 return date2.compareTo(date1);
             }
         }).findFirst();

@@ -1,6 +1,6 @@
 package com.mindia.carmind.revision.manager;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +50,7 @@ public class RevisionManager {
 
         revision.setVehiculoId(alta.getVehiculoId());
 
-        revision.setFecha(LocalDateTime.now());
+        revision.setFecha(LocalDate.now());
         revision.setNota(alta.getNota());
         revision.setUsuarioId(usuariosManager.getLoggeduser().getId());
 

@@ -109,10 +109,10 @@ public class PreguntaView {
     public PreguntaView(Pregunta p){
         this.id = p.getId();
         this.descripcion = p.getDescripcion();
-        this.tipo = p.getTipoPregunta().getCodigo();
-        this.crucial = p.getCrucial();
+        this.tipo = p.getTipopregunta().getCodigo();
+        this.crucial = p.isCrucial();
 
-        this.opciones = p.getListOfPreguntaOpcion().stream().map(OpcionView::new).collect(Collectors.toList());
+        this.opciones = p.getPreguntaopcionList().stream().map(OpcionView::new).collect(Collectors.toList());
     }
 
 }

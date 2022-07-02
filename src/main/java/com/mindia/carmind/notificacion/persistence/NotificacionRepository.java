@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface NotificacionRepository extends JpaRepository<Notificaciones, Integer> {
 
-    List<Notificaciones> findByEmpresaId(Integer empresaId);
+    List<Notificaciones> findTop10ByEmpresaId(Integer empresaId);
+
 }

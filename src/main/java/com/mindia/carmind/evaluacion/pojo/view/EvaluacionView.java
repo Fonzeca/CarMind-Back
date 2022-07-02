@@ -116,9 +116,9 @@ public class EvaluacionView {
     public static EvaluacionView getEvaluacionDetails(Evaluacion e){
         EvaluacionView ev = new EvaluacionView(e);
 
-        ev.setVehiculoId(e.getListOfVehiculoEvaluacion().stream().map(x -> x.getVehiculoId()).collect(Collectors.toList()));
+        ev.setVehiculoId(e.getVehiculoevaluacionList().stream().map(x -> x.getVehiculoId()).collect(Collectors.toList()));
 
-        ev.setPreguntas(e.getListOfPregunta().stream().map(PreguntaView::new).collect(Collectors.toList()));
+        ev.setPreguntas(e.getPreguntaList().stream().map(PreguntaView::new).collect(Collectors.toList()));
 
         return ev;
     }

@@ -231,7 +231,7 @@ public class VehiculoView {
         nombre = v.getNombre();
         this.enUso = v.getUsuarioIdUsando() != null;
         this.tipo = v.getTipoVehiculo();
-        this.averiado = v.getAveriado();
+        this.averiado = v.isAveriado();
         this.kilometraje = v.getKilometraje();
         
         if (detalle) {

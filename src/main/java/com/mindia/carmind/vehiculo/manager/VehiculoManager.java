@@ -181,7 +181,7 @@ public class VehiculoManager {
         Vehiculo vehiculo = repository.getById(id);
 
         // Obtenemos las evaluaciones de él
-        List<VehiculoEvaluacion> vehiculoxEvaluacion = vehiculo.getListOfVehiculoEvaluacion();
+        List<VehiculoEvaluacion> vehiculoxEvaluacion = vehiculo.getVehiculoevaluacionList();
 
         // Iteramos sobre ellas
         for (VehiculoEvaluacion vehiculoEvaluacion : vehiculoxEvaluacion) {
@@ -226,7 +226,7 @@ public class VehiculoManager {
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
         
 
-        if (!vehiculo.getEmpresaId().equals(loggedUser.getEmpresa())) {
+        if (!(vehiculo.getEmpresaId() == loggedUser.getEmpresa())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
         }
 
@@ -254,7 +254,10 @@ public class VehiculoManager {
 
         repository.save(vehiculo);
 
-        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo(loggedUser.getId(), id);
+        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo ();
+        logUsoVehiculo.setUsuarioId(loggedUser.getId());
+        logUsoVehiculo.setVehiculoId(id);
+
         logUsoVehiculoRepository.save(logUsoVehiculo);
     }
 
@@ -312,8 +315,8 @@ public class VehiculoManager {
         }
 
         // Busco los que esten activos
-        var docsActivos = v.getListOfDocumento().stream()
-                .filter(x -> x.getActive() && x.getTipoDocumento().equals(tipo)).collect(Collectors.toList());
+        var docsActivos = v.getDocumentoList().stream()
+                .filter(x -> x.isActive() && x.getTipoDocumento().equals(tipo)).collect(Collectors.toList());
 
         // Los desactivo
         if (docsActivos.size() > 0) {
@@ -357,8 +360,8 @@ public class VehiculoManager {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No existe ese tipo de documento");
         }
 
-        List<Documento> listDoc = v.getListOfDocumento();
-        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo) && x.getActive())
+        List<Documento> listDoc = v.getDocumentoList();
+        Optional<Documento> doc = listDoc.stream().filter(x -> x.getTipoDocumento().equals(tipo) && x.isActive())
                 .findFirst();
 
         if (doc.isEmpty()) {
@@ -452,7 +455,7 @@ public class VehiculoManager {
     private VehiculoView armarVehiculoConPendientes(Vehiculo v) {
         VehiculoView vehiculo = new VehiculoView(v, true);
 
-        var listsEvaluacion = v.getListOfVehiculoEvaluacion().stream()
+        var listsEvaluacion = v.getVehiculoevaluacionList().stream()
                 .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x),
                         x.getIntervaloDias()))
                 .collect(Collectors.toList());

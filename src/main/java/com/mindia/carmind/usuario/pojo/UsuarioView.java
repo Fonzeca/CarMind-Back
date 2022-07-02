@@ -128,7 +128,7 @@ public class UsuarioView {
 
 
     public UsuarioView(Usuario u) {
-        administrador = u.getAdministrador();
+        administrador = u.isAdministrador();
         nombre = u.getNombre();
         empresa = u.getEmpresa();
         id = u.getId();
