@@ -112,7 +112,7 @@ public class UsuariosManager {
             pojo.setDni(usuario.getDni());
 
         if(pojo.getAdministrador() == null)
-            pojo.setAdministrador(usuario.getAdministrador());
+            pojo.setAdministrador(usuario.isAdministrador());
 
         userHubManager.modifyUsuario(pojo);
 
