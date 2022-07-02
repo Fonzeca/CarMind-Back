@@ -29,26 +29,24 @@ import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
-
 
 @Service
 public class NotificacionManager {
-
-    private Environment env;
 
     private static final Logger log = LoggerFactory.getLogger(NotificacionManager.class);
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat(" HH:mm:ss");
@@ -73,6 +71,9 @@ public class NotificacionManager {
 
     @Autowired
     UsuariosManager usuariosManager;
+
+    @Value("${fastemail.url}")
+    private String fastEmailUrl;
 
     public List<NotificacionPojo> getAllNotificaciones(){
         List<Notificaciones> notificaciones = notificacionRepository.findTop10ByEmpresaId(usuariosManager.getLoggeduser().getEmpresa());
@@ -103,7 +104,7 @@ public class NotificacionManager {
         log.info("Finish dailyTask, the time is now {}", dateFormat.format(new Date()));
     }
 
-    @Scheduled(cron = "0 0 0 * * MON")
+    @Scheduled(cron = "0 0 9 * * MON")
     @Transactional
     private void everyMondayTask(){
         
@@ -142,7 +143,6 @@ public class NotificacionManager {
 
     private void sendEmail(String email, String nombre, List<VencimientoView> vencimientos){
         
-        String url = env.getProperty("fastemail.url");
         String path = "/sendDocsCloseToExpire";
         final OkHttpClient client = new OkHttpClient();
         
@@ -152,7 +152,7 @@ public class NotificacionManager {
 
         if(vencimientos.isEmpty()) path =  "/sendNoneDocsCloseToExpire";
 
-        Request fastEmailRequest = new Request.Builder().url(url + path)
+        Request fastEmailRequest = new Request.Builder().url(fastEmailUrl + path)
         .addHeader("Content-Type", "application/json").post(body).build();
     
         try (Response fastEmailResponse = client.newCall(fastEmailRequest).execute()) {

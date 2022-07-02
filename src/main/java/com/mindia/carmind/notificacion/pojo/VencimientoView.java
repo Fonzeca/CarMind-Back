@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonPropertyOrder({
     "vehiculo",
-    "dias",
+    "days",
     "documento"
 })
 public class VencimientoView {
@@ -14,7 +14,7 @@ public class VencimientoView {
     private String tipoDocumento;
     @JsonProperty("vehiculo")
     private String vehiculo;
-    @JsonProperty("dias")
+    @JsonProperty("days")
     private int dias;
 
     public VencimientoView() {
