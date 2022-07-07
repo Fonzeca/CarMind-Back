@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.mindia.carmind.version.manager.VersionManager;
 import com.mindia.carmind.version.pojo.AltaPojo;
+import com.mindia.carmind.version.pojo.LastVersionView;
 import com.mindia.carmind.version.pojo.ModificarPojo;
 import com.mindia.carmind.version.pojo.VersionView;
 
@@ -34,8 +35,8 @@ public class VersionApi {
     }
 
     @GetMapping("/public/lastVersion")
-    public String enviarTokenRecuperacionPassword(@RequestParam(value = "platform", required = false) String platform, @RequestParam(value = "storeType", required = false) String storeType){
-        return manager.getLastVersionByPlatform(storeType).getStoreVersion();
+    public LastVersionView enviarTokenRecuperacionPassword(@RequestParam("platform") String platform ){
+        return manager.getLastVersionByPlatform(platform);
     }
 
     @PostMapping("/public/version")
