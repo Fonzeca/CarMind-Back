@@ -42,7 +42,7 @@ public class VersionManager {
 
         pojo.validate();
 
-        Version version = repository.findByStoreVersion(pojo.getStoreVersion());
+        Version version = repository.findByStoreVersionAndStoreType(pojo.getStoreVersion(), pojo.getStoreType());
 
         if (version == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Version no encontrada");
@@ -55,17 +55,17 @@ public class VersionManager {
         repository.save(version);
     }
 
-    public void bajaVersion(String version) {
+    public void bajaVersion(String version, String platform) {
         try {
-            Version v = repository.findByStoreVersion(version);
+            Version v = repository.findByStoreVersionAndStoreType(version, platform);
             repository.delete(v);
         } catch (EmptyResultDataAccessException e) {
             throw new EntityNotFoundException("No se encontró la entidad Version " + version);
         }
     }
 
-    public VersionView obtenerVersionByVersion(String version) {
-        Version v = repository.findByStoreVersion(version);
+    public VersionView obtenerVersionByVersion(String version, String platform) {
+        Version v = repository.findByStoreVersionAndStoreType(version, platform);
         try{
             VersionView versionView = new VersionView(v);
             return versionView;

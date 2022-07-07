@@ -28,9 +28,9 @@ public class VersionApi {
         return manager.getAllVersiones();
     }
 
-    @GetMapping("/public/version/{version}")
-    public VersionView getVersion(@PathVariable String version) {
-        return manager.obtenerVersionByVersion(version);
+    @GetMapping("/public/version/{version}/{platform}")
+    public VersionView getVersion(@PathVariable String version, @PathVariable String platform) {
+        return manager.obtenerVersionByVersion(version, platform);
     }
 
     @GetMapping("/public/lastVersion")
@@ -48,9 +48,9 @@ public class VersionApi {
         manager.modificarVersion(pojo);
     }
 
-    @DeleteMapping("/public/version/{version}")
-    public void borrarVersion(@PathVariable String version) {
-        manager.bajaVersion(version);
+    @DeleteMapping("/public/version/{version}/{platform}")
+    public void borrarVersion(@PathVariable String version, @PathVariable String platform) {
+        manager.bajaVersion(version, platform);
     }
 
 }
