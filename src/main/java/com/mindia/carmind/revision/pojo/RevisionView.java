@@ -49,7 +49,7 @@ public class RevisionView {
         super();
         this.id = revision.getId();
         this.nota = revision.getNota();
-        this.fecha = revision.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/YYYY mm:hh"));
+        this.fecha = revision.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/YYYY"));
         this.logs = revision.getLogevaluacionList().stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
 
