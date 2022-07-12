@@ -115,24 +115,42 @@ public class NotificacionManager {
 
         List<Empresa> empresas = empresaRepository.findAll();
 
+        if(empresas.isEmpty()) log.info("El repositorio de empresas no encontró ninguna empresa");
+
         for(Empresa empresa : empresas){
+            log.info("------------------------------------------------------------");
+            log.info("Realizando acciones sobre la empresa " + empresa.getNombre());
 
             List<Vehiculo> vehiculos = vehiculosRepository.findByEmpresaId(empresa.getId());
             List<VencimientoView> vencimientos = new ArrayList<VencimientoView>();
 
+            if(vehiculos.isEmpty()) log.info("Esta empresa no tiene ningún vehiculo");
+
             for(Vehiculo vehiculo : vehiculos){
+                log.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
+                log.info("Obteniendo documentos vencidos para el auto con id: " + vehiculo.getId());
                 List<Documento> docsVencidos = documentoRepository.findByVehiculoIdAndVencimientoBetweenAndActiveTrue(vehiculo.getId(), dateNow, dateNow.plusDays(daysInterval));
+                
+                
                 IntStream.range(0, docsVencidos.size()).forEach(i ->    
-                    vencimientos.add(
-                        new VencimientoView( 
+                vencimientos.add(
+                    new VencimientoView( 
                         docsVencidos.get(i).getTipoDocumento(), 
                         vehiculo.getNombre(),
                         differenceInDays(dateNow, docsVencidos.get(i).getVencimiento())
-                    ))
-                );
+                        ))
+                        );
+                if(docsVencidos.isEmpty()){ 
+                    log.info("No se encontraron documentos vencidos");
+                }else{
+                    log.info("Se encontraron documentos vencidos " + vencimientos.toString());
+                }
+                log.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             }
             List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrue(empresa.getId());
+            if(usuarios.isEmpty()) log.info("Esta empresa no tiene usuarios, imposible enviar el email via FastEmail, vuelvas prontos");
             usuarios.stream().forEach(usuario -> {sendEmail(usuario.getUsername(), usuario.getNombre(), vencimientos);});
+            log.info("------------------------------------------------------------");
         }
     }
     
@@ -142,6 +160,8 @@ public class NotificacionManager {
     }
 
     private void sendEmail(String email, String nombre, List<VencimientoView> vencimientos){
+
+        log.info("MandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmail");
         
         String path = "/sendDocsCloseToExpire";
         final OkHttpClient client = new OkHttpClient();
@@ -155,10 +175,17 @@ public class NotificacionManager {
         Request fastEmailRequest = new Request.Builder().url(fastEmailUrl + path)
         .addHeader("Content-Type", "application/json").post(body).build();
     
-        try (Response fastEmailResponse = client.newCall(fastEmailRequest).execute()) {
+        try{
+            Response fastEmailResponse = client.newCall(fastEmailRequest).execute();
+            log.info("Email envíado con exito a " + nombre + " con email " + email);
+            log.info("Repuesta de FastEmail: " + fastEmailResponse.toString());
+
         } catch (IOException ex) {
+            log.info("ocurrió un error");
             ex.printStackTrace();
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-        } 
+        }
+
+        log.info("MandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmail");
     }
 }
