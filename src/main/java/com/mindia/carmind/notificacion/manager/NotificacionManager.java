@@ -80,15 +80,6 @@ public class NotificacionManager {
         return notificaciones.stream().map(NotificacionPojo::new).collect(Collectors.toList());
     }
 
-    static boolean flagAntiMultipleCalls = false;
-
-    public void runMondayTask(){
-        if(!flagAntiMultipleCalls){
-            everyMondayTask();
-            flagAntiMultipleCalls = true;
-        }
-    }
-
 
     @Scheduled(cron = "0 0 0 1/1 * ?")
     @Transactional
