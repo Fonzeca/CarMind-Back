@@ -28,8 +28,10 @@ public class UsuariosApi {
     UsuariosManager manager;
 
     @PostMapping("/login")
-    public TokenView getVehiculo(@RequestParam("username") String userName, @RequestParam("password") String password) {
-        return manager.login(userName, password);
+    public TokenView getVehiculo(   @RequestParam("username") String userName, 
+                                    @RequestParam("password") String password, 
+                                    @RequestParam(value="FCMToken", required = false) String FCMToken) {
+        return manager.login(userName, password, FCMToken);
     }
 
     @GetMapping("/loggedUser")

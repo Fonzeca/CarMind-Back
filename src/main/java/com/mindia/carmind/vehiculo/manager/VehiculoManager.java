@@ -140,7 +140,7 @@ public class VehiculoManager {
     public List<VehiculoView> getAllVehiculos() {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
-        List<Vehiculo> v = repository.findByEmpresaId(usuario.getEmpresa());
+        List<Vehiculo> v = repository.findByEmpresaIdOrderByUsuarioIdUsandoDesc(usuario.getEmpresa());
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
     }
 
@@ -237,6 +237,10 @@ public class VehiculoManager {
         // Hago que deje de usar los vehiculos asignados al usuario
         var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
 
+        if(vehiculo.getUsuarioIdUsando() != null){
+            updateFechaFinLogDeUso(id, vehiculo.getUsuarioIdUsando());
+        }
+
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
                 v.setUsuarioIdUsando(null);
@@ -244,14 +248,13 @@ public class VehiculoManager {
             }
         }
 
+
         // Asigno el vehiculo escaneado al usuario
         vehiculo.setUsuarioIdUsando(loggedUser.getId());
 
         repository.save(vehiculo);
 
-        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo ();
-        logUsoVehiculo.setUsuarioId(loggedUser.getId());
-        logUsoVehiculo.setVehiculoId(id);
+        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo (loggedUser.getId(),id);
 
         logUsoVehiculoRepository.save(logUsoVehiculo);
     }
@@ -264,22 +267,21 @@ public class VehiculoManager {
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
         if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
+            updateFechaFinLogDeUso(id, loggedUser.getId());
             vehiculo.setUsuarioIdUsando(null);
-
             repository.save(vehiculo);
-
-            try{
-                LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndFechaFin(id, null);
-                logUsoVehiculo.setFechaFin(LocalDate.now());
-                logUsoVehiculoRepository.save(logUsoVehiculo);
-            }catch(Exception e){
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                "El Vehiculo se ha detenido pero no se ha guardado la detención en el historial de uso debido a que no existe en el historial ningún inicio de uso del Vehiculo");
-            }
         } else {
 
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "El usuario actual no es el que esta usando este vehiculo.");
+        }
+    }
+
+    private void updateFechaFinLogDeUso(Integer vehiculoId, Integer userId){
+        LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndUsuarioIdAndFechaFin(vehiculoId, userId, null);
+        if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
+            logUsoVehiculo.setFechaFin(LocalDateTime.now());
+            logUsoVehiculoRepository.save(logUsoVehiculo);
         }
     }
 

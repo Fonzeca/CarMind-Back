@@ -19,6 +19,8 @@ public class LoginView {
     private String userName;
     @JsonProperty("password")
     private String password;
+    @JsonProperty("FCMToken")
+    private String FCMToken;
 
     /**
      * No args constructor for use in serialization
@@ -32,10 +34,11 @@ public class LoginView {
      * @param password
      * @param userName
      */
-    public LoginView(String userName, String password) {
+    public LoginView(String userName, String password, String FCMToken) {
         super();
         this.userName = userName;
         this.password = password;
+        this.FCMToken = FCMToken;
     }
 
     @JsonProperty("userName")
@@ -56,6 +59,15 @@ public class LoginView {
     @JsonProperty("password")
     public void setPassword(String password) {
         this.password = password;
+    }
+    @JsonProperty("FCMToken")
+    public String getFCMToken() {
+        return this.FCMToken;
+    }
+
+    @JsonProperty("FCMToken")
+    public void setFCMToken(String FCMToken) {
+        this.FCMToken = FCMToken;
     }
 
 }

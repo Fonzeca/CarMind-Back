@@ -1,6 +1,6 @@
 package com.mindia.carmind.vehiculo.pojo;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -19,9 +19,9 @@ public class LogUsoVehiculoView {
     @JsonProperty("id")
     private int        id ;
     @JsonProperty("fecha_inicio")
-    private LocalDate  fechaInicio ;
+    private LocalDateTime  fechaInicio ;
     @JsonProperty("fecha_fin")
-    private LocalDate  fechaFin ;
+    private LocalDateTime  fechaFin ;
     @JsonProperty("usuario_id")
     private int        usuarioId ;
     @JsonProperty("vehiculo_id")
@@ -45,22 +45,22 @@ public class LogUsoVehiculoView {
     }
 
     @JsonProperty("fecha_inicio")
-    public LocalDate getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return fechaInicio;
     }
 
     @JsonProperty("fecha_inicio")
-    public void setFechaInicio(LocalDate fechaInicio) {
+    public void setFechaInicio(LocalDateTime fechaInicio) {
         this.fechaInicio = fechaInicio;
     }
 
     @JsonProperty("fecha_fin")
-    public LocalDate getFechaFin() {
+    public LocalDateTime getFechaFin() {
         return fechaFin;
     }
 
     @JsonProperty("fecha_fin")
-    public void setFechaFin(LocalDate fechaFin) {
+    public void setFechaFin(LocalDateTime fechaFin) {
         this.fechaFin = fechaFin;
     }
 

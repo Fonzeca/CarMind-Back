@@ -34,9 +34,14 @@ public class VersionApi {
         return manager.obtenerVersionByVersion(version, platform);
     }
 
-    @GetMapping("/public/lastVersion")
-    public LastVersionView enviarTokenRecuperacionPassword(@RequestParam("platform") String platform ){
+    @GetMapping("/public/lastVersion_new")
+    public LastVersionView getLatestVersion_NEW(@RequestParam("platform") String platform ){
         return manager.getLastVersionByPlatform(platform);
+    }
+
+    @GetMapping("/public/lastVersion")
+    public String getLatestVersion_OLD(@RequestParam(value = "platform", required = false) String platform, @RequestParam(value = "storeType", required = false) String storeType){
+        return manager.getLastVersionByPlatform(storeType).getStoreVersion();
     }
 
     @PostMapping("/public/version")

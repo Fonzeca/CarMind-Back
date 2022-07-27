@@ -35,9 +35,9 @@ public class UserHubManager {
     private final OkHttpClient client = new OkHttpClient();
     private final ObjectMapper mapper = new ObjectMapper();
 
-    protected TokenView login(String username, String password) {
+    protected TokenView login(String username, String password, String FCMToken) {
         // Armo el json a mandar
-        LoginView loginView = new LoginView(username, password);
+        LoginView loginView = new LoginView(username, password, FCMToken);
 
         // Armo el body
         RequestBody body = RequestBody.create(Convertions.toJson(loginView),
