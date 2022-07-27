@@ -19,4 +19,6 @@ public interface UsuariosRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByEmpresaAndActiveTrue(Integer empresa);
 
+    List<Usuario> findByEmpresaAndActiveTrueAndAdministradorTrue(Integer empresa);
+
 }
