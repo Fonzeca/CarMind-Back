@@ -347,8 +347,9 @@ public class EvaluacionManager {
 
         for(Usuario usuario : usuarios){
 
-            //Por cada usuario adminitrador, se setea el email
+            //Por cada usuario adminitrador, se setea el email y nombre
             notificacion.setEmail(usuario.getUsername());
+            notificacion.setEmail(usuario.getNombre());
 
             final OkHttpClient client = new OkHttpClient();
             

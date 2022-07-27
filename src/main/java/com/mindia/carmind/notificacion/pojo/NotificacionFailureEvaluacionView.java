@@ -15,12 +15,14 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class NotificacionFailureEvaluacionView {
     @JsonProperty("email")
     private String email;
+    @JsonProperty("nombre")
+    private  String nombre;
     @JsonProperty("evaluacionDateTime")
     private LocalDateTime evaluacionDateTime;
     @JsonProperty("nombreUsuario")
-    private String nombre;
+    private String nombreUsuario;
     @JsonProperty("apellidoUsuario")
-    private String apellido;
+    private String apellidoUsuario;
     @JsonProperty("nombreVehiculo")
     private  String nombreVehiculo;
     @JsonProperty("idLog")
@@ -32,11 +34,11 @@ public class NotificacionFailureEvaluacionView {
     public NotificacionFailureEvaluacionView() {
     }
 
-    public NotificacionFailureEvaluacionView(String nombre,  String apellido, String nombreVehiculo, int idLog, int idVehiculo) {
+    public NotificacionFailureEvaluacionView(String nombreUsuario,  String apellidoUsuario, String nombreVehiculo, int idLog, int idVehiculo) {
         super();
-        this.nombre = nombre;
+        this.nombreUsuario = nombreUsuario;
         this.evaluacionDateTime = LocalDateTime.now();
-        this.apellido = apellido;
+        this.apellidoUsuario = apellidoUsuario;
         this.nombreVehiculo = nombreVehiculo;
         this.idLog = idLog;
         this.idVehiculo = idVehiculo;
@@ -45,5 +47,10 @@ public class NotificacionFailureEvaluacionView {
     @JsonProperty("email")
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    @JsonProperty("nombre")
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 }
