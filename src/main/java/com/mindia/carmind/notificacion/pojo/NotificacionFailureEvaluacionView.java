@@ -8,8 +8,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
     "email",
     "nombre",
-    "preguntas",
-    "respuestas"
+    "evaluacionDateTime",
+    "nombreUsuario",
+    "apellidoUsuario",
+    "nombreVehiculo",
+    "idLog",
+    "idVehiculo"
 })
 
 public class NotificacionFailureEvaluacionView {
