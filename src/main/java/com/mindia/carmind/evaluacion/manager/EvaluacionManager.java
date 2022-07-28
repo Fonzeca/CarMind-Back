@@ -1,5 +1,6 @@
 package com.mindia.carmind.evaluacion.manager;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -12,6 +13,7 @@ import com.mindia.carmind.entities.LogOption;
 import com.mindia.carmind.entities.LogPregunta;
 import com.mindia.carmind.entities.Pregunta;
 import com.mindia.carmind.entities.PreguntaOpcion;
+import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.persistence.EvaluacionRepository;
 import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
@@ -23,22 +25,37 @@ import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.RespuestaOpcionPojo;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
+import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 import com.mindia.carmind.pregunta.persistence.LogOptionRepository;
 import com.mindia.carmind.pregunta.persistence.LogPreguntaRepository;
 import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
+import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 @Service
 public class EvaluacionManager {
+
+    private static final Logger log = LoggerFactory.getLogger(EvaluacionManager.class);
+
     @Autowired
     EvaluacionRepository repository;
 
@@ -65,6 +82,13 @@ public class EvaluacionManager {
 
     @Autowired
     LogOptionRepository logOptionRepository;
+
+    @Autowired
+    UsuariosRepository usuariosRepository;
+
+    @Value("${fastemail.url}")
+    private String fastEmailUrl;
+
 
     public Evaluacion getEvaluacionById(String id){
         int intId = Integer.parseInt(id);
@@ -193,12 +217,15 @@ public class EvaluacionManager {
 
                 //Guardamos el log de la evaluacion
                 log = logEvaluacionRepository.save(log);
+
+                //Chequea que si hay una respuesta que es crucial y seleccionada como sin tick, se debe mandar un email a los admins indicando la falla
+                boolean hasFailure = false;
                 
                 //Recorremos las respuestas del view
                 for (AltaRespuestaPojo res : respuestas.getRespuestas()) {
                     //Obtenemos la pregunta a responder, para validar el tipo
                     PreguntaView pregunta = preguntaManager.getPreguntaById(res.getPreguntaId());
-
+                    
                     //Creamos el log de la pregunta
                     LogPregunta logPregunta = new LogPregunta();
 
@@ -206,7 +233,6 @@ public class EvaluacionManager {
                     logPregunta.setCrucial(pregunta.getCrucial());
                     logPregunta.setTipo(pregunta.getTipo());
                     logPregunta.setLogEvaluacion(log.getId());
-
 
                     //depende del tipo de pregunta, cambia su comportamiento
                     switch(pregunta.getTipo()){
@@ -232,7 +258,11 @@ public class EvaluacionManager {
                                     LogOption log_opt = new LogOption();
                                     log_opt.setTickCheck(optRes.getTickCorrecto());
 
-                                    if(pregunta.getTipo().equals("S1") && pregunta.getCrucial() && !optRes.getTickCorrecto()){
+                                    if(pregunta.getTipo().equals("S1") && opcion.isCrucial() && !optRes.getTickCorrecto()){
+
+                                        //se setea en true porque se debe mandar email ya que la respuesta es errónea y crucial
+                                        hasFailure = true;
+
                                         //Se avisa que esta para revisar
                                         if(!log.isParaRevisar()){
                                             setEvaluacionParaRevisar(log, vehiculo);
@@ -256,6 +286,9 @@ public class EvaluacionManager {
 
                                 //Se avisa que esta para revisar
                                 if(pregunta.getCrucial()){
+                                    
+                                     //se setea en true porque se debe mandar email ya que la respuesta es errónea y crucial
+                                    hasFailure = true;
                                     if(!log.isParaRevisar()){
                                         setEvaluacionParaRevisar(log, vehiculo);
                                     }
@@ -277,6 +310,12 @@ public class EvaluacionManager {
                     //if(logPregunta.getId() == null){    así estaba antes
                     if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
                 }
+
+                //Si el vehiculo tiene alguna falla (pregunta marcada como incorrecta y crucial) en la evaluación, entonces mandamos el mail via FastEmail
+                if (hasFailure) {
+                    hasFailure = false; 
+                    sendEmailNotificationFailure(loggedUser.getEmpresa(),loggedUser.getNombre(), loggedUser.getApellido(), vehiculo.getNombre(), log.getId(), vehiculo.getId());
+                }
                 
                 return;
             }else{
@@ -289,6 +328,45 @@ public class EvaluacionManager {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La evaluacion a realizar, no la tiene asignada el vehiculo seleccionado.");
         }
 
+    }
+
+    private void sendEmailNotificationFailure(Integer empresaId, String nombreUsuario, String apellidoUsuario, String nombreVehiculo, int idLog, int idVehiculo){
+        
+        String path = "/sendFailureEvaluacion";
+
+        //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
+        List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrueAndAdministradorTrue(empresaId);
+
+        //Se setean todas las propiedades que le llegan a FastEmail
+        NotificacionFailureEvaluacionView notificacion = new NotificacionFailureEvaluacionView(
+            nombreUsuario, 
+            apellidoUsuario, 
+            nombreVehiculo, 
+            idLog, idVehiculo
+        );
+
+        for(Usuario usuario : usuarios){
+
+            //Por cada usuario adminitrador, se setea el email y nombre
+            notificacion.setEmail(usuario.getUsername());
+            notificacion.setEmail(usuario.getNombre());
+
+            final OkHttpClient client = new OkHttpClient();
+            
+            RequestBody body = RequestBody.create(Convertions.toJson(notificacion), MediaType.get("application/json; charset=utf-8"));
+    
+            Request fastEmailRequest = new Request.Builder().url(fastEmailUrl + path)
+            .addHeader("Content-Type", "application/json").post(body).build();
+        
+            try{
+                Response fastEmailResponse = client.newCall(fastEmailRequest).execute();
+                log.info("Email envíado con exito a " + usuario.getUsername());
+                log.info("Repuesta de FastEmail: " + fastEmailResponse.toString());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+            }
+        }
     }
 
     public List<LogEvaluacionView> historialDeEvaluaciones(){
