@@ -1,7 +1,5 @@
 package com.mindia.carmind.notificacion.pojo;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
@@ -22,7 +20,7 @@ public class NotificacionFailureEvaluacionView {
     @JsonProperty("nombre")
     private  String nombre;
     @JsonProperty("evaluacionDateTime")
-    private LocalDateTime evaluacionDateTime;
+    private String evaluacionDateTime;
     @JsonProperty("nombreUsuario")
     private String nombreUsuario;
     @JsonProperty("apellidoUsuario")
@@ -38,10 +36,10 @@ public class NotificacionFailureEvaluacionView {
     public NotificacionFailureEvaluacionView() {
     }
 
-    public NotificacionFailureEvaluacionView(String nombreUsuario,  String apellidoUsuario, String nombreVehiculo, int idLog, int idVehiculo) {
+    public NotificacionFailureEvaluacionView(String nombreUsuario,  String apellidoUsuario, String nombreVehiculo, int idLog, int idVehiculo, String evaluacionDateTime) {
         super();
         this.nombreUsuario = nombreUsuario;
-        this.evaluacionDateTime = LocalDateTime.now();
+        this.evaluacionDateTime = evaluacionDateTime;
         this.apellidoUsuario = apellidoUsuario;
         this.nombreVehiculo = nombreVehiculo;
         this.idLog = idLog;

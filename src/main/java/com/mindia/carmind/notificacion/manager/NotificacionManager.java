@@ -21,6 +21,7 @@ import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.notificacion.persistence.NotificacionRepository;
 import com.mindia.carmind.notificacion.pojo.NotificacionDocumentacionView;
+import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.notificacion.pojo.NotificacionPojo;
 import com.mindia.carmind.notificacion.pojo.VencimientoView;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
@@ -74,6 +75,7 @@ public class NotificacionManager {
 
     @Value("${fastemail.url}")
     private String fastEmailUrl;
+
 
     public List<NotificacionPojo> getAllNotificaciones(){
         List<Notificaciones> notificaciones = notificacionRepository.findTop10ByEmpresaId(usuariosManager.getLoggeduser().getEmpresa());
@@ -188,5 +190,33 @@ public class NotificacionManager {
         }
 
         log.info("MandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmailMandandoEmail");
+    }
+
+    static public void sendEmailNotificationFailure( List<Usuario> usuarios, NotificacionFailureEvaluacionView notificacion, String fastEmailUrl){
+        
+        String path = "/sendFailureEvaluacion";
+
+        for(Usuario usuario : usuarios){
+
+            //Por cada usuario adminitrador, se setea el email y nombre
+            notificacion.setEmail(usuario.getUsername());
+            notificacion.setNombre(usuario.getNombre());
+
+            final OkHttpClient client = new OkHttpClient();
+            
+            RequestBody body = RequestBody.create(Convertions.toJson(notificacion), MediaType.get("application/json; charset=utf-8"));
+    
+            Request fastEmailRequest = new Request.Builder().url(fastEmailUrl + path)
+            .addHeader("Content-Type", "application/json").post(body).build();
+        
+            try{
+                Response fastEmailResponse = client.newCall(fastEmailRequest).execute();
+                log.info("Email envíado con exito a " + usuario.getUsername());
+                log.info("Repuesta de FastEmail: " + fastEmailResponse.toString());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+            }
+        }
     }
 }
