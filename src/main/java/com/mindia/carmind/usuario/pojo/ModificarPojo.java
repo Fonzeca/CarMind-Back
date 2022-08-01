@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "nombre", "apellido", "username", "password", "DNI", "administrador" })
+@JsonPropertyOrder({ "nombre", "apellido", "username", "password", "dni", "administrador" })
 @Generated("jsonschema2pojo")
 public class ModificarPojo {
 
@@ -17,7 +17,7 @@ public class ModificarPojo {
     private String apellido;
     @JsonProperty("username")
     private String username;
-    @JsonProperty("DNI")
+    @JsonProperty("dni")
     private String dni;
     @JsonProperty("administrador")
     private Boolean administrador;
@@ -77,12 +77,12 @@ public class ModificarPojo {
         this.username = username;
     }
 
-    @JsonProperty("DNI")
+    @JsonProperty("dni")
     public String getDni() {
         return dni;
     }
 
-    @JsonProperty("DNI")
+    @JsonProperty("dni")
     public void setDni(String dni) {
         this.dni = dni;
     }
