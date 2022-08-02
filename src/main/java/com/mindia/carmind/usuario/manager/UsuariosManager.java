@@ -49,7 +49,7 @@ public class UsuariosManager {
     EvaluacionManager evaluacionManager;
 
     public TokenView login(String username, String password, String FCMToken) {
-        Usuario u = repository.findByUsernameAndActiveTrue(username);
+        Usuario u = repository.findByUsername(username);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario inexistente.");
         }
@@ -71,7 +71,7 @@ public class UsuariosManager {
         // Le damos de alta en nuestra base de datos
         Usuario usuario = new Usuario();
 
-        if (repository.findByUsernameAndActiveTrue(pojo.getUsername()) != null) {
+        if (repository.findByUsername(pojo.getUsername()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuario duplicado");
         }
 
@@ -94,7 +94,7 @@ public class UsuariosManager {
     
     public void modificarConductor(ModificarPojo pojo) {
         // Modificamos el usuario en UserHub
-        Usuario usuario = repository.findByUsernameAndEmpresaAndActiveTrue(pojo.getUsername(), getLoggeduser().getEmpresa());
+        Usuario usuario = repository.findByUsernameAndEmpresa(pojo.getUsername(), getLoggeduser().getEmpresa());
 
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
@@ -148,14 +148,14 @@ public class UsuariosManager {
 
     
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuario u = repository.findByIdAndEmpresaAndActiveTrue(Integer.parseInt(id), getLoggeduser().getEmpresa());
+        Usuario u = repository.findByIdAndEmpresa(Integer.parseInt(id), getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
     }
 
     public UsuarioView obtenerUsuarioByUsername(String username) {
-        Usuario u = repository.findByUsernameAndEmpresaAndActiveTrue(username, getLoggeduser().getEmpresa());
+        Usuario u = repository.findByUsernameAndEmpresa(username, getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
@@ -163,17 +163,17 @@ public class UsuariosManager {
 
     public UsuarioView getLoggeduser() {
         LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Usuario u = repository.findByUsernameAndActiveTrue(logged.getUserName());
+        Usuario u = repository.findByUsername(logged.getUserName());
         return new UsuarioView(u);
     }
 
     public List<UsuarioView> getAllUsuario() {
-        List<Usuario> usuarios = repository.findByEmpresaAndActiveTrue(getLoggeduser().getEmpresa());
+        List<Usuario> usuarios = repository.findByEmpresa(getLoggeduser().getEmpresa());
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
     }
 
     public void enviarTokenRecuperacionPassword(String email) {
-        Usuario user = repository.findByUsernameAndActiveTrue(email);
+        Usuario user = repository.findByUsername(email);
         if(user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no existe");
         }

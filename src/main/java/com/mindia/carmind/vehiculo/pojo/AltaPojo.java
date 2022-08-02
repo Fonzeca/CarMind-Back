@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-@JsonPropertyOrder({ "nombre", "patente", "marca", "modelo", "linea", "color", "tipo", "fecha_service","kilometraje" })
+@JsonPropertyOrder({ "nombre", "patente", "marca", "modelo", "linea", "tipo", "kilometraje" })
 @Generated("jsonschema2pojo")
 public class AltaPojo {
 
@@ -94,7 +94,7 @@ public class AltaPojo {
 
     @JsonProperty("kilometraje")
     public void setKilometraje(Integer kilometraje){
-        kilometraje = this.kilometraje;
+        this.kilometraje = kilometraje;
     }
 
     public boolean validate() {

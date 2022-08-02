@@ -1,7 +1,7 @@
 package com.mindia.carmind.evaluacion.manager;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +25,7 @@ import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
 import com.mindia.carmind.evaluacion.pojo.respuesta.RespuestaOpcionPojo;
 import com.mindia.carmind.evaluacion.pojo.view.EvaluacionView;
 import com.mindia.carmind.evaluacion.pojo.view.PreguntaView;
+import com.mindia.carmind.notificacion.manager.NotificacionManager;
 import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.pregunta.manager.PreguntaManager;
 import com.mindia.carmind.pregunta.persistence.LogOptionRepository;
@@ -33,11 +34,8 @@ import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
-import com.mindia.carmind.utils.Convertions;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -45,16 +43,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-
 @Service
 public class EvaluacionManager {
-
-    private static final Logger log = LoggerFactory.getLogger(EvaluacionManager.class);
 
     @Autowired
     EvaluacionRepository repository;
@@ -118,6 +108,12 @@ public class EvaluacionManager {
         evaluacion = repository.save(evaluacion);
 
         preguntaManager.createPreguntas(evaluacion.getId(), alta.getPreguntas());
+    }
+
+    public void deleteEvaluacion(int id){
+        
+        Evaluacion evaluacion = repository.getById(id);
+        repository.delete(evaluacion);
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
@@ -314,7 +310,21 @@ public class EvaluacionManager {
                 //Si el vehiculo tiene alguna falla (pregunta marcada como incorrecta y crucial) en la evaluación, entonces mandamos el mail via FastEmail
                 if (hasFailure) {
                     hasFailure = false; 
-                    sendEmailNotificationFailure(loggedUser.getEmpresa(),loggedUser.getNombre(), loggedUser.getApellido(), vehiculo.getNombre(), log.getId(), vehiculo.getId());
+                    //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
+                    List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrue(empresaId);
+                    //Obtenemos la fecha actual en el formato necestiado
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                    String currentDateTime = LocalDateTime.now().format(formatter);
+                     //Se setean todas las propiedades que le llegan a FastEmail
+                    NotificacionFailureEvaluacionView notificacion = new NotificacionFailureEvaluacionView(
+                        loggedUser.getNombre(), 
+                        loggedUser.getApellido(), 
+                        vehiculo.getNombre(), 
+                        log.getId(), 
+                        vehiculo.getId(),
+                        currentDateTime
+                    );
+                    NotificacionManager.sendEmailNotificationFailure(usuarios, notificacion, fastEmailUrl);
                 }
                 
                 return;
@@ -328,45 +338,6 @@ public class EvaluacionManager {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La evaluacion a realizar, no la tiene asignada el vehiculo seleccionado.");
         }
 
-    }
-
-    private void sendEmailNotificationFailure(Integer empresaId, String nombreUsuario, String apellidoUsuario, String nombreVehiculo, int idLog, int idVehiculo){
-        
-        String path = "/sendFailureEvaluacion";
-
-        //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
-        List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrueAndAdministradorTrue(empresaId);
-
-        //Se setean todas las propiedades que le llegan a FastEmail
-        NotificacionFailureEvaluacionView notificacion = new NotificacionFailureEvaluacionView(
-            nombreUsuario, 
-            apellidoUsuario, 
-            nombreVehiculo, 
-            idLog, idVehiculo
-        );
-
-        for(Usuario usuario : usuarios){
-
-            //Por cada usuario adminitrador, se setea el email y nombre
-            notificacion.setEmail(usuario.getUsername());
-            notificacion.setEmail(usuario.getNombre());
-
-            final OkHttpClient client = new OkHttpClient();
-            
-            RequestBody body = RequestBody.create(Convertions.toJson(notificacion), MediaType.get("application/json; charset=utf-8"));
-    
-            Request fastEmailRequest = new Request.Builder().url(fastEmailUrl + path)
-            .addHeader("Content-Type", "application/json").post(body).build();
-        
-            try{
-                Response fastEmailResponse = client.newCall(fastEmailRequest).execute();
-                log.info("Email envíado con exito a " + usuario.getUsername());
-                log.info("Repuesta de FastEmail: " + fastEmailResponse.toString());
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-            }
-        }
     }
 
     public List<LogEvaluacionView> historialDeEvaluaciones(){
