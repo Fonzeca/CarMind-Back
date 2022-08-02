@@ -18,3 +18,4 @@ ALTER TABLE `documento` DROP FOREIGN KEY `vehiculo_documento`; ALTER TABLE `docu
 
 //Cambiar el log de uso del vehiculo para que se elimine cuando se elimina un vehiculo
 ALTER TABLE `log_uso_vehiculo` DROP FOREIGN KEY `log_uso_vehiculo_ibfk_2`; ALTER TABLE `log_uso_vehiculo` ADD CONSTRAINT `log_uso_vehiculo_ibfk_2` FOREIGN KEY (`vehiculo_id`) REFERENCES `vehiculo`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `log_evaluacion` DROP FOREIGN KEY `log_evaluacion_id`; ALTER TABLE `log_evaluacion` ADD CONSTRAINT `log_evaluacion_id` FOREIGN KEY (`evaluacion_id`) REFERENCES `evaluacion`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
