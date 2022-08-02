@@ -7,7 +7,6 @@ package com.mindia.carmind.entities;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -59,7 +58,7 @@ public class Pregunta implements Serializable {
     @JoinColumn(name="tipo", referencedColumnName="codigo", insertable=false, updatable=false)
     private TipoPregunta tipopregunta ; 
 
-    @OneToMany(mappedBy="pregunta", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="pregunta")
     private List<PreguntaOpcion> preguntaopcionList ; 
 
 

@@ -7,7 +7,6 @@ package com.mindia.carmind.entities;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -72,10 +71,10 @@ public class Vehiculo implements Serializable {
     @OneToMany(mappedBy="vehiculo")
     private List<Documento> documentoList ; 
 
-    @OneToMany(mappedBy="vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="vehiculo")
     private List<LogEvaluacion> logevaluacionList ; 
 
-    @OneToMany(mappedBy="vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="vehiculo")
     private List<LogUsoVehiculo> logusovehiculoList ; 
 
     @ManyToOne
@@ -90,7 +89,7 @@ public class Vehiculo implements Serializable {
     @JoinColumn(name="usuario_id_usando", referencedColumnName="id", insertable=false, updatable=false)
     private Usuario    usuario ; 
 
-    @OneToMany(mappedBy="vehiculo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy="vehiculo")
     private List<VehiculoEvaluacion> vehiculoevaluacionList ; 
 
 
