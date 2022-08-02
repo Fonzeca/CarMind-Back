@@ -4,7 +4,5 @@ ALTER TABLE `log_uso_vehiculo` CHANGE `fecha_inicio` `fecha_inicio` DATETIME NOT
 
 
 //Eliminar propiedad active del user hub
-UserHub.users.updateMany(
-   { },
-   { $unset: { active: "" } }
-)
+ALTER TABLE usuario
+DROP COLUMN active;
