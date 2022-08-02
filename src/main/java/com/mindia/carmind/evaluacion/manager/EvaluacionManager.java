@@ -110,6 +110,12 @@ public class EvaluacionManager {
         preguntaManager.createPreguntas(evaluacion.getId(), alta.getPreguntas());
     }
 
+    public void deleteEvaluacion(int id){
+        
+        Evaluacion evaluacion = repository.getById(id);
+        repository.delete(evaluacion);
+    }
+
     public List<EvaluacionView> getAllEvaluaciones(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
