@@ -1,5 +1,7 @@
 name: Deploy to dev
-on: [push]
+on: 
+  push:
+    - dev
 jobs:
   build:
     name: Build and Deploy
