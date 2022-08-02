@@ -43,3 +43,9 @@ jobs:
             cd ${{ secrets.PATH }}
             docker compose build carmind-back
             docker compose up -d
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'El {{ EVENT_PAYLOAD.repository.full_name }} termino de hacer deploy.'
