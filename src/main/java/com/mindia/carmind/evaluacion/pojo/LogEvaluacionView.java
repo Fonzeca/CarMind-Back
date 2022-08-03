@@ -12,7 +12,6 @@ import com.mindia.carmind.entities.LogEvaluacion;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "log_id",
-        "evaluacion_id",
         "nombre_evaluacion",
         "fecha",
         "vehiculo_id",
@@ -27,8 +26,6 @@ public class LogEvaluacionView {
 
     @JsonProperty("log_id")
     private Integer logId;
-    @JsonProperty("evaluacion_id")
-    private Integer evaluacionId;
     @JsonProperty("nombre_evaluacion")
     private String nombreEvaluacion;
     @JsonProperty("fecha")
@@ -62,15 +59,13 @@ public class LogEvaluacionView {
      * @param nombreVehiculo
      * @param logId
      * @param nombreUsuario
-     * @param evaluacionId
      * @param usuarioId
      */
-    public LogEvaluacionView(Integer logId, Integer evaluacionId, String nombreEvaluacion, String fecha,
+    public LogEvaluacionView(Integer logId, String nombreEvaluacion, String fecha,
             Integer vehiculoId, String nombreVehiculo, Integer usuarioId, String nombreUsuario,
             String apellidoUsuario) {
         super();
         this.logId = logId;
-        this.evaluacionId = evaluacionId;
         this.nombreEvaluacion = nombreEvaluacion;
         this.fecha = fecha;
         this.vehiculoId = vehiculoId;
@@ -88,16 +83,6 @@ public class LogEvaluacionView {
     @JsonProperty("log_id")
     public void setLogId(Integer logId) {
         this.logId = logId;
-    }
-
-    @JsonProperty("evaluacion_id")
-    public Integer getEvaluacionId() {
-        return evaluacionId;
-    }
-
-    @JsonProperty("evaluacion_id")
-    public void setEvaluacionId(Integer evaluacionId) {
-        this.evaluacionId = evaluacionId;
     }
 
     @JsonProperty("nombre_evaluacion")
@@ -183,8 +168,7 @@ public class LogEvaluacionView {
 
     public LogEvaluacionView(LogEvaluacion log){
         this.logId = log.getId();
-        this.evaluacionId = log.getEvaluacionId();
-        this.nombreEvaluacion = log.getEvaluacion().getNombre();
+        this.nombreEvaluacion = log.getNombreEvaluacion();
         this.fecha = log.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/YYYY HH:mm:ss"));
         this.vehiculoId = log.getVehiculoId();
         this.nombreVehiculo = log.getVehiculo().getNombre();

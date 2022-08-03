@@ -254,7 +254,10 @@ public class VehiculoManager {
 
         repository.save(vehiculo);
 
-        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo (loggedUser.getId(),id);
+        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
+        logUsoVehiculo.setFechaInicio(LocalDateTime.now());
+        logUsoVehiculo.setUsuarioId(loggedUser.getId());
+        logUsoVehiculo.setVehiculoId(id);
 
         logUsoVehiculoRepository.save(logUsoVehiculo);
     }
