@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LogEvaluacionRepository extends JpaRepository<LogEvaluacion, Integer> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE evaluacion_id = ?1 ORDER BY fecha DESC LIMIT 1")
+    @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE vehiculo_id = ?1 ORDER BY fecha DESC LIMIT 1")
     public LogEvaluacion getLastLogById(Integer id);
 
     @Query(nativeQuery = true, value = "SELECT * FROM log_evaluacion WHERE usuario_id = ?1 LIMIT ?2")

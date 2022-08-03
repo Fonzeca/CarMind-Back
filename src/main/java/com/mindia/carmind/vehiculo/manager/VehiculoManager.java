@@ -187,7 +187,7 @@ public class VehiculoManager {
         for (VehiculoEvaluacion vehiculoEvaluacion : vehiculoxEvaluacion) {
 
             // Obtenemos el ultimo log de la evaluacion
-            LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
+            LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getVehiculoId());
 
             // Si el ultimo log es null, es porque nunca se hizo una evaluacion
             if (log != null) {
