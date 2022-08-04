@@ -149,7 +149,7 @@ public class NotificacionManager {
                 }
                 log.info("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
             }
-            List<Usuario> usuarios = usuariosRepository.findByEmpresa(empresa.getId());
+            List<Usuario> usuarios = usuariosRepository.findByEmpresaAndActiveTrue(empresa.getId());
             usuarios = usuarios.stream().filter(o -> o.isAdministrador()).collect(Collectors.toList());
             if(usuarios.isEmpty()) log.info("Esta empresa no tiene usuarios, imposible enviar el email via FastEmail, vuelvas prontos");
             usuarios.stream().forEach(usuario -> {sendEmail(usuario.getUsername(), usuario.getNombre(), vencimientos);});

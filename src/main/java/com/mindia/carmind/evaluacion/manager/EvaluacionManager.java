@@ -311,7 +311,7 @@ public class EvaluacionManager {
                 if (hasFailure) {
                     hasFailure = false; 
                     //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
-                    List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrue(empresaId);
+                    List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrueAndActiveTrue(empresaId);
                     //Obtenemos la fecha actual en el formato necestiado
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     String currentDateTime = LocalDateTime.now().format(formatter);
