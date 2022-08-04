@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mindia.carmind.entities.LogUsoVehiculo;
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
@@ -23,6 +24,7 @@ import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
+import com.mindia.carmind.vehiculo.persistence.LogUsoVehiculoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,9 @@ public class UsuariosManager {
 
     @Autowired
     EvaluacionManager evaluacionManager;
+
+    @Autowired
+    LogUsoVehiculoRepository logUsoVehiculoRepository;
 
     public TokenView login(String username, String password, String FCMToken) {
         Usuario u = repository.findByUsernameAndActiveTrue(username);
@@ -144,8 +149,13 @@ public class UsuariosManager {
         userToDesactive.setActive(false); 
         for (Vehiculo vehiculo : userToDesactive.getVehiculoList()) {
             vehiculo.setUsuarioIdUsando(null);
-
             vehiculosRepository.save(vehiculo);
+        }
+
+        LogUsoVehiculo log = logUsoVehiculoRepository.findByUsuarioIdAndFechaFin(id, null);
+        if(log != null){
+            log.setFechaFin(LocalDateTime.now());
+            logUsoVehiculoRepository.save(log);
         }
 
         userHubManager.deleteUsuario(userToDesactive.getUsername());
