@@ -77,7 +77,7 @@ public class UsuariosManager {
         }
 
         usuario.setAdministrador(pojo.getAdministrador());
-
+        usuario.setActive(true);
         usuario.setUsername(pojo.getUsername());
         usuario.setDni(pojo.getDni());
         usuario.setApellido(pojo.getApellido());
