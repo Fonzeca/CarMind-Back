@@ -22,5 +22,5 @@ public interface LogEvaluacionRepository extends JpaRepository<LogEvaluacion, In
 
     List<LogEvaluacion> findByVehiculoIdAndParaRevisarTrue(Integer vehiculoId);
 
-    List<LogEvaluacion> findByVehiculoIdIn(List<Integer> vehiculoIds);
+    List<LogEvaluacion> findByVehiculoIdInOrderByFechaDesc(List<Integer> vehiculoIds);
 }

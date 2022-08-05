@@ -345,7 +345,7 @@ public class EvaluacionManager {
 
         List<Integer> vehiculosIds = vehiculosRepository.findIdsByEmpresaId(empresaId);
 
-        List<LogEvaluacion> logs = logEvaluacionRepository.findByVehiculoIdIn(vehiculosIds);
+        List<LogEvaluacion> logs = logEvaluacionRepository.findByVehiculoIdInOrderByFechaDesc(vehiculosIds);
         
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }
