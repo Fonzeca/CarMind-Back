@@ -303,8 +303,8 @@ public class EvaluacionManager {
                             break;
                     }
                     //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
-                    //if(logPregunta.getId() == null){    así estaba antes
-                    if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
+                    if(logPregunta.getId() == 0) logPregunta = logPreguntaRepository.save(logPregunta);
+                    // if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
                 }
 
                 //Si el vehiculo tiene alguna falla (pregunta marcada como incorrecta y crucial) en la evaluación, entonces mandamos el mail via FastEmail
