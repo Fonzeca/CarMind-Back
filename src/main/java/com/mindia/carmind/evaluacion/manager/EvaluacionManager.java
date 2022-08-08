@@ -34,6 +34,7 @@ import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class EvaluacionManager {
     @Autowired
     UsuariosRepository usuariosRepository;
 
+    @Autowired
+    VehiculoEvaluacionRepository vehiculoEvaluacionRepository;
+
     @Value("${fastemail.url}")
     private String fastEmailUrl;
 
@@ -92,6 +96,10 @@ public class EvaluacionManager {
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
         Evaluacion e = repository.findByIdAndEmpresaIdAndActiveTrue(id, empresaId);
+
+        if(e == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluacion no encontrada.");
+        }
 
         return EvaluacionView.getEvaluacionDetails(e);
     }
@@ -113,8 +121,10 @@ public class EvaluacionManager {
 
     public void deleteEvaluacion(int id){
         Evaluacion evaluacion = repository.getById(id);
+        vehiculoEvaluacionRepository.deleteByEvaluacionId(id);
         evaluacion.setActive(false);
         repository.save(evaluacion);
+
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
