@@ -85,13 +85,13 @@ public class EvaluacionManager {
 
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        return repository.findByIdAndEmpresaId(intId, empresaId);
+        return repository.findByIdAndEmpresaIdAndActiveTrue(intId, empresaId);
     }
 
     public EvaluacionView getEvaluacionViewById(int id){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        Evaluacion e = repository.findByIdAndEmpresaId(id, empresaId);
+        Evaluacion e = repository.findByIdAndEmpresaIdAndActiveTrue(id, empresaId);
 
         return EvaluacionView.getEvaluacionDetails(e);
     }
@@ -104,6 +104,7 @@ public class EvaluacionManager {
 
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
         evaluacion.setEmpresaId(empresaId);
+        evaluacion.setActive(true);
 
         evaluacion = repository.save(evaluacion);
 
@@ -111,15 +112,15 @@ public class EvaluacionManager {
     }
 
     public void deleteEvaluacion(int id){
-        
         Evaluacion evaluacion = repository.getById(id);
-        repository.delete(evaluacion);
+        evaluacion.setActive(false);
+        repository.save(evaluacion);
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        List<Evaluacion> evaluaciones = repository.findByEmpresaId(empresaId);
+        List<Evaluacion> evaluaciones = repository.findByEmpresaIdAndActiveTrue(empresaId);
 
         return evaluaciones.stream().map(EvaluacionView::new).collect(Collectors.toList());
     }
@@ -127,7 +128,7 @@ public class EvaluacionManager {
     public List<EvaluacionView> getAllEvaluacionesWithDetails(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        List<Evaluacion> evaluaciones = repository.findByEmpresaId(empresaId);
+        List<Evaluacion> evaluaciones = repository.findByEmpresaIdAndActiveTrue(empresaId);
 
         return evaluaciones.stream().map(x -> EvaluacionView.getEvaluacionDetails(x)).collect(Collectors.toList());
     }
@@ -172,7 +173,7 @@ public class EvaluacionManager {
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
         //Obtenemos la evaluacion
-        Evaluacion evaluacion = repository.findByIdAndEmpresaId(id, empresaId);
+        Evaluacion evaluacion = repository.findByIdAndEmpresaIdAndActiveTrue(id, empresaId);
         if(evaluacion == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluacion no encontrada.");
         }
