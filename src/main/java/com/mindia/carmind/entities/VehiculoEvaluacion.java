@@ -5,7 +5,7 @@
 package com.mindia.carmind.entities;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,7 +45,7 @@ public class VehiculoEvaluacion implements Serializable {
     private int        intervaloDias ;
 
     @Column(name="fecha_inicio", nullable=false)
-    private LocalDate  fechaInicio ;
+    private LocalDateTime  fechaInicio ;
 
 
     //--- ENTITY LINKS ( RELATIONSHIP )
@@ -94,10 +94,10 @@ public class VehiculoEvaluacion implements Serializable {
         return this.intervaloDias;
     }
 
-    public void setFechaInicio( LocalDate fechaInicio ) {
+    public void setFechaInicio( LocalDateTime fechaInicio ) {
         this.fechaInicio = fechaInicio ;
     }
-    public LocalDate getFechaInicio() {
+    public LocalDateTime getFechaInicio() {
         return this.fechaInicio;
     }
 
