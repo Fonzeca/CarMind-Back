@@ -119,6 +119,7 @@ public class EvaluacionManager {
         preguntaManager.createPreguntas(evaluacion.getId(), alta.getPreguntas());
     }
 
+    @Transactional
     public void deleteEvaluacion(int id){
         Evaluacion evaluacion = repository.getById(id);
         vehiculoEvaluacionRepository.deleteByEvaluacionId(id);
