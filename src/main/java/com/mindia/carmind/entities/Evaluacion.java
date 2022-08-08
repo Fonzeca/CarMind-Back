@@ -6,7 +6,16 @@ package com.mindia.carmind.entities;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "Evaluacion"
@@ -38,6 +47,9 @@ public class Evaluacion implements Serializable {
     @ManyToOne
     @JoinColumn(name="empresa_id", referencedColumnName="id", insertable=false, updatable=false)
     private Empresa    empresa ; 
+
+    @OneToMany(mappedBy="evaluacion")
+    private List<LogEvaluacion> logevaluacionList ; 
 
     @OneToMany(mappedBy="evaluacion")
     private List<Pregunta> preguntaList ; 
@@ -86,6 +98,10 @@ public class Evaluacion implements Serializable {
 
     public List<VehiculoEvaluacion> getVehiculoevaluacionList() {
         return this.vehiculoevaluacionList;
+    } 
+
+    public List<LogEvaluacion> getLogevaluacionList() {
+        return this.logevaluacionList;
     } 
 
     //--- toString specific method

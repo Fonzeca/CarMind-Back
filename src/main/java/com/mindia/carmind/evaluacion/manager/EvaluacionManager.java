@@ -199,7 +199,7 @@ public class EvaluacionManager {
 
                 //LogEvaluacion
                 LogEvaluacion log = new LogEvaluacion();
-                log.setNombreEvaluacion(evaluacion.getNombre());
+                log.setEvaluacionId(id);
 
                 //Para cuando se hace offline
                 if(logFecha != null){
@@ -343,9 +343,8 @@ public class EvaluacionManager {
     public List<LogEvaluacionView> historialDeEvaluaciones(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        List<Integer> vehiculosIds = vehiculosRepository.findIdsByEmpresaId(empresaId);
-
-        List<LogEvaluacion> logs = logEvaluacionRepository.findByVehiculoIdInOrderByFechaDesc(vehiculosIds);
+        List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
+        logs = logs.stream().filter(x -> x.getEvaluacion().getEmpresaId() == (empresaId)).collect(Collectors.toList());
         
         return logs.stream().map(LogEvaluacionView::new).collect(Collectors.toList());
     }

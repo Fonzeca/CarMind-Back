@@ -7,7 +7,16 @@ package com.mindia.carmind.entities;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "LogEvaluacion"
@@ -31,6 +40,9 @@ public class LogEvaluacion implements Serializable {
     @Column(name="fecha", nullable=false)
     private LocalDateTime fecha ;
 
+    @Column(name="evaluacion_id", nullable=false)
+    private int        evaluacionId ;
+
     @Column(name="vehiculo_id", nullable=false)
     private int        vehiculoId ;
 
@@ -43,11 +55,11 @@ public class LogEvaluacion implements Serializable {
     @Column(name="revision_id")
     private Integer    revisionId ;
 
-    @Column(name="nombre_evaluacion", length=50)
-    private String     nombreEvaluacion ;
-
-
     //--- ENTITY LINKS ( RELATIONSHIP )
+    @ManyToOne
+    @JoinColumn(name="evaluacion_id", referencedColumnName="id", insertable=false, updatable=false)
+    private Evaluacion evaluacion ; 
+
     @ManyToOne
     @JoinColumn(name="revision_id", referencedColumnName="id", insertable=false, updatable=false)
     private Revision   revision ; 
@@ -86,6 +98,13 @@ public class LogEvaluacion implements Serializable {
         return this.fecha;
     }
 
+    public void setEvaluacionId( int evaluacionId ) {
+        this.evaluacionId = evaluacionId ;
+    }
+    public int getEvaluacionId() {
+        return this.evaluacionId;
+    }
+
     public void setVehiculoId( int vehiculoId ) {
         this.vehiculoId = vehiculoId ;
     }
@@ -114,14 +133,11 @@ public class LogEvaluacion implements Serializable {
         return this.revisionId;
     }
 
-    public void setNombreEvaluacion( String nombreEvaluacion ) {
-        this.nombreEvaluacion = nombreEvaluacion ;
-    }
-    public String getNombreEvaluacion() {
-        return this.nombreEvaluacion;
-    }
-
     //--- GETTERS FOR LINKS
+    public Evaluacion getEvaluacion() {
+        return this.evaluacion;
+    } 
+    
     public Revision getRevision() {
         return this.revision;
     } 
@@ -146,6 +162,8 @@ public class LogEvaluacion implements Serializable {
         sb.append("|");
         sb.append(fecha);
         sb.append("|");
+        sb.append(evaluacionId);
+        sb.append("|");
         sb.append(vehiculoId);
         sb.append("|");
         sb.append(usuarioId);
@@ -153,8 +171,6 @@ public class LogEvaluacion implements Serializable {
         sb.append(paraRevisar);
         sb.append("|");
         sb.append(revisionId);
-        sb.append("|");
-        sb.append(nombreEvaluacion);
         return sb.toString(); 
     } 
 

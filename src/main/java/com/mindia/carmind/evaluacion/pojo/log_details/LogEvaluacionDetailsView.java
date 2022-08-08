@@ -14,6 +14,7 @@ import com.mindia.carmind.entities.LogEvaluacion;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
+    "evaluacion_id",
     "log_id",
     "evaluacion_nombre",
     "fecha_relizacion",
@@ -27,6 +28,8 @@ import com.mindia.carmind.entities.LogEvaluacion;
 @Generated("jsonschema2pojo")
 public class LogEvaluacionDetailsView {
 
+    @JsonProperty("evaluacion_id")
+    private Integer evaluacionId;
     @JsonProperty("log_id")
     private Integer logId;
     @JsonProperty("evaluacion_nombre")
@@ -59,13 +62,15 @@ public class LogEvaluacionDetailsView {
      * @param vehiculoId
      * @param logId
      * @param fechaRelizacion
+     * @param evaluacionId
      * @param usuarioId
      * @param usuarioNombre
      * @param preguntas
      * @param evaluacionNombre
      */
-    public LogEvaluacionDetailsView(Integer logId, String evaluacionNombre, String fechaRelizacion, Integer usuarioId, String usuarioNombre, Integer vehiculoId, String vehiculoNombre, List<LogPreguntaDetailsView> preguntas) {
+    public LogEvaluacionDetailsView(Integer evaluacionId, Integer logId, String evaluacionNombre, String fechaRelizacion, Integer usuarioId, String usuarioNombre, Integer vehiculoId, String vehiculoNombre, List<LogPreguntaDetailsView> preguntas) {
         super();
+        this.evaluacionId = evaluacionId;
         this.logId = logId;
         this.evaluacionNombre = evaluacionNombre;
         this.fechaRelizacion = fechaRelizacion;
@@ -78,8 +83,9 @@ public class LogEvaluacionDetailsView {
 
     public LogEvaluacionDetailsView(LogEvaluacion log) {
         super();
+        this.evaluacionId = log.getEvaluacionId();
         this.logId = log.getId();
-        this.evaluacionNombre = log.getNombreEvaluacion();
+        this.evaluacionNombre = log.getEvaluacion().getNombre();
         this.fechaRelizacion = log.getFecha().format(DateTimeFormatter.ofPattern("dd/MM/YYYY mm:HH"));
         this.usuarioId = log.getUsuarioId();
         this.usuarioNombre = log.getUsuario().getNombre() + log.getUsuario().getApellido();
@@ -87,6 +93,16 @@ public class LogEvaluacionDetailsView {
         this.vehiculoNombre = log.getVehiculo().getNombre();
         this.paraRevisar = log.isParaRevisar();
         this.preguntas = log.getLogpreguntaList().stream().map(LogPreguntaDetailsView::new).collect(Collectors.toList());
+    }
+
+    @JsonProperty("evaluacion_id")
+    public Integer getEvaluacionId() {
+        return evaluacionId;
+    }
+
+    @JsonProperty("evaluacion_id")
+    public void setEvaluacionId(Integer evaluacionId) {
+        this.evaluacionId = evaluacionId;
     }
 
     @JsonProperty("log_id")
