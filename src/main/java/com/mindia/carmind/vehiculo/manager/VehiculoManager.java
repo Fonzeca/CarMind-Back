@@ -165,7 +165,7 @@ public class VehiculoManager {
         manyToMany.setIntervaloDias(pojo.getIntervalo_dias());
 
         try {
-            LocalDateTime fechaInicio = LocalDateTime.parse(pojo.getFecha_inicio(),
+            LocalDate fechaInicio = LocalDate.parse(pojo.getFecha_inicio(),
                     DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.getDefault()));
             manyToMany.setFechaInicio(fechaInicio);
         } catch (IllegalArgumentException | DateTimeParseException e) {
@@ -193,10 +193,10 @@ public class VehiculoManager {
             if (log != null) {
 
                 // Fecha del ultimo log
-                LocalDateTime dateLog = log.getFecha();
+                LocalDate dateLog = log.getFecha().toLocalDate();
 
                 // Fecha de la proxima vez que se deberia realizar la evaluacion
-                LocalDateTime fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
+                LocalDate fechaProxima = fechaProximoCheck(vehiculoEvaluacion);
 
                 int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
@@ -402,11 +402,11 @@ public class VehiculoManager {
      * @param vehiculoEvaluacion
      * @return proxima fecha de la evaluacion
      */
-    private LocalDateTime fechaProximoCheck(VehiculoEvaluacion vehiculoEvaluacion) {
+    private LocalDate fechaProximoCheck(VehiculoEvaluacion vehiculoEvaluacion) {
 
-        LocalDateTime hoy = LocalDateTime.now();
+        LocalDate hoy = LocalDate.now();
 
-        LocalDateTime fechaPeriodo = vehiculoEvaluacion.getFechaInicio();
+        LocalDate fechaPeriodo = vehiculoEvaluacion.getFechaInicio();
 
         int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
@@ -430,7 +430,7 @@ public class VehiculoManager {
             int intervaloDias = vehiculoEvaluacion.getIntervaloDias();
 
             // Fecha de la proxima vez que se deberia realizar la evaluacion
-            LocalDateTime fechaProxima = fechaProximoCheck(vehiculoEvaluacion).toLocalDate().atStartOfDay();
+            LocalDateTime fechaProxima = fechaProximoCheck(vehiculoEvaluacion).atStartOfDay();
 
             LocalDateTime fechaAnterior = fechaProxima.minusDays(intervaloDias);
 
@@ -444,8 +444,8 @@ public class VehiculoManager {
             return vencimiento;
         } else {
 
-            if (!vehiculoEvaluacion.getFechaInicio().isBefore(LocalDateTime.now())) {
-                int vencimiento = (int) LocalDate.now().datesUntil(vehiculoEvaluacion.getFechaInicio().toLocalDate()).count();
+            if (!vehiculoEvaluacion.getFechaInicio().isBefore(LocalDate.now())) {
+                int vencimiento = (int) LocalDate.now().datesUntil(vehiculoEvaluacion.getFechaInicio()).count();
                 return vencimiento;
             }
 
@@ -455,7 +455,7 @@ public class VehiculoManager {
 
     private VehiculoView armarVehiculoConPendientes(Vehiculo v, boolean getFuturePendientes) {
         VehiculoView vehiculo = new VehiculoView(v, true);
-        var listsEvaluacion = v.getVehiculoevaluacionList().stream().filter(x -> (!getFuturePendientes) ? (LocalDateTime.now().isAfter(x.getFechaInicio()) || (LocalDateTime.now().equals(x.getFechaInicio()))) : true )
+        var listsEvaluacion = v.getVehiculoevaluacionList().stream().filter(x -> (!getFuturePendientes) ? (LocalDate.now().isAfter(x.getFechaInicio()) || (LocalDate.now().equals(x.getFechaInicio()))) : true )
                 .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x),
                         x.getIntervaloDias()))
                 .collect(Collectors.toList());
