@@ -455,7 +455,7 @@ public class VehiculoManager {
 
     private VehiculoView armarVehiculoConPendientes(Vehiculo v, boolean getFuturePendientes) {
         VehiculoView vehiculo = new VehiculoView(v, true);
-        var listsEvaluacion = v.getVehiculoevaluacionList().stream().filter(x -> (!getFuturePendientes) ? (LocalDateTime.now().isAfter(x.getFechaInicio()) || (LocalDateTime.now().equals(x.getFechaInicio()))) : null )
+        var listsEvaluacion = v.getVehiculoevaluacionList().stream().filter(x -> (!getFuturePendientes) ? (LocalDateTime.now().isAfter(x.getFechaInicio()) || (LocalDateTime.now().equals(x.getFechaInicio()))) : true )
                 .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x),
                         x.getIntervaloDias()))
                 .collect(Collectors.toList());
