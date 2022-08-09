@@ -14,6 +14,9 @@ public interface UsuariosRepository extends JpaRepository<Usuario, Integer> {
 
     Usuario findByUsernameAndActiveTrue(String username);
 
+    //Se usa para dar de alta un usuario que se dio de baja
+    Usuario findByUsernameAndActiveFalse(String username);
+
     Optional<Usuario> findByIdAndActiveTrue(Integer id);
 
     Usuario findByUsernameAndEmpresaAndActiveTrue(String username, Integer empresa);

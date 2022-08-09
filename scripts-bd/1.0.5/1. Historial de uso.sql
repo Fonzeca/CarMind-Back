@@ -21,4 +21,4 @@ ALTER TABLE `log_uso_vehiculo` DROP FOREIGN KEY `log_uso_vehiculo_ibfk_2`; ALTER
 ALTER TABLE `log_evaluacion` DROP FOREIGN KEY `log_evaluacion_id`; ALTER TABLE `log_evaluacion` ADD CONSTRAINT `log_evaluacion_id` FOREIGN KEY (`evaluacion_id`) REFERENCES `evaluacion`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 //Añadir foreign key caida en el log option
-ALTER TABLE `log_option` ADD CONSTRAINT `id_log_option_log_pregunta` FOREIGN KEY (`id_log_pregunta`) REFERENCES `log_pregunta`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+ALTER TABLE `log_option` ADD CONSTRAINT `id_log_option_log_pregunta` FOREIGN KEY (`id_log_pregunta`) REFERENCES `log_pregunta`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

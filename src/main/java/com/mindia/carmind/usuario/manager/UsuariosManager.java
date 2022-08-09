@@ -74,11 +74,17 @@ public class UsuariosManager {
             }
         }
 
-        // Le damos de alta en nuestra base de datos
-        Usuario usuario = new Usuario();
-
+        
         if (repository.findByUsernameAndActiveTrue(pojo.getUsername()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuario duplicado");
+        }
+
+        //Si se dio de baja, lo damos de alta otra vez.
+        //Buscamos por los active en falso, y si da ok, editamos el usuario.
+        //Si no da ok, creamos un nuevo usuario
+        Usuario usuario = repository.findByUsernameAndActiveFalse(pojo.getUsername());
+        if(usuario == null) {
+            usuario = new Usuario();
         }
 
         usuario.setAdministrador(pojo.getAdministrador());
