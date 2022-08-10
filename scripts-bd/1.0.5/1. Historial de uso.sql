@@ -22,3 +22,5 @@ ALTER TABLE `log_evaluacion` DROP FOREIGN KEY `log_evaluacion_id`; ALTER TABLE `
 
 //Añadir foreign key caida en el log option
 ALTER TABLE `log_option` ADD CONSTRAINT `id_log_option_log_pregunta` FOREIGN KEY (`id_log_pregunta`) REFERENCES `log_pregunta`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE vehiculo ADD IMEI VARCHAR(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER kilometraje;
