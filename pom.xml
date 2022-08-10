@@ -9,7 +9,7 @@
 	</parent>
 	<groupId>com.mindia</groupId>
 	<artifactId>CarMind</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.7</version>
 	<name>CarMind</name>
 	<description>Sistema back de CarMind</description>
 	<properties>
