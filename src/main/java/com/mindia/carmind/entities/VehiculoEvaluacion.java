@@ -6,7 +6,15 @@ package com.mindia.carmind.entities;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * JPA entity class for "VehiculoEvaluacion"
@@ -22,7 +30,7 @@ public class VehiculoEvaluacion implements Serializable {
 
     //--- ENTITY PRIMARY KEY 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name="id", nullable=false)
     private int        id ;
 

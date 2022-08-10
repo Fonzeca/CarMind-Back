@@ -12,4 +12,5 @@ import org.springframework.stereotype.Repository;
 public interface VehiculoEvaluacionRepository extends JpaRepository<VehiculoEvaluacion, Integer> {
 
     List<VehiculoEvaluacion> findByVehiculoId(Integer vehiculoId);
+    void deleteByEvaluacionId(Integer evaluacionId);
 }   

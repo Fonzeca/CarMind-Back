@@ -2,6 +2,7 @@ package com.mindia.carmind.usuario.persistence;
 
 
 import java.util.List;
+import java.util.Optional;
 
 import com.mindia.carmind.entities.Usuario;
 
@@ -11,14 +12,19 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UsuariosRepository extends JpaRepository<Usuario, Integer> {
 
-    Usuario findByUsername(String username);
+    Usuario findByUsernameAndActiveTrue(String username);
 
-    Usuario findByUsernameAndEmpresa(String username, Integer empresa);
+    //Se usa para dar de alta un usuario que se dio de baja
+    Usuario findByUsernameAndActiveFalse(String username);
 
-    Usuario findByIdAndEmpresa(Integer id, Integer empresa);
+    Optional<Usuario> findByIdAndActiveTrue(Integer id);
 
-    List<Usuario> findByEmpresa(Integer empresa);
+    Usuario findByUsernameAndEmpresaAndActiveTrue(String username, Integer empresa);
 
-    List<Usuario> findByEmpresaAndAdministradorTrue(Integer empresa);
+    Usuario findByIdAndEmpresaAndActiveTrue(Integer id, Integer empresa);
+
+    List<Usuario> findByEmpresaAndActiveTrue(Integer empresa);
+
+    List<Usuario> findByEmpresaAndAdministradorTrueAndActiveTrue(Integer empresa);
 
 }

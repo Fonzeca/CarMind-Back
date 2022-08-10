@@ -5,8 +5,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mindia.carmind.entities.LogUsoVehiculo;
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
@@ -22,6 +24,7 @@ import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
 import com.mindia.carmind.utils.exception.custom.UserHubException;
 import com.mindia.carmind.vehiculo.manager.VehiculoManager;
+import com.mindia.carmind.vehiculo.persistence.LogUsoVehiculoRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +51,11 @@ public class UsuariosManager {
     @Autowired
     EvaluacionManager evaluacionManager;
 
+    @Autowired
+    LogUsoVehiculoRepository logUsoVehiculoRepository;
+
     public TokenView login(String username, String password, String FCMToken) {
-        Usuario u = repository.findByUsername(username);
+        Usuario u = repository.findByUsernameAndActiveTrue(username);
         if (u == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Usuario inexistente.");
         }
@@ -68,15 +74,21 @@ public class UsuariosManager {
             }
         }
 
-        // Le damos de alta en nuestra base de datos
-        Usuario usuario = new Usuario();
-
-        if (repository.findByUsername(pojo.getUsername()) != null) {
+        
+        if (repository.findByUsernameAndActiveTrue(pojo.getUsername()) != null) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Usuario duplicado");
         }
 
-        usuario.setAdministrador(pojo.getAdministrador());
+        //Si se dio de baja, lo damos de alta otra vez.
+        //Buscamos por los active en falso, y si da ok, editamos el usuario.
+        //Si no da ok, creamos un nuevo usuario
+        Usuario usuario = repository.findByUsernameAndActiveFalse(pojo.getUsername());
+        if(usuario == null) {
+            usuario = new Usuario();
+        }
 
+        usuario.setAdministrador(pojo.getAdministrador());
+        usuario.setActive(true);
         usuario.setUsername(pojo.getUsername());
         usuario.setDni(pojo.getDni());
         usuario.setApellido(pojo.getApellido());
@@ -94,7 +106,7 @@ public class UsuariosManager {
     
     public void modificarConductor(ModificarPojo pojo) {
         // Modificamos el usuario en UserHub
-        Usuario usuario = repository.findByUsernameAndEmpresa(pojo.getUsername(), getLoggeduser().getEmpresa());
+        Usuario usuario = repository.findByUsernameAndEmpresaAndActiveTrue(pojo.getUsername(), getLoggeduser().getEmpresa());
 
         if (usuario == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no encontrado");
@@ -129,33 +141,42 @@ public class UsuariosManager {
     @Transactional
     public void bajaConductor(Integer id) {
         UsuarioView logged = getLoggeduser();
+        Optional<Usuario> user = repository.findByIdAndActiveTrue(id);
         
         if(logged.getId().equals(id)){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No podes eliminar tu usuario.");
         }
 
-        Usuario user = repository.getById(id);
-        user.setActive(false);
-        for (Vehiculo vehiculo : user.getVehiculoList()) {
-            vehiculo.setUsuarioIdUsando(null);
+        if (user.isEmpty() || user == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No podes eliminar tu usuario.");
+        }
 
+        Usuario userToDesactive = user.get();
+        userToDesactive.setActive(false); 
+        for (Vehiculo vehiculo : userToDesactive.getVehiculoList()) {
+            vehiculo.setUsuarioIdUsando(null);
             vehiculosRepository.save(vehiculo);
         }
-        repository.delete(user);
 
-        userHubManager.deleteUsuario(user.getUsername());
+        LogUsoVehiculo log = logUsoVehiculoRepository.findByUsuarioIdAndFechaFin(id, null);
+        if(log != null){
+            log.setFechaFin(LocalDateTime.now());
+            logUsoVehiculoRepository.save(log);
+        }
+
+        userHubManager.deleteUsuario(userToDesactive.getUsername());
     }
 
     
     public UsuarioView obtenerUsuarioById(String id) {
-        Usuario u = repository.findByIdAndEmpresa(Integer.parseInt(id), getLoggeduser().getEmpresa());
+        Usuario u = repository.findByIdAndEmpresaAndActiveTrue(Integer.parseInt(id), getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
     }
 
     public UsuarioView obtenerUsuarioByUsername(String username) {
-        Usuario u = repository.findByUsernameAndEmpresa(username, getLoggeduser().getEmpresa());
+        Usuario u = repository.findByUsernameAndEmpresaAndActiveTrue(username, getLoggeduser().getEmpresa());
         UsuarioView usuario = new UsuarioView(u);
 
         return usuario;
@@ -163,17 +184,17 @@ public class UsuariosManager {
 
     public UsuarioView getLoggeduser() {
         LoggedView logged = (LoggedView) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Usuario u = repository.findByUsername(logged.getUserName());
+        Usuario u = repository.findByUsernameAndActiveTrue(logged.getUserName());
         return new UsuarioView(u);
     }
 
     public List<UsuarioView> getAllUsuario() {
-        List<Usuario> usuarios = repository.findByEmpresa(getLoggeduser().getEmpresa());
+        List<Usuario> usuarios = repository.findByEmpresaAndActiveTrue(getLoggeduser().getEmpresa());
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
     }
 
     public void enviarTokenRecuperacionPassword(String email) {
-        Usuario user = repository.findByUsername(email);
+        Usuario user = repository.findByUsernameAndActiveTrue(email);
         if(user == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuario no existe");
         }

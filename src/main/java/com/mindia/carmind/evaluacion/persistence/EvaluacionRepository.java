@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EvaluacionRepository extends JpaRepository<Evaluacion, Integer> {
-    Evaluacion findByIdAndEmpresaId(Integer id, Integer empresaId);
+    Evaluacion findByIdAndEmpresaIdAndActiveTrue(Integer id, Integer empresaId);
 
-    List<Evaluacion> findByEmpresaId(Integer empresaId);
+    List<Evaluacion> findByEmpresaIdAndActiveTrue(Integer empresaId);
 }

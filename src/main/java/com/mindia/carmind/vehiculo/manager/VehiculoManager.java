@@ -134,7 +134,7 @@ public class VehiculoManager {
 
     public VehiculoView obtenerVehiculoById(String id) {
         Vehiculo v = repository.getById(Integer.parseInt(id));
-        return armarVehiculoConPendientes(v);
+        return armarVehiculoConPendientes(v, true);
     }
 
     public List<VehiculoView> getAllVehiculos() {
@@ -148,7 +148,7 @@ public class VehiculoManager {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
         List<Vehiculo> v = repository.findByEmpresaId(usuario.getEmpresa());
-        return v.stream().map(x -> armarVehiculoConPendientes(x)).collect(Collectors.toList());
+        return v.stream().map(x -> armarVehiculoConPendientes(x, true)).collect(Collectors.toList());
     }
 
     public void asignarEvaluacion(String vehiculoId, AsignacionPojo pojo) {
@@ -187,7 +187,7 @@ public class VehiculoManager {
         for (VehiculoEvaluacion vehiculoEvaluacion : vehiculoxEvaluacion) {
 
             // Obtenemos el ultimo log de la evaluacion
-            LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getEvaluacionId());
+            LogEvaluacion log = logEvaluacionRepository.getLastLogById(vehiculoEvaluacion.getVehiculoId());
 
             // Si el ultimo log es null, es porque nunca se hizo una evaluacion
             if (log != null) {
@@ -254,7 +254,10 @@ public class VehiculoManager {
 
         repository.save(vehiculo);
 
-        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo (loggedUser.getId(),id);
+        LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
+        logUsoVehiculo.setFechaInicio(LocalDateTime.now());
+        logUsoVehiculo.setUsuarioId(loggedUser.getId());
+        logUsoVehiculo.setVehiculoId(id);
 
         logUsoVehiculoRepository.save(logUsoVehiculo);
     }
@@ -300,7 +303,7 @@ public class VehiculoManager {
             return null;
         }
 
-        return armarVehiculoConPendientes(vehiculo);
+        return armarVehiculoConPendientes(vehiculo, false);
     }
 
     @Transactional
@@ -450,10 +453,9 @@ public class VehiculoManager {
         }
     }
 
-    private VehiculoView armarVehiculoConPendientes(Vehiculo v) {
+    private VehiculoView armarVehiculoConPendientes(Vehiculo v, boolean getFuturePendientes) {
         VehiculoView vehiculo = new VehiculoView(v, true);
-
-        var listsEvaluacion = v.getVehiculoevaluacionList().stream()
+        var listsEvaluacion = v.getVehiculoevaluacionList().stream().filter(x -> (!getFuturePendientes) ? (LocalDate.now().isAfter(x.getFechaInicio()) || (LocalDate.now().equals(x.getFechaInicio()))) : true )
                 .map(x -> new EvaluacionLiteView(x.getEvaluacion(), getVencimientoOfEvaluacion(x),
                         x.getIntervaloDias()))
                 .collect(Collectors.toList());

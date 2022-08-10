@@ -34,6 +34,7 @@ import com.mindia.carmind.pregunta.persistence.PreguntaOpcionRepository;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.vehiculo.persistence.VehiculoEvaluacionRepository;
 import com.mindia.carmind.vehiculo.persistence.VehiculosRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,9 @@ public class EvaluacionManager {
     @Autowired
     UsuariosRepository usuariosRepository;
 
+    @Autowired
+    VehiculoEvaluacionRepository vehiculoEvaluacionRepository;
+
     @Value("${fastemail.url}")
     private String fastEmailUrl;
 
@@ -85,13 +89,17 @@ public class EvaluacionManager {
 
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        return repository.findByIdAndEmpresaId(intId, empresaId);
+        return repository.findByIdAndEmpresaIdAndActiveTrue(intId, empresaId);
     }
 
     public EvaluacionView getEvaluacionViewById(int id){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        Evaluacion e = repository.findByIdAndEmpresaId(id, empresaId);
+        Evaluacion e = repository.findByIdAndEmpresaIdAndActiveTrue(id, empresaId);
+
+        if(e == null){
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluacion no encontrada.");
+        }
 
         return EvaluacionView.getEvaluacionDetails(e);
     }
@@ -104,22 +112,26 @@ public class EvaluacionManager {
 
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
         evaluacion.setEmpresaId(empresaId);
+        evaluacion.setActive(true);
 
         evaluacion = repository.save(evaluacion);
 
         preguntaManager.createPreguntas(evaluacion.getId(), alta.getPreguntas());
     }
 
+    @Transactional
     public void deleteEvaluacion(int id){
-        
         Evaluacion evaluacion = repository.getById(id);
-        repository.delete(evaluacion);
+        vehiculoEvaluacionRepository.deleteByEvaluacionId(id);
+        evaluacion.setActive(false);
+        repository.save(evaluacion);
+
     }
 
     public List<EvaluacionView> getAllEvaluaciones(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        List<Evaluacion> evaluaciones = repository.findByEmpresaId(empresaId);
+        List<Evaluacion> evaluaciones = repository.findByEmpresaIdAndActiveTrue(empresaId);
 
         return evaluaciones.stream().map(EvaluacionView::new).collect(Collectors.toList());
     }
@@ -127,7 +139,7 @@ public class EvaluacionManager {
     public List<EvaluacionView> getAllEvaluacionesWithDetails(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
-        List<Evaluacion> evaluaciones = repository.findByEmpresaId(empresaId);
+        List<Evaluacion> evaluaciones = repository.findByEmpresaIdAndActiveTrue(empresaId);
 
         return evaluaciones.stream().map(x -> EvaluacionView.getEvaluacionDetails(x)).collect(Collectors.toList());
     }
@@ -172,7 +184,7 @@ public class EvaluacionManager {
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
 
         //Obtenemos la evaluacion
-        Evaluacion evaluacion = repository.findByIdAndEmpresaId(id, empresaId);
+        Evaluacion evaluacion = repository.findByIdAndEmpresaIdAndActiveTrue(id, empresaId);
         if(evaluacion == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Evaluacion no encontrada.");
         }
@@ -303,15 +315,15 @@ public class EvaluacionManager {
                             break;
                     }
                     //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
-                    //if(logPregunta.getId() == null){    así estaba antes
-                    if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
+                    if(logPregunta.getId() == 0) logPregunta = logPreguntaRepository.save(logPregunta);
+                    // if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
                 }
 
                 //Si el vehiculo tiene alguna falla (pregunta marcada como incorrecta y crucial) en la evaluación, entonces mandamos el mail via FastEmail
                 if (hasFailure) {
                     hasFailure = false; 
                     //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
-                    List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrue(empresaId);
+                    List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrueAndActiveTrue(empresaId);
                     //Obtenemos la fecha actual en el formato necestiado
                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                     String currentDateTime = LocalDateTime.now().format(formatter);
@@ -342,7 +354,6 @@ public class EvaluacionManager {
 
     public List<LogEvaluacionView> historialDeEvaluaciones(){
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
-
 
         List<LogEvaluacion> logs = logEvaluacionRepository.getAllFechaDesc();
         logs = logs.stream().filter(x -> x.getEvaluacion().getEmpresaId() == (empresaId)).collect(Collectors.toList());

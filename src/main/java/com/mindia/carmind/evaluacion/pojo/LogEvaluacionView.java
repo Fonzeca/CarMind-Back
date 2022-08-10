@@ -11,8 +11,8 @@ import com.mindia.carmind.entities.LogEvaluacion;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "log_id",
         "evaluacion_id",
+        "log_id",
         "nombre_evaluacion",
         "fecha",
         "vehiculo_id",
@@ -24,7 +24,6 @@ import com.mindia.carmind.entities.LogEvaluacion;
 })
 @Generated("jsonschema2pojo")
 public class LogEvaluacionView {
-
     @JsonProperty("log_id")
     private Integer logId;
     @JsonProperty("evaluacion_id")
