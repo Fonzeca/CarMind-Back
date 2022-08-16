@@ -10,18 +10,21 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "vehiculoId",
-    "fecha",
-    "enUso"
+    "usuarioId",
+    "fechaInicio",
+    "fechaFin"
 })
 @Generated("jsonschema2pojo")
 public class LogUsoView {
 
     @JsonProperty("vehiculoId")
     private Integer vehiculoId;
-    @JsonProperty("fecha")
-    private String fecha;
-    @JsonProperty("enUso")
-    private Boolean enUso;
+    @JsonProperty("usuarioId")
+    private Integer usuarioId;
+    @JsonProperty("fechaInicio")
+    private String fechaInicio;
+    @JsonProperty("fechaFin")
+    private String fechaFin;
 
     /**
      * No args constructor for use in serialization
@@ -32,15 +35,16 @@ public class LogUsoView {
 
     /**
      * 
-     * @param fecha
      * @param vehiculoId
-     * @param enUso
+     * @param usuarioId
+     * @param fechaInicio
+     * @param fechaFin
      */
-    public LogUsoView(Integer vehiculoId, String fecha, Boolean enUso) {
+    public LogUsoView(Integer vehiculoId, Integer usuarioId, String fechaInicio,String fechaFin) {
         super();
         this.vehiculoId = vehiculoId;
-        this.fecha = fecha;
-        this.enUso = enUso;
+        this.fechaInicio = fechaInicio;
+        this.fechaFin = fechaFin;
     }
 
     @JsonProperty("vehiculoId")
@@ -53,24 +57,35 @@ public class LogUsoView {
         this.vehiculoId = vehiculoId;
     }
 
-    @JsonProperty("fecha")
-    public String getFecha() {
-        return fecha;
+    @JsonProperty("usuarioId")
+    public Integer getUsuarioId() {
+        return usuarioId;
     }
 
-    @JsonProperty("fecha")
-    public void setFecha(String fecha) {
-        this.fecha = fecha;
+    @JsonProperty("usuarioId")
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
-    @JsonProperty("enUso")
-    public Boolean getEnUso() {
-        return enUso;
+
+    @JsonProperty("fechaInicio")
+    public String getFechaInicio() {
+        return fechaInicio;
     }
 
-    @JsonProperty("enUso")
-    public void setEnUso(Boolean enUso) {
-        this.enUso = enUso;
+    @JsonProperty("fechaInicio")
+    public void setfechaFin(String fechaInicio) {
+        this.fechaInicio = fechaInicio;
+    }
+
+    @JsonProperty("fechaFin")
+    public String getFechaFin() {
+        return fechaFin;
+    }
+
+    @JsonProperty("fechaFin")
+    public void setFechaFin(String fechaFin) {
+        this.fechaFin = fechaFin;
     }
 
 }

@@ -11,16 +11,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "logUso",
-    "evaluacionesRealizadas"
+    "logsUso",
+    "logsEvaluaciones"
 })
 @Generated("jsonschema2pojo")
 public class SyncView {
 
-    @JsonProperty("logUso")
-    private List<LogUsoView> logUso = null;
-    @JsonProperty("evaluacionesRealizadas")
-    private List<LogEvaluacionRealizada> evaluacionesRealizadas = null;
+    @JsonProperty("logsUso")
+    private List<LogUsoView> logsUso = null;
+    @JsonProperty("logsEvaluaciones")
+    private List<LogEvaluacionRealizada> logsEvaluaciones = null;
 
     /**
      * No args constructor for use in serialization
@@ -31,33 +31,33 @@ public class SyncView {
 
     /**
      * 
-     * @param evaluacionesRealizadas
-     * @param logUso
+     * @param logsEvaluaciones
+     * @param logsUso
      */
-    public SyncView(List<LogUsoView> logUso, List<LogEvaluacionRealizada> evaluacionesRealizadas) {
+    public SyncView(List<LogUsoView> logsUso, List<LogEvaluacionRealizada> logsEvaluaciones) {
         super();
-        this.logUso = logUso;
-        this.evaluacionesRealizadas = evaluacionesRealizadas;
+        this.logsUso = logsUso;
+        this.logsEvaluaciones = logsEvaluaciones;
     }
 
-    @JsonProperty("logUso")
-    public List<LogUsoView> getLogUso() {
-        return logUso;
+    @JsonProperty("logsUso")
+    public List<LogUsoView> getLogsUso() {
+        return logsUso;
     }
 
-    @JsonProperty("logUso")
-    public void setLogUso(List<LogUsoView> logUso) {
-        this.logUso = logUso;
+    @JsonProperty("logsUso")
+    public void setLogsUso(List<LogUsoView> logsUso) {
+        this.logsUso = logsUso;
     }
 
-    @JsonProperty("evaluacionesRealizadas")
-    public List<LogEvaluacionRealizada> getEvaluacionesRealizadas() {
-        return evaluacionesRealizadas;
+    @JsonProperty("logsEvaluaciones")
+    public List<LogEvaluacionRealizada> getlogsEvaluaciones() {
+        return logsEvaluaciones;
     }
 
-    @JsonProperty("evaluacionesRealizadas")
-    public void setEvaluacionesRealizadas(List<LogEvaluacionRealizada> evaluacionesRealizadas) {
-        this.evaluacionesRealizadas = evaluacionesRealizadas;
+    @JsonProperty("logsEvaluaciones")
+    public void setlogsEvaluaciones(List<LogEvaluacionRealizada> logsEvaluaciones) {
+        this.logsEvaluaciones = logsEvaluaciones;
     }
 
 }

@@ -1,18 +1,22 @@
 
 package com.mindia.carmind.usuario.pojo.sync;
 
+import java.util.List;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
+import com.mindia.carmind.evaluacion.pojo.respuesta.AltaRespuestaPojo;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "fecha",
     "evaluacionId",
-    "respuesta"
+    "vehiculoId",
+    "usuarioId",
+    "respuestas"
 })
 @Generated("jsonschema2pojo")
 public class LogEvaluacionRealizada {
@@ -21,8 +25,12 @@ public class LogEvaluacionRealizada {
     private String fecha;
     @JsonProperty("evaluacionId")
     private Integer evaluacionId;
-    @JsonProperty("respuesta")
-    private AltaEvaluacionTerminadaPojo respuesta;
+    @JsonProperty("vehiculoId")
+    private Integer vehiculoId;
+    @JsonProperty("usuarioId")
+    private Integer usuarioId;
+    @JsonProperty("respuestas")
+    private List<AltaRespuestaPojo> respuestas;
 
     /**
      * No args constructor for use in serialization
@@ -34,14 +42,18 @@ public class LogEvaluacionRealizada {
     /**
      * 
      * @param fecha
-     * @param respuesta
      * @param evaluacionId
+     * @param vehiculoId
+     * @param usuarioId
+     * @param respuestas
      */
-    public LogEvaluacionRealizada(String fecha, Integer evaluacionId, AltaEvaluacionTerminadaPojo respuesta) {
+    public LogEvaluacionRealizada(String fecha, Integer evaluacionId, Integer vehiculoId, Integer usuarioId, List<AltaRespuestaPojo> respuestas) {
         super();
         this.fecha = fecha;
         this.evaluacionId = evaluacionId;
-        this.respuesta = respuesta;
+        this.vehiculoId = vehiculoId;
+        this.usuarioId = usuarioId;
+        this.respuestas = respuestas;
     }
 
     @JsonProperty("fecha")
@@ -64,14 +76,34 @@ public class LogEvaluacionRealizada {
         this.evaluacionId = evaluacionId;
     }
 
-    @JsonProperty("respuesta")
-    public AltaEvaluacionTerminadaPojo getRespuesta() {
-        return respuesta;
+    @JsonProperty("vehiculoId")
+    public Integer getVehiculoId() {
+        return vehiculoId;
     }
 
-    @JsonProperty("respuesta")
-    public void setRespuesta(AltaEvaluacionTerminadaPojo respuesta) {
-        this.respuesta = respuesta;
+    @JsonProperty("vehiculoId")
+    public void setVehiculoId(Integer vehiculoId) {
+        this.vehiculoId = vehiculoId;
+    }
+
+    @JsonProperty("usuarioId")
+    public Integer getUsuarioId() {
+        return usuarioId;
+    }
+
+    @JsonProperty("usuarioId")
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    @JsonProperty("respuestas")
+    public List<AltaRespuestaPojo> getRespuestas() {
+        return respuestas;
+    }
+
+    @JsonProperty("respuestas")
+    public void setRespuestas(List<AltaRespuestaPojo> respuestas) {
+        this.respuestas = respuestas;
     }
 
 }

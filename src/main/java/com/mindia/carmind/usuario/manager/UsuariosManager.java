@@ -1,23 +1,24 @@
 package com.mindia.carmind.usuario.manager;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.mindia.carmind.entities.LogEvaluacion;
 import com.mindia.carmind.entities.LogUsoVehiculo;
 import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.entities.Vehiculo;
 import com.mindia.carmind.evaluacion.manager.EvaluacionManager;
+import com.mindia.carmind.evaluacion.persistence.LogEvaluacionRepository;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.usuario.pojo.AltaPojo;
 import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.sync.LogEvaluacionRealizada;
 import com.mindia.carmind.usuario.pojo.sync.LogUsoView;
 import com.mindia.carmind.usuario.pojo.sync.SyncView;
 import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
@@ -53,6 +54,9 @@ public class UsuariosManager {
 
     @Autowired
     LogUsoVehiculoRepository logUsoVehiculoRepository;
+
+    @Autowired
+    LogEvaluacionRepository logEvaluacionRepository;
 
     public TokenView login(String username, String password, String FCMToken) {
         Usuario u = repository.findByUsernameAndActiveTrue(username);
@@ -227,36 +231,40 @@ public class UsuariosManager {
     }
 
     public void sincronizarDatos(SyncView sync){
-        //Ordeno los datos para que quede primero el ultimo log
-        var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-        var optLog = sync.getLogUso().stream().sorted(new Comparator<LogUsoView>() {
-
-            @Override
-            public int compare(LogUsoView o1, LogUsoView o2) {
-                LocalDate date1 = LocalDate.parse(o1.getFecha(), format);
-                LocalDate date2 = LocalDate.parse(o2.getFecha(), format);
-                return date2.compareTo(date1);
-            }
-        }).findFirst();
-
-        //Verifico que exista el primero
-        if(optLog.isPresent()){
-            var log = optLog.get();
-            //Si fue un "en uso" llamo a la manager para que inicie el uso
-            if(log.getEnUso()){
-                vehiculoManager.iniciarUso(log.getVehiculoId());
+        List<LogUsoView> newLogsUso = sync.getLogsUso();
+        List<LogEvaluacionRealizada> newLogsEvaluacion = sync.getlogsEvaluaciones();
+        
+        if(!newLogsUso.isEmpty()){
+            for(LogUsoView log: newLogsUso){
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
+                logUsoVehiculo.setFechaInicio(LocalDateTime.parse(log.getFechaInicio(), formatter));
+                logUsoVehiculo.setFechaFin((log.getFechaFin() != null) ? LocalDateTime.parse(log.getFechaFin(), formatter) : null);
+                logUsoVehiculo.setUsuarioId(log.getUsuarioId());
+                logUsoVehiculo.setVehiculoId(log.getVehiculoId());
+        
+                logUsoVehiculoRepository.save(logUsoVehiculo);
             }
         }
 
-        //----------
-
-        sync.getEvaluacionesRealizadas().stream().forEach(x -> {
-            LocalDateTime date = LocalDateTime.parse(x.getFecha(), format);
-
-            evaluacionManager.realizarEvaluacion(x.getEvaluacionId(), x.getRespuesta(), date);
-        });
-
+        if(!newLogsEvaluacion.isEmpty()){
+            int empresaId = getLoggeduser().getEmpresa();
+            UsuarioView loggedUser = getLoggeduser();
+            
+            for(LogEvaluacionRealizada log: newLogsEvaluacion){
+                Vehiculo vehiculo = vehiculosRepository.getById(log.getVehiculoId());
+                                
+                LogEvaluacion logEvaluacion = new LogEvaluacion();
+                logEvaluacion.setEvaluacionId(log.getEvaluacionId());
+                logEvaluacion.setVehiculoId(vehiculo.getId());
+                logEvaluacion.setUsuarioId(loggedUser.getId());
+    
+                logEvaluacion = logEvaluacionRepository.save(logEvaluacion);
+    
+                evaluacionManager.saveLogsPregunta(logEvaluacion, loggedUser, vehiculo, log.getRespuestas(), empresaId);
+            }
+        }
     }
 
 
