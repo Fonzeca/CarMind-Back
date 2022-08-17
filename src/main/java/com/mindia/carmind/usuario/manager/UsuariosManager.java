@@ -234,10 +234,27 @@ public class UsuariosManager {
 
         List<LogUsoView> newLogsUso = sync.getLogsUso();
         List<LogEvaluacionRealizada> newLogsEvaluacion = sync.getlogsEvaluaciones();
+        UsuarioView loggedUser = getLoggeduser();
         
         if(!newLogsUso.isEmpty()){
             for(LogUsoView log: newLogsUso){
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+                Vehiculo vehiculo = vehiculosRepository.getById(log.getVehiculoId());
+                
+                //Si el vehiculo se terminó de usar, hay que verificar si hay que crear un nuevo log o actualziar uno existente de la bd
+                if (log.getFechaFin() != null){
+                    LogUsoVehiculo oldLogUso = logUsoVehiculoRepository.findByUsuarioIdAndFechaFin(loggedUser.getId(), null);
+                    if(oldLogUso != null){
+                        oldLogUso.setFechaFin(LocalDateTime.parse(log.getFechaFin(), formatter));
+                        logUsoVehiculoRepository.save(oldLogUso);
+
+                        vehiculo.setUsuarioIdUsando(null);
+                        vehiculosRepository.save(vehiculo);
+                        continue;
+                    }
+                }
+                
                 LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
                 logUsoVehiculo.setFechaInicio(LocalDateTime.parse(log.getFechaInicio(), formatter));
                 logUsoVehiculo.setFechaFin((log.getFechaFin() != null) ? LocalDateTime.parse(log.getFechaFin(), formatter) : null);
@@ -245,12 +262,19 @@ public class UsuariosManager {
                 logUsoVehiculo.setVehiculoId(log.getVehiculoId());
         
                 logUsoVehiculoRepository.save(logUsoVehiculo);
+                
+                if(logUsoVehiculo.getFechaFin() == null){
+                    vehiculo.setUsuarioIdUsando(loggedUser.getId());
+                    vehiculosRepository.save(vehiculo);
+                }else{
+                    vehiculo.setUsuarioIdUsando(null);
+                    vehiculosRepository.save(vehiculo);
+                }
             }
         }
 
         if(!newLogsEvaluacion.isEmpty()){
             int empresaId = getLoggeduser().getEmpresa();
-            UsuarioView loggedUser = getLoggeduser();
             
             for(LogEvaluacionRealizada log: newLogsEvaluacion){
                 Vehiculo vehiculo = vehiculosRepository.getById(log.getVehiculoId());
