@@ -166,18 +166,9 @@ public class EvaluacionManager {
         preguntaManager.modifyPreguntas(id, alta.getPreguntas());
     }
 
-    /**
-     * Funcion sobrecargada
-     * @param id
-     * @param respuestas
-     */
-    public void realizarEvaluacion(Integer id, AltaEvaluacionTerminadaPojo respuestas){
-        realizarEvaluacion(id, respuestas, null);
-    }
-
     
     @Transactional
-    public void realizarEvaluacion(Integer id, AltaEvaluacionTerminadaPojo respuestas, LocalDateTime logFecha){
+    public void realizarEvaluacion(Integer id, AltaEvaluacionTerminadaPojo respuestas){
         //Validamos el pojo
         respuestas.validate();
 
@@ -212,7 +203,7 @@ public class EvaluacionManager {
                 //LogEvaluacion
                 LogEvaluacion log = new LogEvaluacion();
                 log.setEvaluacionId(id);
-
+                log.setFecha(LocalDateTime.now());
                 log.setVehiculoId(vehiculo.getId());
                 log.setUsuarioId(loggedUser.getId());
 

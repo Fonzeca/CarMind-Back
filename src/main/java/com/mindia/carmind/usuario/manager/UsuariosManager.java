@@ -229,22 +229,23 @@ public class UsuariosManager {
         }        
         return data;
     }
-
+    
+    @Transactional
     public void sincronizarDatos(SyncView sync){
 
         List<LogUsoView> newLogsUso = sync.getLogsUso();
         List<LogEvaluacionRealizada> newLogsEvaluacion = sync.getlogsEvaluaciones();
         UsuarioView loggedUser = getLoggeduser();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
         
         if(!newLogsUso.isEmpty()){
             for(LogUsoView log: newLogsUso){
                 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
                 Vehiculo vehiculo = vehiculosRepository.getById(log.getVehiculoId());
                 
                 //Si el vehiculo se terminó de usar, hay que verificar si hay que crear un nuevo log o actualziar uno existente de la bd
+                LogUsoVehiculo oldLogUso = logUsoVehiculoRepository.findByUsuarioIdAndFechaFin(loggedUser.getId(), null);
                 if (log.getFechaFin() != null){
-                    LogUsoVehiculo oldLogUso = logUsoVehiculoRepository.findByUsuarioIdAndFechaFin(loggedUser.getId(), null);
                     if(oldLogUso != null){
                         oldLogUso.setFechaFin(LocalDateTime.parse(log.getFechaFin(), formatter));
                         logUsoVehiculoRepository.save(oldLogUso);
@@ -253,6 +254,12 @@ public class UsuariosManager {
                         vehiculosRepository.save(vehiculo);
                         continue;
                     }
+                }  
+
+                //Si el log que viene no teine fecha null (es un iniciar uso vehiculo) entonces primero chequeo que no haya
+                // ningun otro log con la fecha en null                
+                if(oldLogUso != null){
+                    continue;
                 }
                 
                 LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
@@ -283,6 +290,7 @@ public class UsuariosManager {
                 logEvaluacion.setEvaluacionId(log.getEvaluacionId());
                 logEvaluacion.setVehiculoId(vehiculo.getId());
                 logEvaluacion.setUsuarioId(loggedUser.getId());
+                logEvaluacion.setFecha(LocalDateTime.parse(log.getFecha(), formatter));
     
                 logEvaluacion = logEvaluacionRepository.save(logEvaluacion);
     
