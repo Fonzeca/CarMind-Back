@@ -22,6 +22,7 @@ import com.mindia.carmind.evaluacion.pojo.view.EvaluacionLiteView;
         "modelo",
         "linea",
         "patente",
+        "tipo",
         "fecha_service",
         "averiado",
         "ultima_evaluacion",

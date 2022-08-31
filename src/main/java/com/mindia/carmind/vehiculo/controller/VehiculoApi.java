@@ -11,6 +11,7 @@ import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.DocumentoView;
 import com.mindia.carmind.vehiculo.pojo.LogUsoVehiculoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
+import com.mindia.carmind.vehiculo.pojo.VehiculoPositionView;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,11 @@ public class VehiculoApi {
     @GetMapping("/vehiculo")
     public List<VehiculoView> getAllVehiculo() {
         return manager.getAllVehiculos();
+    }
+
+    @GetMapping("/vehiculo/positions")
+    public List<VehiculoPositionView> getAllPosicionesVehiculos() {
+        return manager.getAllPosicionesVehiculos();
     }
 
     @GetMapping("/vehiculo/{id}")
