@@ -6,18 +6,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mindia.carmind.entities.Documento;
 import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.LogEvaluacion;
@@ -42,24 +37,16 @@ import com.mindia.carmind.vehiculo.pojo.AsignacionPojo;
 import com.mindia.carmind.vehiculo.pojo.DocumentoView;
 import com.mindia.carmind.vehiculo.pojo.LogUsoVehiculoView;
 import com.mindia.carmind.vehiculo.pojo.ModificarPojo;
-import com.mindia.carmind.vehiculo.pojo.VehiculoPositionView;
 import com.mindia.carmind.vehiculo.pojo.VehiculoView;
 
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 @Service
 public class VehiculoManager {
@@ -88,9 +75,6 @@ public class VehiculoManager {
 
     @Autowired
     TipoDocumentoRepository tipoDocumentoRepository;
-
-    @Value("${trackin.url}")
-    private String trakinUrl;
 
     public void altaVehiculo(AltaPojo pojo) {
 
@@ -158,21 +142,6 @@ public class VehiculoManager {
 
         List<Vehiculo> v = repository.findByEmpresaIdOrderByUsuarioIdUsandoDesc(usuario.getEmpresa());
         return v.stream().map(VehiculoView::new).collect(Collectors.toList());
-    }
-
-    public List<VehiculoPositionView> getAllPosicionesVehiculos() {
-        UsuarioView usuario = usuariosManager.getLoggeduser();
-        List<Vehiculo> vehicles = repository.findByEmpresaIdOrderByUsuarioIdUsandoDesc(usuario.getEmpresa()).stream().filter(v -> v.getImei() != null).collect(Collectors.toList());
-        
-        List<String> imeis = new ArrayList<String>();
-        vehicles.forEach((v) -> imeis.add(v.getImei()));
-        List<VehiculoPositionView> positionsView = getInfoFromTrackin(imeis);
-       
-        positionsView.forEach((positionView) -> {
-            Optional<Vehiculo> vehicle = vehicles.stream().filter(v -> v.getImei().equals(positionView.getImei())).findFirst();
-            positionView.setVehiculo(vehicle.get());
-        });
-        return positionsView;
     }
 
     public List<VehiculoView> getAllVehiculosWithPendientes() {
@@ -493,31 +462,6 @@ public class VehiculoManager {
 
         vehiculo.setPendientes(listsEvaluacion);
         return vehiculo;
-    }
-
-    
-    private List<VehiculoPositionView> getInfoFromTrackin(List<String> imeis){
-        String path = "/getVehiclesStateByImeis";
-        final OkHttpClient client = new OkHttpClient();
-        
-        Map<String, List<String>> imeisMap = new HashMap<String, List<String>>();
-        imeisMap.put("imeis", imeis);
-        RequestBody body = RequestBody.create(Convertions.toJson(imeisMap),
-        MediaType.get("application/json; charset=utf-8"));
-
-        Request trackinRequest = new Request.Builder().url(trakinUrl + path)
-        .addHeader("Content-Type", "application/json").post(body).build();
-    
-        try{
-            Response trakinResponse = client.newCall(trackinRequest).execute();
-            ObjectMapper mapper = new ObjectMapper();
-            return Arrays.asList(mapper.readValue(trakinResponse.body().string(), VehiculoPositionView[].class));
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
-        }
-
     }
 
 }
