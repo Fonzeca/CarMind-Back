@@ -141,7 +141,7 @@ public class VehiculoManager {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
         List<Vehiculo> v = repository.findByEmpresaIdOrderByUsuarioIdUsandoDesc(usuario.getEmpresa());
-        return v.stream().map(VehiculoView::new).collect(Collectors.toList());
+        return v.stream().map(vehic -> new VehiculoView(vehic, true)).collect(Collectors.toList());
     }
 
     public List<VehiculoView> getAllVehiculosWithPendientes() {
