@@ -1,6 +1,9 @@
 
 package com.mindia.carmind.usuario.pojo.sync;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -15,7 +18,7 @@ import com.mindia.carmind.evaluacion.pojo.respuesta.AltaEvaluacionTerminadaPojo;
     "respuesta"
 })
 @Generated("jsonschema2pojo")
-public class LogEvaluacionRealizada {
+public class LogEvaluacionRealizada implements Comparable<LogEvaluacionRealizada> {
 
     @JsonProperty("fecha")
     private String fecha;
@@ -72,6 +75,19 @@ public class LogEvaluacionRealizada {
     @JsonProperty("respuesta")
     public void setRespuesta(AltaEvaluacionTerminadaPojo respuesta) {
         this.respuesta = respuesta;
+    }
+
+    @Override
+    public int compareTo(LogEvaluacionRealizada o) {
+        try {
+            var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            LocalDate date1 = LocalDate.parse(this.getFecha(), format);
+            LocalDate date2 = LocalDate.parse(o.getFecha(), format);
+            return date2.compareTo(date1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 }
