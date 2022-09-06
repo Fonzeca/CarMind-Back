@@ -16,6 +16,7 @@ import com.mindia.carmind.usuario.pojo.ModificarPojo;
 import com.mindia.carmind.usuario.pojo.OfflineDatosView;
 import com.mindia.carmind.usuario.pojo.RecuperacionPojo;
 import com.mindia.carmind.usuario.pojo.UsuarioView;
+import com.mindia.carmind.usuario.pojo.sync.LogUsoView;
 import com.mindia.carmind.usuario.pojo.sync.SyncView;
 import com.mindia.carmind.usuario.pojo.userHub.LoggedView;
 import com.mindia.carmind.usuario.pojo.userHub.TokenView;
@@ -230,20 +231,22 @@ public class UsuariosManager {
         var listLogUso = sync.getLogUso().stream().sorted().collect(Collectors.toList());
 
         if(!listLogUso.isEmpty()){
-            //Obtenemos el ultimo log, el ultimo movimiento de vehículos
-            var lastUso = listLogUso.get(listLogUso.size()-1);
 
-            //Si fue un "en uso" llamo a la manager para que inicie el uso
-            if(lastUso.getEnUso()){
-                vehiculoManager.iniciarUso(lastUso.getVehiculoId());
-            }else{
-                //Si no fue "en uso" true, entonces procedemos a dejar de usar el vehículo
-                //Pero antes nos aseguramos que antes de dejar de usar un vehículo, lo este usando.
-                if(listLogUso.size() > 1){
-                    vehiculoManager.iniciarUso(listLogUso.get(listLogUso.size()-2).getVehiculoId());
+            for (LogUsoView log : listLogUso) {
+                //Parseamos la fecha
+                LocalDateTime date = LocalDateTime.parse(log.getFecha(), format);
+
+                //Vamos uno a uno iniciando uso, y terminando el uso dependiendo del log.
+                if(log.getEnUso()){
+                    vehiculoManager.iniciarUso(log.getVehiculoId(), date);
+                }else{
+                    //Hacemos un try por las dudas, para que no se corte el proceso de sincronizacion
+                    try {
+                        //Dejamos de usar el vehículo
+                        vehiculoManager.terminarUso(log.getVehiculoId(), date);
+                    } catch (Exception e) {
+                    }
                 }
-                //Dejamos de usar el vehículo
-                vehiculoManager.terminarUso(lastUso.getVehiculoId());
             }
         }
 

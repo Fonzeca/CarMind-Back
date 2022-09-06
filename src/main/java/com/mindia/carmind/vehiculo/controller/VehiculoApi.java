@@ -69,12 +69,12 @@ public class VehiculoApi {
 
     @GetMapping("/vehiculo/{id}/iniciarUso")
     public void iniciaruso(@PathVariable int id) {
-        manager.iniciarUso(id);
+        manager.iniciarUso(id, null);
     }
 
     @GetMapping("/vehiculo/{id}/terminarUso")
     public void terminarUso(@PathVariable int id) {
-        manager.terminarUso(id);
+        manager.terminarUso(id,null);
     }
 
     @GetMapping("/vehiculo/{id}/documentos")
