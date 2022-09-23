@@ -1,5 +1,6 @@
 package com.mindia.carmind.vehiculo.manager;
 
+import java.io.Console;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -121,8 +122,13 @@ public class VehiculoManager {
         vehiculo.setTipoVehiculo(pojo.getTipo());
         vehiculo.setKilometraje(pojo.getKilometraje());
         vehiculo.setPatente(pojo.getPatente());
-
-        repository.save(vehiculo);
+        vehiculo.setImei(pojo.getImei());
+        
+        try{
+            repository.save(vehiculo);
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La patente o el imei deben ser únicos");
+        }
     }
 
     public void bajaVehiculo(String id) {
