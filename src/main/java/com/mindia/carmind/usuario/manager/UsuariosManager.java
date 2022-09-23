@@ -1,9 +1,7 @@
 package com.mindia.carmind.usuario.manager;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -227,31 +225,34 @@ public class UsuariosManager {
     }
 
     public void sincronizarDatos(SyncView sync){
-        //Ordeno los datos para que quede primero el ultimo log
         var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 
-        var optLog = sync.getLogUso().stream().sorted(new Comparator<LogUsoView>() {
+        //Obtenemos la lista de loguso ordenada.
+        var listLogUso = sync.getLogUso().stream().sorted().collect(Collectors.toList());
 
-            @Override
-            public int compare(LogUsoView o1, LogUsoView o2) {
-                LocalDate date1 = LocalDate.parse(o1.getFecha(), format);
-                LocalDate date2 = LocalDate.parse(o2.getFecha(), format);
-                return date2.compareTo(date1);
-            }
-        }).findFirst();
+        if(!listLogUso.isEmpty()){
 
-        //Verifico que exista el primero
-        if(optLog.isPresent()){
-            var log = optLog.get();
-            //Si fue un "en uso" llamo a la manager para que inicie el uso
-            if(log.getEnUso()){
-                vehiculoManager.iniciarUso(log.getVehiculoId());
+            for (LogUsoView log : listLogUso) {
+                //Parseamos la fecha
+                LocalDateTime date = LocalDateTime.parse(log.getFecha(), format);
+
+                //Vamos uno a uno iniciando uso, y terminando el uso dependiendo del log.
+                if(log.getEnUso()){
+                    vehiculoManager.iniciarUso(log.getVehiculoId(), date);
+                }else{
+                    //Hacemos un try por las dudas, para que no se corte el proceso de sincronizacion
+                    try {
+                        //Dejamos de usar el vehículo
+                        vehiculoManager.terminarUso(log.getVehiculoId(), date);
+                    } catch (Exception e) {
+                    }
+                }
             }
         }
 
         //----------
 
-        sync.getEvaluacionesRealizadas().stream().forEach(x -> {
+        sync.getEvaluacionesRealizadas().stream().sorted().forEach(x -> {
             LocalDateTime date = LocalDateTime.parse(x.getFecha(), format);
 
             evaluacionManager.realizarEvaluacion(x.getEvaluacionId(), x.getRespuesta(), date);

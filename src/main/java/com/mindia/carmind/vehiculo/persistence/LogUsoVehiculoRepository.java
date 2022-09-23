@@ -14,7 +14,7 @@ public interface LogUsoVehiculoRepository  extends JpaRepository<LogUsoVehiculo,
 
     List<LogUsoVehiculo> findAllByVehiculoId(Integer vehiculoId);
 
-    LogUsoVehiculo findByVehiculoIdAndUsuarioIdAndFechaFin(Integer vehiculoId, Integer usuarioId, LocalDate fechaFin);
+    List<LogUsoVehiculo> findByVehiculoIdAndUsuarioIdAndFechaFin(Integer vehiculoId, Integer usuarioId, LocalDate fechaFin);
 
     LogUsoVehiculo findByUsuarioIdAndFechaFin(Integer usuarioId,  LocalDateTime fechaFin);
     

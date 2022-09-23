@@ -1,6 +1,9 @@
 
 package com.mindia.carmind.usuario.pojo.sync;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import javax.annotation.Generated;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -14,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "enUso"
 })
 @Generated("jsonschema2pojo")
-public class LogUsoView {
+public class LogUsoView implements Comparable<LogUsoView> {
 
     @JsonProperty("vehiculoId")
     private Integer vehiculoId;
@@ -71,6 +74,19 @@ public class LogUsoView {
     @JsonProperty("enUso")
     public void setEnUso(Boolean enUso) {
         this.enUso = enUso;
+    }
+
+    @Override
+    public int compareTo(LogUsoView o) {
+        try {
+            var format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+            LocalDate date1 = LocalDate.parse(this.getFecha(), format);
+            LocalDate date2 = LocalDate.parse(o.getFecha(), format);
+            return date2.compareTo(date1);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
 }

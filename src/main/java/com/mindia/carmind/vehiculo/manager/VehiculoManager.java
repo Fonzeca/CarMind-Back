@@ -1,5 +1,6 @@
 package com.mindia.carmind.vehiculo.manager;
 
+import java.io.Console;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -120,8 +121,14 @@ public class VehiculoManager {
         vehiculo.setModelo(pojo.getModelo());
         vehiculo.setTipoVehiculo(pojo.getTipo());
         vehiculo.setKilometraje(pojo.getKilometraje());
-
-        repository.save(vehiculo);
+        vehiculo.setPatente(pojo.getPatente());
+        vehiculo.setImei(pojo.getImei());
+        
+        try{
+            repository.save(vehiculo);
+        }catch(Exception e){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "La patente o el imei deben ser únicos");
+        }
     }
 
     public void bajaVehiculo(String id) {
@@ -141,7 +148,7 @@ public class VehiculoManager {
         UsuarioView usuario = usuariosManager.getLoggeduser();
 
         List<Vehiculo> v = repository.findByEmpresaIdOrderByUsuarioIdUsandoDesc(usuario.getEmpresa());
-        return v.stream().map(VehiculoView::new).collect(Collectors.toList());
+        return v.stream().map(vehic -> new VehiculoView(vehic, true)).collect(Collectors.toList());
     }
 
     public List<VehiculoView> getAllVehiculosWithPendientes() {
@@ -218,7 +225,12 @@ public class VehiculoManager {
     }
 
     @Transactional
-    public void iniciarUso(Integer id) {
+    /***
+     * 
+     * @param id El id del vehiculo
+     * @param time Puede ser null o no, es para indicar la fecha de inicio, si es por sincronizacion de datos
+     */
+    public void iniciarUso(Integer id, LocalDateTime time) {
         // Obtenemos el vehiculo
         Vehiculo vehiculo = repository.getById(id);
 
@@ -230,20 +242,23 @@ public class VehiculoManager {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Este vehiculo no es de tu empresa.");
         }
 
+        //Si empieza a usar un vehiculo que ya esta usando, no pasa nada
         if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
             return;
         }
 
-        // Hago que deje de usar los vehiculos asignados al usuario
-        var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
-
+        //Si el vehiculo que va a empezar a usar, tiene un usuario ya asignado, le deja el log de uso con la fecha fin
         if(vehiculo.getUsuarioIdUsando() != null){
-            updateFechaFinLogDeUso(id, vehiculo.getUsuarioIdUsando());
+            updateFechaFinLogDeUso(id, vehiculo.getUsuarioIdUsando(), time);
         }
 
+        // Hago que deje de usar los vehiculos asignados al usuario
+        var vehiculosUsando = repository.findByusuarioIdUsando(loggedUser.getId());
         if (vehiculosUsando != null && !vehiculosUsando.isEmpty()) {
             for (Vehiculo v : vehiculosUsando) {
                 v.setUsuarioIdUsando(null);
+                //Actualizo la fecha fin de los logs de uso de sus vehiculos que estaba usando antes
+                updateFechaFinLogDeUso(v.getId(), loggedUser.getId(), time);
                 repository.save(v);
             }
         }
@@ -255,14 +270,19 @@ public class VehiculoManager {
         repository.save(vehiculo);
 
         LogUsoVehiculo logUsoVehiculo = new LogUsoVehiculo();
-        logUsoVehiculo.setFechaInicio(LocalDateTime.now());
+        logUsoVehiculo.setFechaInicio(time != null ? time : LocalDateTime.now());
         logUsoVehiculo.setUsuarioId(loggedUser.getId());
         logUsoVehiculo.setVehiculoId(id);
 
         logUsoVehiculoRepository.save(logUsoVehiculo);
     }
 
-    public void terminarUso(Integer id) {
+    /**
+     * 
+     * @param id El id del vehiculo
+     * @param time Puede ser null o no, es para indicar la fecha de fin, si es por sincronizacion de datos.
+     */
+    public void terminarUso(Integer id, LocalDateTime time) {
         // Obtenemos el vehiculo
         Vehiculo vehiculo = repository.getById(id);
 
@@ -270,7 +290,7 @@ public class VehiculoManager {
         UsuarioView loggedUser = usuariosManager.getLoggeduser();
 
         if (vehiculo.getUsuarioIdUsando() != null && vehiculo.getUsuarioIdUsando().equals(loggedUser.getId())) {
-            updateFechaFinLogDeUso(id, loggedUser.getId());
+            updateFechaFinLogDeUso(id, loggedUser.getId(), time);
             vehiculo.setUsuarioIdUsando(null);
             repository.save(vehiculo);
         } else {
@@ -280,11 +300,13 @@ public class VehiculoManager {
         }
     }
 
-    private void updateFechaFinLogDeUso(Integer vehiculoId, Integer userId){
-        LogUsoVehiculo logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndUsuarioIdAndFechaFin(vehiculoId, userId, null);
-        if(logUsoVehiculo != null && logUsoVehiculo.getFechaInicio() != null){
-            logUsoVehiculo.setFechaFin(LocalDateTime.now());
-            logUsoVehiculoRepository.save(logUsoVehiculo);
+    private void updateFechaFinLogDeUso(Integer vehiculoId, Integer userId, LocalDateTime time){
+        List<LogUsoVehiculo> logUsoVehiculo = logUsoVehiculoRepository.findByVehiculoIdAndUsuarioIdAndFechaFin(vehiculoId, userId, null);
+        for (var log : logUsoVehiculo) {
+            if(log != null && log.getFechaInicio() != null){
+                log.setFechaFin(time != null ? time :LocalDateTime.now());
+                logUsoVehiculoRepository.save(log);
+            }
         }
     }
 
