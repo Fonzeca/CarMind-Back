@@ -125,20 +125,14 @@ public class ModificarPojo {
 
     public boolean validate(){
 
-        this.marca = this.marca.trim();
-        this.modelo = this.modelo.trim();
-
-        if(this.marca == null || this.marca.isBlank()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca vacio");
-        }
-
-        //Se busca si verdaderamente existe el modelo que se quiere dar de alta
-        if(this.modelo == null || this.modelo.isBlank()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo vacio");
-        }
+        if(this.patente != null) this.patente = this.patente.trim();
+        
+        if(this.marca != null) this.marca.trim();
+        
+        if(this.modelo != null) this.modelo = this.modelo.trim();
 
         //Valida si la linea no esta vacia o es mayor a 10 caracteres
-        if(this.linea == null || this.linea.isBlank() || this.linea.length() > 10){
+        if(this.linea != null && this.linea.length() > 10){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
         }
 

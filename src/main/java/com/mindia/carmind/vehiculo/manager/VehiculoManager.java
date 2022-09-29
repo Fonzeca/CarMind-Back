@@ -86,7 +86,7 @@ public class VehiculoManager {
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
 
-        if (vehiculo.getPatente() != null && !vehiculo.getPatente().isEmpty()) {
+        if (pojo.getPatente() != null && !pojo.getPatente().isEmpty()) {
 
             vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
 
