@@ -108,11 +108,6 @@ public class AltaPojo {
             this.modelo = this.modelo.trim();
         }
 
-        // Valida si la linea no esta vacia o es mayor a 10 caracteres
-        if (this.linea == null || this.linea.isBlank() || this.linea.length() > 10) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
-        }
-
         if(this.nombre == null || this.nombre.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre vacio");
         }
