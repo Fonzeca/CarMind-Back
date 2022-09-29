@@ -99,11 +99,13 @@ public class AltaPojo {
 
     public boolean validate() {
 
-        this.modelo = this.modelo.trim();
         this.patente = this.patente.trim();
 
         if(this.marca != null){
             this.marca.trim();
+        }
+        if(this.modelo != null){
+            this.modelo = this.modelo.trim();
         }
 
         // Valida si la linea no esta vacia o es mayor a 10 caracteres
