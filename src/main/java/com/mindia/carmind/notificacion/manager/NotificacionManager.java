@@ -74,7 +74,7 @@ public class NotificacionManager {
     UsuariosManager usuariosManager;
 
     @Value("${fastemail.url}")
-    private String fastEmailUrl;
+    public String fastEmailUrl;
 
 
     public List<NotificacionPojo> getAllNotificaciones(){
