@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class RabbitMqService {
-  static final String TOPIC_EXCHANGE_NAME = "carmind.back";
+  public static final String TOPIC_EXCHANGE_NAME = "carmind";
 
-  static final String NOTIFICACION_TESTING_QUEUE = "spring-boot";
+  public static final String NOTIFICACION_TESTING_QUEUE = "back-testing";
 
   @Bean
   Queue notificationTestingQueue() {
-    return new Queue(NOTIFICACION_TESTING_QUEUE, false);
+    return new Queue(NOTIFICACION_TESTING_QUEUE, false, false,true);
   }
 
   @Bean
@@ -28,7 +28,7 @@ public class RabbitMqService {
 
   @Bean
   Binding binding(Queue notificationTestingQueue, TopicExchange exchange) {
-    return BindingBuilder.bind(notificationTestingQueue).to(exchange).with("carmind.back.notification.test.#");
+    return BindingBuilder.bind(notificationTestingQueue).to(exchange).with("back.notification.test.#");
   }
 
 

@@ -9,6 +9,7 @@ import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.notificacion.manager.NotificacionManager;
 import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.notificacion.pojo.TestRabbitMessage;
+import com.mindia.carmind.utils.RabbitMqService;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class NotificationRabbitMq {
     @Autowired
     NotificacionManager manager;
 
-    @RabbitListener(queues = "spring-boot")
+    @RabbitListener(queues = RabbitMqService.NOTIFICACION_TESTING_QUEUE)
     public void receiveMessage(TestRabbitMessage message) {
         List<Usuario> usuarios = new ArrayList<Usuario>();
         Usuario user = new Usuario();
@@ -41,6 +42,6 @@ public class NotificationRabbitMq {
 
         System.out.println("Mandando email a :" + message.getEmail());
         System.out.println(message.toString());
-        NotificacionManager.sendEmailNotificationFailure(usuarios, notif, manager.fastEmailUrl);
+        manager.sendEmailNotificationFailure(usuarios, notif, manager.fastEmailUrl);
     }
 }

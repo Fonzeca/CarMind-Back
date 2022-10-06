@@ -85,6 +85,9 @@ public class EvaluacionManager {
     @Autowired
     DefectoRepository defectoRepository;
 
+    @Autowired
+    NotificacionManager notificacionManager;
+
     @Value("${fastemail.url}")
     private String fastEmailUrl;
 
@@ -362,7 +365,7 @@ public class EvaluacionManager {
                         vehiculo.getId(),
                         currentDateTime
                     );
-                    NotificacionManager.sendEmailNotificationFailure(usuarios, notificacion, fastEmailUrl);
+                    notificacionManager.sendEmailNotificationFailure(usuarios, notificacion, fastEmailUrl);
                 }
                 
                 return;
