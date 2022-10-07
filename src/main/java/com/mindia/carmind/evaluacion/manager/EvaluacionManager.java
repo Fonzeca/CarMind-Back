@@ -337,8 +337,10 @@ public class EvaluacionManager {
 
                         Defecto newDefecto = new Defecto();
                         newDefecto.setFechaCreacion(LocalDateTime.now());
-                        newDefecto.setNombreUsuario(loggedUser.getNombre());
-                        newDefecto.setResuelto(false);
+                        newDefecto.setNombreApeUsuario(loggedUser.getNombre() + " " + loggedUser.getApellido());
+                        newDefecto.setPrioridad(0);
+                        newDefecto.setIdUsuario(loggedUser.getId());
+                        newDefecto.setEstado("pendiente");
                         newDefecto.setVehiculoId(vehiculo.getId());
                         newDefecto.setLogPreguntaId(logPregunta.getId());
                         

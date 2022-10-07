@@ -43,7 +43,7 @@ public class Defecto implements Serializable {
     private Integer    idUsuario ;
 
     @Column(name="prioridad", nullable=false)
-    private byte       prioridad ;
+    private Integer       prioridad ;
 
     @Column(name="estado", nullable=false, length=50)
     private String     estado ;
@@ -117,10 +117,10 @@ public class Defecto implements Serializable {
         return this.idUsuario;
     }
 
-    public void setPrioridad( byte prioridad ) {
+    public void setPrioridad( Integer prioridad ) {
         this.prioridad = prioridad ;
     }
-    public byte getPrioridad() {
+    public Integer getPrioridad() {
         return this.prioridad;
     }
 

@@ -5,7 +5,7 @@ CREATE TABLE `defecto` (
   `fecha_creacion` datetime NOT NULL,
   `vehiculo_id` int NOT NULL,
   `id_usuario` int DEFAULT NULL,
-  `prioridad` tinyint NOT NULL,
+  `prioridad` int NOT NULL,
   `estado` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
   PRIMARY KEY (`id`),
   KEY `id_log_pregunta_defecto` (`log_pregunta_id`),
