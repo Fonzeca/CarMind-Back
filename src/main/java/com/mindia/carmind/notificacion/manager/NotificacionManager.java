@@ -23,6 +23,7 @@ import com.mindia.carmind.notificacion.pojo.NotificacionDocumentacionView;
 import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.notificacion.pojo.NotificacionPojo;
 import com.mindia.carmind.notificacion.pojo.VencimientoView;
+import com.mindia.carmind.notificacion.pojo.ZoneNotification;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 import com.mindia.carmind.vehiculo.persistence.DocumentoRepository;
@@ -74,6 +75,37 @@ public class NotificacionManager {
     public List<NotificacionPojo> getAllNotificaciones(){
         List<Notificaciones> notificaciones = notificacionRepository.findTop10ByEmpresaId(usuariosManager.getLoggeduser().getEmpresa());
         return notificaciones.stream().map(NotificacionPojo::new).collect(Collectors.toList());
+    }
+
+    public void sendEmailNotificationFailure( List<Usuario> usuarios, NotificacionFailureEvaluacionView notificacion, String fastEmailUrl){
+        for(Usuario usuario : usuarios){
+
+            //Por cada usuario adminitrador, se setea el email y nombre
+            notificacion.setEmail(usuario.getUsername());
+            notificacion.setNombre(usuario.getNombre());
+
+            rabbitTemplate.convertAndSend("carmind", "notification.failure.ready", notificacion);
+        }
+    }
+
+    public void prepareZoneNotification(ZoneNotification notification){
+        var vehiculos = vehiculosRepository.findByImei(notification.getImei());
+        if(vehiculos == null || vehiculos.isEmpty()){
+            return;
+        }
+        var vehiculo = vehiculos.get(0);
+
+        var empresaId = vehiculo.getEmpresaId();
+
+        var usuarios = usuariosManager.getAllUsuario(empresaId);
+        var usuariosAdmin = usuarios.stream().filter(o -> o.getAdministrador()).collect(Collectors.toList());
+        var emailsAdmin = usuariosAdmin.stream().map(o -> o.getUsername()).collect(Collectors.toList());
+
+        notification.setVehiculoId(vehiculo.getId());
+        notification.setVehiculoName(vehiculo.getNombre());
+        notification.setEmails(emailsAdmin);
+
+        rabbitTemplate.convertAndSend("carmind", "notification.zone.userhub.preparing", notification);
     }
 
 
@@ -159,19 +191,5 @@ public class NotificacionManager {
     private void sendEmail(String email, String nombre, List<VencimientoView> vencimientos){
         NotificacionDocumentacionView notificacion = new NotificacionDocumentacionView(email, nombre, vencimientos);
         rabbitTemplate.convertAndSend("carmind", "notification.weekly.email.ready", notificacion);
-    }
-
-    public void sendEmailNotificationFailure( List<Usuario> usuarios, NotificacionFailureEvaluacionView notificacion, String fastEmailUrl){
-        
-
-        for(Usuario usuario : usuarios){
-
-            //Por cada usuario adminitrador, se setea el email y nombre
-            notificacion.setEmail(usuario.getUsername());
-            notificacion.setNombre(usuario.getNombre());
-
-            rabbitTemplate.convertAndSend("carmind", "notification.failure.ready", notificacion);
-            
-        }
     }
 }

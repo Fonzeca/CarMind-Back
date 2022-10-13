@@ -15,10 +15,16 @@ public class RabbitMqService {
   public static final String TOPIC_EXCHANGE_NAME = "carmind";
 
   public static final String NOTIFICACION_TESTING_QUEUE = "back-testing";
+  public static final String NOTIFICACION = "back.notification.zone";
 
   @Bean
   Queue notificationTestingQueue() {
     return new Queue(NOTIFICACION_TESTING_QUEUE, false, false,true);
+  }
+
+  @Bean
+  Queue notificationQueue() {
+    return new Queue(NOTIFICACION, false, false,true);
   }
 
   @Bean
@@ -29,6 +35,11 @@ public class RabbitMqService {
   @Bean
   Binding binding(Queue notificationTestingQueue, TopicExchange exchange) {
     return BindingBuilder.bind(notificationTestingQueue).to(exchange).with("back.notification.test.#");
+  }
+
+  @Bean
+  Binding bindinNnotificationQueue(Queue notificationQueue, TopicExchange exchange) {
+    return BindingBuilder.bind(notificationQueue).to(exchange).with("notification.zone.back.preparing");
   }
 
 

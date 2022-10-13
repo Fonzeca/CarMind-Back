@@ -18,4 +18,6 @@ public interface VehiculosRepository extends JpaRepository<Vehiculo, Integer> {
 
     Vehiculo findByPatente(String patente);
 
+    List<Vehiculo> findByImei(String imei);
+
 }

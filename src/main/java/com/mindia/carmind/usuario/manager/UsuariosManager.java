@@ -187,7 +187,11 @@ public class UsuariosManager {
     }
 
     public List<UsuarioView> getAllUsuario() {
-        List<Usuario> usuarios = repository.findByEmpresaAndActiveTrue(getLoggeduser().getEmpresa());
+        return getAllUsuario(getLoggeduser().getEmpresa());
+    }
+
+    public List<UsuarioView> getAllUsuario(int empresaId) {
+        List<Usuario> usuarios = repository.findByEmpresaAndActiveTrue(empresaId);
         return usuarios.stream().map(UsuarioView::new).collect(Collectors.toList());
     }
 

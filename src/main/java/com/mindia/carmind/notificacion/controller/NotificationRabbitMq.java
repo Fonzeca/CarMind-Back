@@ -9,6 +9,7 @@ import com.mindia.carmind.entities.Usuario;
 import com.mindia.carmind.notificacion.manager.NotificacionManager;
 import com.mindia.carmind.notificacion.pojo.NotificacionFailureEvaluacionView;
 import com.mindia.carmind.notificacion.pojo.TestRabbitMessage;
+import com.mindia.carmind.notificacion.pojo.ZoneNotification;
 import com.mindia.carmind.utils.RabbitMqService;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -43,5 +44,10 @@ public class NotificationRabbitMq {
         System.out.println("Mandando email a :" + message.getEmail());
         System.out.println(message.toString());
         manager.sendEmailNotificationFailure(usuarios, notif, manager.fastEmailUrl);
+    }
+
+    @RabbitListener(queues = RabbitMqService.NOTIFICACION)
+    public void reciveNotificationPreparing(ZoneNotification message) {
+        manager.prepareZoneNotification(message);
     }
 }
