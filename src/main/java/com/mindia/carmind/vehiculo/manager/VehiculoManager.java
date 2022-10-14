@@ -86,7 +86,7 @@ public class VehiculoManager {
         Vehiculo vehiculo = new Vehiculo();
         vehiculo.setNombre(pojo.getNombre());
 
-        if (vehiculo.getPatente() != null && !vehiculo.getPatente().isEmpty()) {
+        if (pojo.getPatente() != null && !pojo.getPatente().isEmpty()) {
 
             vehiculo.setPatente(pojo.getPatente().trim().replaceAll(" ", "")); // TODO: Validate properties
 
@@ -95,12 +95,8 @@ public class VehiculoManager {
             }
         }
 
-        vehiculo.setLinea(pojo.getLinea());
-        vehiculo.setMarca(pojo.getMarca());
-        vehiculo.setModelo(pojo.getModelo());
         vehiculo.setEmpresaId(usuario.getEmpresa());
         vehiculo.setTipoVehiculo(pojo.getTipo());
-        vehiculo.setKilometraje(pojo.getKilometraje());
 
         repository.save(vehiculo);
     }

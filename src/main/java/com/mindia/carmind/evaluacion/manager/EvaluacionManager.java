@@ -6,7 +6,9 @@ import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.mindia.carmind.defecto.persistence.DefectoRepository;
 import com.mindia.carmind.empresa.manager.EmpresaManager;
+import com.mindia.carmind.entities.Defecto;
 import com.mindia.carmind.entities.Evaluacion;
 import com.mindia.carmind.entities.LogEvaluacion;
 import com.mindia.carmind.entities.LogOption;
@@ -79,6 +81,12 @@ public class EvaluacionManager {
 
     @Autowired
     VehiculoEvaluacionRepository vehiculoEvaluacionRepository;
+
+    @Autowired
+    DefectoRepository defectoRepository;
+
+    @Autowired
+    NotificacionManager notificacionManager;
 
     @Value("${fastemail.url}")
     private String fastEmailUrl;
@@ -227,10 +235,13 @@ public class EvaluacionManager {
                 log = logEvaluacionRepository.save(log);
 
                 //Chequea que si hay una respuesta que es crucial y seleccionada como sin tick, se debe mandar un email a los admins indicando la falla
-                boolean hasFailure = false;
+                boolean evaluacionHasFailure = false;
                 
                 //Recorremos las respuestas del view
                 for (AltaRespuestaPojo res : respuestas.getRespuestas()) {
+                    
+                    boolean preguntaHasFailure = false;
+
                     //Obtenemos la pregunta a responder, para validar el tipo
                     PreguntaView pregunta = preguntaManager.getPreguntaById(res.getPreguntaId());
                     
@@ -269,7 +280,8 @@ public class EvaluacionManager {
                                     if(pregunta.getTipo().equals("S1") && opcion.isCrucial() && !optRes.getTickCorrecto()){
 
                                         //se setea en true porque se debe mandar email ya que la respuesta es errónea y crucial
-                                        hasFailure = true;
+                                        evaluacionHasFailure = true;
+                                        preguntaHasFailure = true;
 
                                         //Se avisa que esta para revisar
                                         if(!log.isParaRevisar()){
@@ -296,7 +308,8 @@ public class EvaluacionManager {
                                 if(pregunta.getCrucial()){
                                     
                                      //se setea en true porque se debe mandar email ya que la respuesta es errónea y crucial
-                                    hasFailure = true;
+                                     evaluacionHasFailure = true;
+                                     preguntaHasFailure = true;
                                     if(!log.isParaRevisar()){
                                         setEvaluacionParaRevisar(log, vehiculo);
                                     }
@@ -317,11 +330,29 @@ public class EvaluacionManager {
                     //Al final de todo guardamos el log (A no ser que ya lo hayamos gaurdado para obtener su id antes.)
                     if(logPregunta.getId() == 0) logPregunta = logPreguntaRepository.save(logPregunta);
                     // if(logPregunta == null) logPregunta = logPreguntaRepository.save(logPregunta);
+
+                    //Si la pregunta tiene alguna falla (pregunta marcada como incorrecta) entonces gaurdamos un defecto
+                    if(preguntaHasFailure){
+                        preguntaHasFailure = false;
+
+                        Defecto newDefecto = new Defecto();
+                        newDefecto.setFechaCreacion(LocalDateTime.now());
+                        newDefecto.setNombreApeUsuario(loggedUser.getNombre() + " " + loggedUser.getApellido());
+                        newDefecto.setPrioridad(0);
+                        newDefecto.setIdUsuario(loggedUser.getId());
+                        newDefecto.setEstado("pendiente");
+                        newDefecto.setVehiculoId(vehiculo.getId());
+                        newDefecto.setLogPreguntaId(logPregunta.getId());
+                        
+                        defectoRepository.save(newDefecto); 
+                    }
+
                 }
 
                 //Si el vehiculo tiene alguna falla (pregunta marcada como incorrecta y crucial) en la evaluación, entonces mandamos el mail via FastEmail
-                if (hasFailure) {
-                    hasFailure = false; 
+                if (evaluacionHasFailure) {
+                    evaluacionHasFailure = false; 
+
                     //Se buscan todos los adminsitradores de la empresa de la persona que está realizando la evaluación
                     List<Usuario> usuarios = usuariosRepository.findByEmpresaAndAdministradorTrueAndActiveTrue(empresaId);
                     //Obtenemos la fecha actual en el formato necestiado
@@ -336,7 +367,7 @@ public class EvaluacionManager {
                         vehiculo.getId(),
                         currentDateTime
                     );
-                    NotificacionManager.sendEmailNotificationFailure(usuarios, notificacion, fastEmailUrl);
+                    notificacionManager.sendEmailNotificationFailure(usuarios, notificacion, fastEmailUrl);
                 }
                 
                 return;

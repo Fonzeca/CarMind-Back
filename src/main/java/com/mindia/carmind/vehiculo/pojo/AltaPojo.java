@@ -99,29 +99,23 @@ public class AltaPojo {
 
     public boolean validate() {
 
-        this.modelo = this.modelo.trim();
-        this.marca = this.marca.trim();
-        this.patente = this.patente.trim();
-
-        // Valida si la linea no esta vacia o es mayor a 10 caracteres
-        if (this.linea == null || this.linea.isBlank() || this.linea.length() > 10) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
-        }
+        if(this.patente != null) this.patente = this.patente.trim();
+        
+        if(this.marca != null) this.marca.trim();
+        
+        if(this.modelo != null) this.modelo = this.modelo.trim();
+        
 
         if(this.nombre == null || this.nombre.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Nombre vacio");
         }
-
-        if(this.marca == null || this.marca.isBlank()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Marca vacio");
-        }
-
-        if(this.modelo == null || this.modelo.isBlank()){
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Modelo vacio");
-        }
         
         if(this.tipo == null || this.tipo.isBlank()){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tipo vacio");
+        }
+
+        if(this.linea != null && this.linea.length() > 10){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato linea incorrecto");
         }
 
         return true;
