@@ -17,3 +17,5 @@ CREATE TABLE `defecto` (
   CONSTRAINT `id_usuario_defecto` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `id_vehiculo_defecto` FOREIGN KEY (`vehiculo_id`) REFERENCES `vehiculo` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+ALTER TABLE `defecto` DROP FOREIGN KEY `estado_defecto`; ALTER TABLE `defecto` ADD CONSTRAINT `estado_defecto` FOREIGN KEY (`estado`) REFERENCES `estado`(`estado`) ON DELETE RESTRICT ON UPDATE CASCADE;
