@@ -1,17 +1,18 @@
 package com.mindia.carmind.defecto.manager;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
 import com.mindia.carmind.defecto.persistence.DefectoRepository;
 import com.mindia.carmind.entities.Defecto;
 import com.mindia.carmind.usuario.manager.UsuariosManager;
 import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 
-@RestController
+@Service
 public class DefectoManager {
 
     
@@ -33,6 +34,16 @@ public class DefectoManager {
         List<Defecto> defectos = defectoRepository.findAllById(userIds);
 
         return defectos;
+    }
+
+
+    public void changePriorityOfDefecto(int id, Integer newPriority) {
+        Optional<Defecto> defecto = defectoRepository.findById(id);
+
+        if (defecto.isPresent()) {
+            defecto.get().setPrioridad(newPriority);
+            defectoRepository.save(defecto.get());
+        }
     }
     
 }
