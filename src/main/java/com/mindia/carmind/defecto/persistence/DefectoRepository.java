@@ -9,5 +9,5 @@ import com.mindia.carmind.entities.Defecto;
 
 @Repository
 public interface DefectoRepository extends JpaRepository<Defecto, Integer> {
-    List<Defecto> findAllByIdUsuario(Iterable<Integer> usersIds);
+    List<Defecto> findAllByIdUsuarioIn(Iterable<Integer> usersIds);
 }
