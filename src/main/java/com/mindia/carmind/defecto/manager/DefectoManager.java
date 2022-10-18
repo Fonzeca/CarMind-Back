@@ -31,7 +31,7 @@ public class DefectoManager {
        
         Iterable<Integer> userIds = usuariosRepository.findByEmpresaAndActiveTrue(empresaId).stream().map(x -> x.getId()).collect(Collectors.toList());
 
-        List<Defecto> defectos = defectoRepository.findAllById(userIds);
+        List<Defecto> defectos = defectoRepository.findAllByIdUsuario(userIds);
 
         return defectos;
     }
