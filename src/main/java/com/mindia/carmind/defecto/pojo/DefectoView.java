@@ -20,7 +20,8 @@ import com.mindia.carmind.entities.Defecto;
         "vehiculo",
         "id_usuario",
         "prioridad",
-        "estado"
+        "estado",
+        "defecto"
 })
 @Generated("jsonschema2pojo")
 public class DefectoView {
@@ -29,8 +30,8 @@ public class DefectoView {
     private int        id ;
 
     //--- ENTITY DATA FIELDS 
-    @JsonProperty("log_pregunta_id")
-    private int        logPreguntaId ;
+    @JsonProperty("defecto")
+    private String     defecto ;
 
     @JsonProperty("nombre_ape_usuario")
     private String     nombreApeUsuario ;
@@ -66,13 +67,13 @@ public class DefectoView {
         return this.id;
     }
 
-    @JsonProperty("log_pregunta_id")
-    public void setLogPreguntaId( int logPreguntaId ) {
-        this.logPreguntaId = logPreguntaId ;
+    @JsonProperty("defecto")
+    public void setDefecto( String defecto ) {
+        this.defecto = defecto ;
     }
-    @JsonProperty("log_pregunta_id")
-    public int getLogPreguntaId() {
-        return this.logPreguntaId;
+    @JsonProperty("defecto")
+    public String getDefecto() {
+        return this.defecto;
     }
 
     @JsonProperty("nombre_ape_usuario")
@@ -131,7 +132,7 @@ public class DefectoView {
 
     public DefectoView(Defecto d) {
         id = d.getId();
-        logPreguntaId = d.getLogPreguntaId();
+        defecto = d.getLogpregunta().getDescripcion();
         nombreApeUsuario = d.getNombreApeUsuario();
         fechaCreacion = d.getFechaCreacion() ;
         this.vehiculo = d.getVehiculo().getNombre();
