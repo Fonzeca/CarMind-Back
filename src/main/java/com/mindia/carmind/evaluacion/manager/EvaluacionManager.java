@@ -340,7 +340,7 @@ public class EvaluacionManager {
                         newDefecto.setNombreApeUsuario(loggedUser.getNombre() + " " + loggedUser.getApellido());
                         newDefecto.setPrioridad(0);
                         newDefecto.setIdUsuario(loggedUser.getId());
-                        newDefecto.setEstado("pendiente");
+                        newDefecto.setEstado("Pendiente");
                         newDefecto.setVehiculoId(vehiculo.getId());
                         newDefecto.setLogPreguntaId(logPregunta.getId());
                         
