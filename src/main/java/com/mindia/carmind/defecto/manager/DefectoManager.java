@@ -15,7 +15,6 @@ import com.mindia.carmind.usuario.persistence.UsuariosRepository;
 
 @Service
 public class DefectoManager {
-
     
     @Autowired
     UsuariosManager usuariosManager;
@@ -25,7 +24,6 @@ public class DefectoManager {
 
     @Autowired
     DefectoRepository defectoRepository;
-
 
     public List<DefectoView> getAllDefectos() {
         int empresaId = usuariosManager.getLoggeduser().getEmpresa();
@@ -37,12 +35,20 @@ public class DefectoManager {
         return defectos.stream().map(defecto -> new DefectoView(defecto)).collect(Collectors.toList());
     }
 
-
     public void changePriorityOfDefecto(int id, Integer newPriority) {
         Optional<Defecto> defecto = defectoRepository.findById(id);
 
         if (defecto.isPresent()) {
             defecto.get().setPrioridad(newPriority);
+            defectoRepository.save(defecto.get());
+        }
+    }
+
+    public void changeStateOfDefecto(int id, String newState) {
+        Optional<Defecto> defecto = defectoRepository.findById(id);
+
+        if (defecto.isPresent()) {
+            defecto.get().setEstado(newState);
             defectoRepository.save(defecto.get());
         }
     }

@@ -27,7 +27,13 @@ public class DefectoApi {
 
     @PutMapping("/defectos/{id}/changePriority")
     @PreAuthorize("hasRole('admin_empresa')")
-    public void changeName(@PathVariable int id, @RequestParam Integer newPriority){
+    public void changePriority(@PathVariable int id, @RequestParam Integer newPriority){
         manager.changePriorityOfDefecto(id, newPriority);
+    }
+
+    @PutMapping("/defectos/{id}/changeState")
+    @PreAuthorize("hasRole('admin_empresa')")
+    public void changeState(@PathVariable int id, @RequestParam String newState){
+        manager.changeStateOfDefecto(id, newState);
     }
 }
