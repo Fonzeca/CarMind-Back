@@ -17,6 +17,7 @@ import com.mindia.carmind.entities.Defecto;
         "log_pregunta_id",
         "nombre_ape_usuario",
         "fecha_creacion",
+        "vehiculo_id",
         "vehiculo",
         "id_usuario",
         "prioridad",
@@ -38,6 +39,9 @@ public class DefectoView {
 
     @JsonProperty("fecha_creacion")
     private LocalDateTime fechaCreacion ;
+
+    @JsonProperty("vehiculo_id")
+    private Integer        vehiculo_id ;
 
     @JsonProperty("vehiculo")
     private String        vehiculo ;
@@ -94,6 +98,15 @@ public class DefectoView {
         return this.fechaCreacion;
     }
 
+    @JsonProperty("vehiculo_id")
+    public void setVehiculoId( Integer vehiculo_id ) {
+        this.vehiculo_id = vehiculo_id ;
+    }
+    @JsonProperty("vehiculo_id")
+    public Integer getVehiculoId() {
+        return this.vehiculo_id;
+    }
+
     @JsonProperty("vehiculo")
     public void setVehiculo( String vehiculo ) {
         this.vehiculo = vehiculo ;
@@ -135,7 +148,8 @@ public class DefectoView {
         defecto = d.getLogpregunta().getDescripcion();
         nombreApeUsuario = d.getNombreApeUsuario();
         fechaCreacion = d.getFechaCreacion() ;
-        this.vehiculo = d.getVehiculo().getNombre();
+        vehiculo_id = d.getVehiculo().getId();
+        vehiculo = d.getVehiculo().getNombre();
         idUsuario = d.getIdUsuario();
         prioridad = d.getPrioridad();
         estado = d.getEstado();
